@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mewati Dictionary - हिंदी ⇄ मेवाती शब्दकोश</title>
-<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <meta name="description" content="हिंदी-मेवाती शब्दकोश। मेवाती भाषा के शब्दों के अर्थ, उदाहरण और मुहावरे।">
     <meta property="og:site_name" content="Mewati Dictionary" />
@@ -113,13 +113,24 @@
             background: #f5f5f5; 
             border: 1px solid #ccc; 
             font-size: 16px; 
-            transition: background-color 0.3s, border-color 0.3s;
+            color: #1a1a1a;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
+        
+        /* जब इनपुट पर कर्सर/फोकस न हो तो टेक्स्ट हल्का रंग (प्लेसहोल्डर जैसा) दिखेगा */
+        input:not(:focus) {
+            color: #888;
+        }
+
         body.dark-mode input {
             background: #333;
             border-color: #555;
             color: #e0e0e0;
         }
+        body.dark-mode input:not(:focus) {
+            color: #aaa;
+        }
+
         input::placeholder { 
             color: #888; 
         }
@@ -156,6 +167,39 @@
             );
             border-color: #555;
         }
+
+        /* स्मूथ फ़ेड-इन / फ़ेड-आउट स्टिकी स्ट्रिप */
+        #stickyWordStrip {
+            position: fixed;
+            top: 90px;
+            left: 0;
+            right: 0;
+            background: #E8E4DC;
+            padding: 6px 20px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #1a1a1a;
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        #stickyWordStrip.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        body.dark-mode #stickyWordStrip {
+            background: #1a1a1a;
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
         .letter-btn { 
             background: #f5f5f5; 
             border: 1px solid #ccc; 
@@ -200,22 +244,6 @@
             width: 100%; 
             max-width: 600px; 
         }
-
-        /* --- STICKY HEADER STYLES --- */
-        .sticky-header-wrapper {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 92px;
-            z-index: 950;
-            background: #E8E4DC;
-            padding-top: 2px;
-            padding-bottom: 2px;
-            transition: background-color 0.3s;
-        }
-        body.dark-mode .sticky-header-wrapper {
-            background: #1a1a1a;
-        }
-
         #suggestions { 
             list-style: none; 
             padding: 0; 
@@ -1030,6 +1058,9 @@
         </div>
     </div>
     <div id="letterFilter"></div>
+    <!-- स्मूथ फ़ेड-इन फ़्लोटिंग स्ट्रिप -->
+    <div id="stickyWordStrip"></div>
+
     <div class="content-container">
         <div class="word-of-the-day-container" id="wordOfTheDay">
             <h2>आज का शब्द</h2>
@@ -1044,15 +1075,10 @@
             <div class="duplicate-slider" id="duplicateSlider"></div>
         </div>
         <ul id="suggestions"></ul>
-
-        <!-- मुख्य शीर्षक व व्याकरण श्रेणी को Sticky (चिपका हुआ) रखने के लिए Wrapper -->
-        <div class="sticky-header-wrapper">
-            <p id="wordType"></p>
-            <p id="subjectLine"></p>
-            <p id="pluralLine"></p>
-            <p id="result"></p>
-        </div>
-
+        <p id="wordType"></p>
+        <p id="subjectLine"></p>
+        <p id="pluralLine"></p>
+        <p id="result"></p>
         <p id="englishMeaning"></p>
         <p id="exampleLabel"></p>
         <p id="example"></p>
@@ -1100,6 +1126,7 @@
 
     <script>
         let dictionary = [];
+        let currentSearchType = "";
 
         const letters = [
             "अ", "आ", "इ", "ई", "उ", "ऊ", "ए", "ऐ", "ओ", "औ",
@@ -1715,6 +1742,8 @@
             const cleanInput = searchData.word;
             const data = searchData.data;
 
+            currentSearchType = searchData.type;
+
             let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
                 imageLabel = "", imageHtml = "",
                 synonymLabel = "", synonymText = "", oppositeLabel = "", oppositeText = "", 
@@ -1800,7 +1829,12 @@
                     }).join(", ");
                     return `• ${linksForThisEntry}`;
                 }).join("<br>");
-                result = `<span class="highlight-word">${cleanInput}</span> के हिंदी अर्थ:<br>${hindiWordsList}`;
+
+                /* मूल परिणाम संरचना */
+                result = `<span class="highlight-word" id="mainMewatiWord">${cleanInput}</span> के हिंदी अर्थ:<br>${hindiWordsList}`;
+
+                /* फ्लोटिंग स्ट्रिप के लिए टेक्स्ट तैयार करें */
+                document.getElementById("stickyWordStrip").textContent = cleanInput;
                 
                 const uniqueEnglishSet = new Set();
                 uniqueRelatedHindiWords.forEach(hindi => {
@@ -2395,7 +2429,11 @@
         }
 
         function clearResults() {
+            currentSearchType = "";
             document.getElementById("pluralLine").style.display = "none";
+            
+            const stickyStrip = document.getElementById("stickyWordStrip");
+            stickyStrip.classList.remove("visible");
 
             document.querySelectorAll("#wordType, #subjectLine, #result, #englishMeaning, #plural, #exampleLabel, #example, #imageLabel, #imageContainer, #synonymLabel, #synonyms, #oppositeLabel, #opposite, #rhymeLabel, #rhymePatterns, #rhymes, #relatedLabel, #related, #coupletLabel, #couplets, #idiomLabel, #idioms, #proverbLabel, #proverbs")
             .forEach(el => el.innerHTML = "");
@@ -2406,6 +2444,29 @@
                 document.getElementById("wordOfTheDay").style.display = "block";
             }
         }
+
+        /* स्मूथ फ़ेड-इन / फ़ेड-आउट स्क्रॉल लॉजिक */
+        window.addEventListener("scroll", function() {
+            if (currentSearchType !== "mewati") {
+                document.getElementById("stickyWordStrip").classList.remove("visible");
+                return;
+            }
+
+            const mainWordEl = document.getElementById("mainMewatiWord");
+            const stickyStrip = document.getElementById("stickyWordStrip");
+
+            if (mainWordEl) {
+                const rect = mainWordEl.getBoundingClientRect();
+                /* 90px पर लेटर-पट्टी समाप्त होती है */
+                if (rect.top <= 90) {
+                    stickyStrip.classList.add("visible");
+                } else {
+                    stickyStrip.classList.remove("visible");
+                }
+            } else {
+                stickyStrip.classList.remove("visible");
+            }
+        });
 
         function toggleSettingsMenu() {
             const menu = document.getElementById("settingsMenu");
@@ -2519,4 +2580,3 @@
     </script>
 </body>
 </html>
-
