@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mewati Dictionary - हिंदी ⇄ मेवाती शब्दकोश</title>
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <meta name="description" content="हिंदी-मेवाती शब्दकोश। मेवाती भाषा के शब्दों के अर्थ, उदाहरण और मुहावरे।">
     <meta property="og:site_name" content="Mewati Dictionary" />
@@ -94,6 +94,7 @@
             background: #fff;
             z-index: 1000;
             box-sizing: border-box;
+            gap: 10px;
         }
         body.dark-mode .search-container {
             background: #2a2a2a;
@@ -117,7 +118,6 @@
             transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
         
-        /* जब इनपुट पर कर्सर/फोकस न हो तो टेक्स्ट हल्का रंग (प्लेसहोल्डर जैसा) दिखेगा */
         input:not(:focus) {
             color: #888;
         }
@@ -168,7 +168,6 @@
             border-color: #555;
         }
 
-        /* स्मूथ फ़ेड-इन / फ़ेड-आउट स्टिकी स्ट्रिप */
         #stickyWordStrip {
             position: fixed;
             top: 90px;
@@ -529,16 +528,16 @@
         }
         .settings-menu {
             position: absolute;
-            top: 40px;
+            top: 45px;
             right: 10px;
             background: #fff;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 1001;
             display: none;
             padding: 10px;
-            width: 150px;
+            width: 190px;
             transition: background-color 0.3s, border-color 0.3s;
         }
         body.dark-mode .settings-menu {
@@ -873,12 +872,23 @@
             background-color: #333;
             border-color: #555;
         }
+        .duplicate-item-block {
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .duplicate-item-block:hover {
+            background-color: rgba(0, 123, 255, 0.08);
+        }
+        body.dark-mode .duplicate-item-block:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
         .duplicate-word {
             font-size: 15px;
             font-weight: 700;
             color: #007bff;
             margin-bottom: 8px;
-            cursor: pointer;
         }
         body.dark-mode .duplicate-word {
             color: #66b0ff;
@@ -905,7 +915,7 @@
         }
         .divider {
             border-top: 1px solid #ddd;
-            margin: 15px 0;
+            margin: 10px 0;
         }
         .duplicate-section h2 {
             font-size: 12px;
@@ -935,6 +945,7 @@
             width: 32px;
             border-radius: 8px;
             object-fit: cover;
+            cursor: pointer;
         }
         .clear-icon {
             position: absolute;
@@ -1007,6 +1018,87 @@
         body.dark-mode #pluralLine span {
             color: #ffffff !important;
         }
+
+        /* सेटिंग्स के अंदर ऑथेंटिकेशन और प्रोफाइल सेक्शन के स्टाइल्स */
+        .login-menu-item {
+            border-top: 1px solid #eee;
+            margin-top: 8px;
+            padding-top: 10px;
+        }
+        body.dark-mode .login-menu-item {
+            border-color: #444;
+        }
+
+        /* जब यूजर लॉग इन न हो */
+        .logged-out-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        .logged-out-container .menu-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        body.dark-mode .logged-out-container .menu-avatar {
+            color: #aaa;
+        }
+
+        /* जब यूजर लॉग इन हो */
+        .user-info-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            width: 100%;
+        }
+        .user-info-container img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+        .user-name-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+        body.dark-mode .user-name-text {
+            color: #e0e0e0;
+        }
+
+        .auth-btn {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+            transition: background 0.3s;
+            text-align: center;
+        }
+        .auth-btn:hover {
+            background: #0056b3;
+        }
+        .auth-btn.logout {
+            background: #dc3545;
+        }
+        .auth-btn.logout:hover {
+            background: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -1026,6 +1118,7 @@
             <input type="text" id="wordInput" placeholder="शब्दार्थ खोजिए" oninput="showSuggestions(); toggleClearIcon();" autocomplete="off">
             <span class="clear-icon" id="clearSearch" onclick="clearSearch()">×</span>
         </div>
+
         <span class="settings-icon material-symbols-outlined" onclick="toggleSettingsMenu()">settings</span>
 
         <div class="settings-menu" id="settingsMenu">
@@ -1055,10 +1148,27 @@
             <div class="menu-item">
                 <a href="https://forms.gle/Pw75jf2HKqkiMUxx6" target="_blank" style="color: #40ceeb; text-decoration: none; font-size: 14px;">सुझाव दें</a>
             </div>
+
+            <!-- सेटिंग्स के अंदर ऑथेंटिकेशन सेक्शन -->
+            <div class="login-menu-item">
+                <!-- 1. जब यूजर लॉग इन न हो -->
+                <div id="loggedOutView" class="logged-out-container">
+                    <span class="material-symbols-outlined menu-avatar">account_circle</span>
+                    <button class="auth-btn" onclick="handleAuth()">Google से लॉग इन करें</button>
+                </div>
+
+                <!-- 2. जब यूजर लॉग इन हो -->
+                <div id="loggedInView" style="display: none; width: 100%;">
+                    <div class="user-info-container">
+                        <img id="menuUserAvatar" src="" alt="User">
+                        <span class="user-name-text" id="menuUserName">यूज़र</span>
+                    </div>
+                    <button class="auth-btn logout" onclick="handleAuth()">लॉग आउट करें</button>
+                </div>
+            </div>
         </div>
     </div>
     <div id="letterFilter"></div>
-    <!-- स्मूथ फ़ेड-इन फ़्लोटिंग स्ट्रिप -->
     <div id="stickyWordStrip"></div>
 
     <div class="content-container">
@@ -1431,11 +1541,14 @@
                     card.className = "duplicate-card";
 
                     wordMap[word].forEach((item, i) => {
-                        const wordDiv = document.createElement("div");
-                        wordDiv.className = "duplicate-word";
-                        wordDiv.textContent = word;
-                        card.onclick = () => {
+                        const itemBlock = document.createElement("div");
+                        itemBlock.className = "duplicate-item-block";
+
+                        itemBlock.onclick = (e) => {
+                            e.stopPropagation();
                             const cleanWord = word.trim();
+                            document.getElementById("wordInput").value = cleanWord;
+                            
                             showResult(JSON.stringify({
                                 word: cleanWord,
                                 type: "mewati",
@@ -1446,6 +1559,10 @@
                             document.getElementById("duplicateSection").style.display = "none";
                         };
 
+                        const wordDiv = document.createElement("div");
+                        wordDiv.className = "duplicate-word";
+                        wordDiv.textContent = word;
+
                         const labelDiv = document.createElement("div");
                         labelDiv.className = "duplicate-hindi-label";
                         labelDiv.textContent = "हिंदी अर्थ";
@@ -1454,9 +1571,11 @@
                         hindiDiv.className = "duplicate-hindi-text";
                         hindiDiv.textContent = item.hindi;
 
-                        card.appendChild(wordDiv);
-                        card.appendChild(labelDiv);
-                        card.appendChild(hindiDiv);
+                        itemBlock.appendChild(wordDiv);
+                        itemBlock.appendChild(labelDiv);
+                        itemBlock.appendChild(hindiDiv);
+
+                        card.appendChild(itemBlock);
 
                         if (i < wordMap[word].length - 1) {
                             const divider = document.createElement("div");
@@ -1830,10 +1949,8 @@
                     return `• ${linksForThisEntry}`;
                 }).join("<br>");
 
-                /* मूल परिणाम संरचना */
                 result = `<span class="highlight-word" id="mainMewatiWord">${cleanInput}</span> के हिंदी अर्थ:<br>${hindiWordsList}`;
 
-                /* फ्लोटिंग स्ट्रिप के लिए टेक्स्ट तैयार करें */
                 document.getElementById("stickyWordStrip").textContent = cleanInput;
                 
                 const uniqueEnglishSet = new Set();
@@ -2445,7 +2562,6 @@
             }
         }
 
-        /* स्मूथ फ़ेड-इन / फ़ेड-आउट स्क्रॉल लॉजिक */
         window.addEventListener("scroll", function() {
             if (currentSearchType !== "mewati") {
                 document.getElementById("stickyWordStrip").classList.remove("visible");
@@ -2457,7 +2573,6 @@
 
             if (mainWordEl) {
                 const rect = mainWordEl.getBoundingClientRect();
-                /* 90px पर लेटर-पट्टी समाप्त होती है */
                 if (rect.top <= 90) {
                     stickyStrip.classList.add("visible");
                 } else {
@@ -2556,7 +2671,15 @@
             const settingsMenu = document.getElementById("settingsMenu");
             const settingsIcon = document.querySelector(".settings-icon");
             const aboutSection = document.getElementById("aboutSection");
-            if (!settingsMenu.contains(event.target) && !settingsIcon.contains(event.target) && !aboutSection.contains(event.target)) {
+            
+            if (
+                settingsMenu &&
+                !settingsMenu.contains(event.target) &&
+                settingsIcon &&
+                !settingsIcon.contains(event.target) &&
+                aboutSection &&
+                !aboutSection.contains(event.target)
+            ) {
                 settingsMenu.style.display = "none";
                 aboutSection.style.display = "none";
             }
@@ -2577,6 +2700,73 @@
                 document.getElementById("textSizeToggle").checked = true;
             }
         };
+    </script>
+
+    <!-- Firebase SDK & Authentication Engine -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
+        authDomain: "mewati-dictionary.firebaseapp.com",
+        projectId: "mewati-dictionary",
+        storageBucket: "mewati-dictionary.firebasestorage.app",
+        messagingSenderId: "258178654948",
+        appId: "1:258178654948:web:e726a480fac76b3dce42f1",
+        measurementId: "G-V4XXJ072VK"
+      };
+
+      // Firebase Initialize
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+
+      let currentUser = null;
+
+      // Handle Authentication Login/Logout
+      window.handleAuth = function() {
+        if (currentUser) {
+          signOut(auth).then(() => {
+            console.log("Logged out successfully");
+          }).catch((error) => {
+            console.error("Sign Out Error:", error);
+          });
+        } else {
+          signInWithPopup(auth, provider)
+            .then((result) => {
+              console.log("Logged in user:", result.user);
+            }).catch((error) => {
+              console.error("Login Error:", error);
+            });
+        }
+      };
+
+      // Firebase User State Listener
+      onAuthStateChanged(auth, (user) => {
+        const loggedOutView = document.getElementById("loggedOutView");
+        const loggedInView = document.getElementById("loggedInView");
+        const menuUserAvatar = document.getElementById("menuUserAvatar");
+        const menuUserName = document.getElementById("menuUserName");
+
+        if (user) {
+          currentUser = user;
+          loggedOutView.style.display = "none";
+          loggedInView.style.display = "block";
+
+          if (user.photoURL) {
+            menuUserAvatar.src = user.photoURL;
+          } else {
+            menuUserAvatar.src = "https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37";
+          }
+
+          menuUserName.textContent = user.displayName || "यूज़र";
+        } else {
+          currentUser = null;
+          loggedOutView.style.display = "flex";
+          loggedInView.style.display = "none";
+        }
+      });
     </script>
 </body>
 </html>
