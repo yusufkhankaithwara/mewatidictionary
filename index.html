@@ -2799,15 +2799,15 @@
         };
     </script>
 
-    <!-- Firebase SDK, Firestore & Direct Authentication Engine -->
+    <!-- Firebase SDK, Firestore & Authentication Engine -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
-        authDomain: "mewatidictionary.in", // अपनी कस्टम डोमेन सेट की गई है
+        authDomain: "mewati-dictionary.firebaseapp.com",
         projectId: "mewati-dictionary",
         storageBucket: "mewati-dictionary.firebasestorage.app",
         messagingSenderId: "258178654948",
@@ -2823,18 +2823,7 @@
 
       let currentUser = null;
 
-      // Handle Redirect Result after Google Sign In
-      getRedirectResult(auth)
-        .then((result) => {
-          if (result && result.user) {
-            console.log("Redirect login successful:", result.user);
-          }
-        })
-        .catch((error) => {
-          console.error("Redirect Login Error:", error);
-        });
-
-      // Handle Authentication Login/Logout with Redirect
+      // Handle Authentication Login/Logout with Popup (Fixes GitHub Pages 404)
       window.handleAuth = function() {
         if (currentUser) {
           signOut(auth).then(() => {
@@ -2843,7 +2832,13 @@
             console.error("Sign Out Error:", error);
           });
         } else {
-          signInWithRedirect(auth, provider);
+          signInWithPopup(auth, provider)
+            .then((result) => {
+              console.log("Logged in user:", result.user);
+            })
+            .catch((error) => {
+              console.error("Login Error:", error);
+            });
         }
       };
 
