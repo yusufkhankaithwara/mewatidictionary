@@ -537,7 +537,7 @@
             z-index: 1001;
             display: none;
             padding: 10px;
-            width: 190px;
+            width: 200px;
             transition: background-color 0.3s, border-color 0.3s;
         }
         body.dark-mode .settings-menu {
@@ -1019,46 +1019,53 @@
             color: #ffffff !important;
         }
 
-        /* ऑथेंटिकेशन और प्रोफाइल के स्टाइल्स */
-        .login-menu-item {
-            border-top: 1px solid #eee;
-            margin-top: 8px;
-            padding-top: 10px;
+        /* लॉगिन और प्रोफाइल सेक्शन के नए स्टाइल्स */
+        .login-top-item {
+            border-bottom: 1px solid #eee;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
         }
-        body.dark-mode .login-menu-item {
+        body.dark-mode .login-top-item {
             border-color: #444;
         }
 
-        .logged-out-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .login-text-btn {
+            color: #007bff;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 2px 0;
+            text-align: left;
             width: 100%;
         }
-        .logged-out-container .menu-avatar {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            color: #666;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
+        body.dark-mode .login-text-btn {
+            color: #66b0ff;
         }
-        body.dark-mode .logged-out-container .menu-avatar {
-            color: #aaa;
+        .login-text-btn:hover {
+            text-decoration: underline;
+        }
+
+        .login-menu-item {
+            border-top: 1px solid #eee;
+            margin-top: 8px;
+            padding-top: 8px;
+        }
+        body.dark-mode .login-menu-item {
+            border-color: #444;
         }
 
         .user-info-container {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             width: 100%;
         }
         .user-info-container img {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid #ccc;
@@ -1070,17 +1077,26 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 120px;
+            max-width: 130px;
         }
         body.dark-mode .user-name-text {
             color: #e0e0e0;
         }
 
-        .auth-btn {
-            background: #007bff;
+        /* एडमिन नाम स्टाइल (मरून कलर) */
+        .user-name-text.admin-name {
+            color: #800000 !important;
+            font-weight: bold;
+        }
+        body.dark-mode .user-name-text.admin-name {
+            color: #ff6666 !important;
+        }
+
+        .auth-btn-logout {
+            background: #dc3545;
             color: #fff;
             border: none;
-            padding: 6px 10px;
+            padding: 5px 10px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
@@ -1088,13 +1104,7 @@
             transition: background 0.3s;
             text-align: center;
         }
-        .auth-btn:hover {
-            background: #0056b3;
-        }
-        .auth-btn.logout {
-            background: #dc3545;
-        }
-        .auth-btn.logout:hover {
+        .auth-btn-logout:hover {
             background: #c82333;
         }
 
@@ -1175,6 +1185,44 @@
             background: #555;
             color: #e0e0e0;
         }
+
+        /* एडमिन फीडबैक लिस्ट ब्लॉक स्टाइल्स */
+        .admin-feedback-card {
+            background: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+        body.dark-mode .admin-feedback-card {
+            background: #333;
+            border-color: #555;
+        }
+        .admin-fb-header {
+            font-size: 12px;
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        body.dark-mode .admin-fb-header {
+            color: #66b0ff;
+        }
+        .admin-fb-msg {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 6px;
+            white-space: pre-wrap;
+        }
+        body.dark-mode .admin-fb-msg {
+            color: #e0e0e0;
+        }
+        .admin-fb-time {
+            font-size: 10px;
+            color: #888;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -1198,6 +1246,19 @@
         <span class="settings-icon material-symbols-outlined" onclick="toggleSettingsMenu()">settings</span>
 
         <div class="settings-menu" id="settingsMenu">
+            <!-- 1. सेटिंग्स में सबसे ऊपर कोने में नीला "लॉग इन" टेक्स्ट (लॉग-आउट होने पर दिखेगा) -->
+            <div class="menu-item login-top-item" id="loginTopView">
+                <button class="login-text-btn" onclick="handleAuth()">लॉग इन</button>
+            </div>
+
+            <!-- 2. जब यूज़र लॉग-इन हो जाए तो यहाँ प्रोफाइल पिक्चर और नाम दिखेगा -->
+            <div class="menu-item login-top-item" id="loggedInTopView" style="display: none;">
+                <div class="user-info-container" style="margin-bottom: 0;">
+                    <img id="menuUserAvatar" src="" alt="User">
+                    <span class="user-name-text" id="menuUserName">यूज़र</span>
+                </div>
+            </div>
+
             <div class="menu-item">
                 <label>डार्क मोड</label>
                 <label class="toggle-switch">
@@ -1221,23 +1282,21 @@
                 <label onclick="showAbout()" style="cursor:pointer;">हमारे बारे में</label>
             </div>
 
-            <div class="menu-item">
+            <!-- आम यूज़र के लिए सुझाव दें बटन -->
+            <div class="menu-item" id="userFeedbackMenuItem">
                 <label onclick="openFeedbackModal()" style="color: #40ceeb; cursor: pointer; font-size: 14px;">सुझाव दें</label>
             </div>
 
-            <div class="login-menu-item">
-                <div id="loggedOutView" class="logged-out-container">
-                    <span class="material-symbols-outlined menu-avatar">account_circle</span>
-                    <button class="auth-btn" onclick="handleAuth()">Google से लॉग इन करें</button>
-                </div>
+            <!-- एडमिन के लिए प्राप्त सुझाव (संख्या) बटन - नीले रंग में -->
+            <div class="menu-item" id="adminFeedbackMenuItem" style="display: none;">
+                <label onclick="fetchAdminFeedbacks()" style="color: #007bff; cursor: pointer; font-size: 14px; font-weight: bold;">
+                    प्राप्त सुझाव <span id="feedbackCountLabel">(0)</span>
+                </label>
+            </div>
 
-                <div id="loggedInView" style="display: none; width: 100%;">
-                    <div class="user-info-container">
-                        <img id="menuUserAvatar" src="" alt="User">
-                        <span class="user-name-text" id="menuUserName">यूज़र</span>
-                    </div>
-                    <button class="auth-btn logout" onclick="handleAuth()">लॉग आउट करें</button>
-                </div>
+            <!-- 3. लॉग आउट का विकल्प नीचे ही रखा गया है -->
+            <div class="login-menu-item" id="loggedOutViewBottom" style="display: none;">
+                <button class="auth-btn-logout" onclick="handleAuth()">लॉग आउट करें</button>
             </div>
         </div>
     </div>
@@ -1245,6 +1304,12 @@
     <div id="stickyWordStrip"></div>
 
     <div class="content-container">
+        <!-- एडमिन फीडबैक प्रदर्शित करने का ब्लॉक -->
+        <div id="adminFeedbackBlock" style="display: none; margin: 10px 20px;">
+            <h3 style="font-size: 16px; color: #007bff; margin-bottom: 12px; text-align: left;">यूज़र्स द्वारा भेजे गए सुझाव</h3>
+            <div id="adminFeedbackContainer"></div>
+        </div>
+
         <div class="word-of-the-day-container" id="wordOfTheDay">
             <h2>आज का शब्द</h2>
             <div class="word-of-the-day">
@@ -2451,6 +2516,7 @@
 
             document.getElementById("wordOfTheDay").style.display = "none";
             document.getElementById("duplicateSection").style.display = "none";
+            document.getElementById("adminFeedbackBlock").style.display = "none";
         }
 
         function showDuplicateSuggestions(word) {
@@ -2641,6 +2707,8 @@
             
             document.querySelectorAll(".synonym-block, .opposite-block, .rhyme-block, .related-block, .couplet-block, .image-block, .idiom-block, .proverb-block").forEach(block => block.style.display = "none");
             
+            document.getElementById("adminFeedbackBlock").style.display = "none";
+
             if (!document.getElementById("wordInput").value.trim() && !activeLetter) {
                 document.getElementById("wordOfTheDay").style.display = "block";
             }
@@ -2803,7 +2871,7 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
@@ -2822,8 +2890,9 @@
       const provider = new GoogleAuthProvider();
 
       let currentUser = null;
+      const ADMIN_EMAIL = "mewatidictionary@gmail.com";
 
-      // Handle Authentication Login/Logout with Popup (Fixes GitHub Pages 404)
+      // Handle Authentication Login/Logout
       window.handleAuth = function() {
         if (currentUser) {
           signOut(auth).then(() => {
@@ -2863,7 +2932,6 @@
           feedbackInput.value = "";
           window.closeFeedbackModal();
 
-          // इन-पेज कंफर्मेशन बैनर
           const msg = document.createElement("div");
           msg.style.cssText = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#28a745; color:#fff; padding:10px 20px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:3000; font-size:14px;";
           msg.textContent = "धन्यवाद! आपका सुझाव सफलतापूर्वक प्राप्त हो गया है।";
@@ -2879,17 +2947,92 @@
         }
       };
 
+      // फ़ायरस्टोर से फीडबैक की कुल गिनती लोड करने का फ़ंक्शन
+      async function updateFeedbackCount() {
+        try {
+          const querySnapshot = await getDocs(collection(db, "feedbacks"));
+          const count = querySnapshot.size;
+          document.getElementById("feedbackCountLabel").textContent = `(${count})`;
+        } catch (error) {
+          console.error("Count Fetch Error:", error);
+        }
+      }
+
+      // एडमिन द्वारा सभी सुझावों को वेबसाइट पर लोड करके दिखाना
+      window.fetchAdminFeedbacks = async function() {
+        if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+          alert("केवल एडमिन ही प्राप्त सुझाव देख सकते हैं।");
+          return;
+        }
+
+        const adminBlock = document.getElementById("adminFeedbackBlock");
+        const container = document.getElementById("adminFeedbackContainer");
+        
+        document.getElementById("settingsMenu").style.display = "none";
+        clearResults();
+        
+        container.innerHTML = "<p style='font-size:13px; color:#888;'>लोड हो रहा है...</p>";
+        adminBlock.style.display = "block";
+        document.getElementById("wordOfTheDay").style.display = "none";
+        document.getElementById("duplicateSection").style.display = "none";
+
+        try {
+          const querySnapshot = await getDocs(collection(db, "feedbacks"));
+
+          if (querySnapshot.empty) {
+            container.innerHTML = "<p style='font-size:13px; color:#888;'>अभी तक कोई सुझाव प्राप्त नहीं हुआ है।</p>";
+            document.getElementById("feedbackCountLabel").textContent = "(0)";
+            return;
+          }
+
+          let feedbackList = [];
+          querySnapshot.forEach((doc) => {
+            feedbackList.push({ id: doc.id, ...doc.data() });
+          });
+
+          document.getElementById("feedbackCountLabel").textContent = `(${feedbackList.length})`;
+
+          feedbackList.sort((a, b) => {
+            let tA = a.timestamp ? a.timestamp.seconds : 0;
+            let tB = b.timestamp ? b.timestamp.seconds : 0;
+            return tB - tA;
+          });
+
+          container.innerHTML = "";
+          feedbackList.forEach((data) => {
+            const dateStr = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('hi-IN') : "समय उपलब्ध नहीं";
+
+            const card = document.createElement("div");
+            card.className = "admin-feedback-card";
+            card.innerHTML = `
+              <div class="admin-fb-header">${data.userName || 'अज्ञात यूज़र'} (${data.userEmail || 'N/A'})</div>
+              <div class="admin-fb-msg">${data.message || ''}</div>
+              <div class="admin-fb-time">📅 ${dateStr}</div>
+            `;
+            container.appendChild(card);
+          });
+
+        } catch (error) {
+          console.error("Fetch Feedbacks Error:", error);
+          container.innerHTML = "<p style='font-size:13px; color:red;'>सुझाव लोड करने में समस्या आई: " + error.message + "</p>";
+        }
+      };
+
       // Firebase User State Listener
       onAuthStateChanged(auth, (user) => {
-        const loggedOutView = document.getElementById("loggedOutView");
-        const loggedInView = document.getElementById("loggedInView");
+        const loginTopView = document.getElementById("loginTopView");
+        const loggedInTopView = document.getElementById("loggedInTopView");
         const menuUserAvatar = document.getElementById("menuUserAvatar");
         const menuUserName = document.getElementById("menuUserName");
+        const userFeedbackMenuItem = document.getElementById("userFeedbackMenuItem");
+        const adminMenuItem = document.getElementById("adminFeedbackMenuItem");
+        const loggedOutViewBottom = document.getElementById("loggedOutViewBottom");
 
         if (user) {
           currentUser = user;
-          loggedOutView.style.display = "none";
-          loggedInView.style.display = "block";
+          loginTopView.style.display = "none";
+          loggedInTopView.style.display = "block";
+          loggedOutViewBottom.style.display = "block";
 
           if (user.photoURL) {
             menuUserAvatar.src = user.photoURL;
@@ -2897,11 +3040,30 @@
             menuUserAvatar.src = "https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37";
           }
 
-          menuUserName.textContent = user.displayName || "यूज़र";
+          // एडमिन पहचान चेक
+          if (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+            menuUserName.textContent = "Admin";
+            menuUserName.classList.add("admin-name"); // मरून कलर स्टाइल
+            
+            // एडमिन के लिए "सुझाव दें" छिपाएं और "प्राप्त सुझाव (संख्या)" दिखाएं
+            userFeedbackMenuItem.style.display = "none";
+            adminMenuItem.style.display = "flex";
+            updateFeedbackCount();
+          } else {
+            menuUserName.textContent = user.displayName || "यूज़र";
+            menuUserName.classList.remove("admin-name");
+            
+            userFeedbackMenuItem.style.display = "flex";
+            adminMenuItem.style.display = "none";
+          }
         } else {
           currentUser = null;
-          loggedOutView.style.display = "flex";
-          loggedInView.style.display = "none";
+          loginTopView.style.display = "block";
+          loggedInTopView.style.display = "none";
+          loggedOutViewBottom.style.display = "none";
+          userFeedbackMenuItem.style.display = "flex";
+          adminMenuItem.style.display = "none";
+          menuUserName.classList.remove("admin-name");
         }
       });
     </script>
