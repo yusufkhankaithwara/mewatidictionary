@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>हमारे बारे में - मेवाती शब्दकोश</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --accent: #007bff;
+        --accent-dark: #0056b3;
+        --bg: #E8E4DC;
+        --card-bg: #ffffff;
+        --border: #ddd;
+        --text: #1a1a1a;
+        --muted: #666;
+    }
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        font-family: 'Noto Sans Devanagari', sans-serif;
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .topbar {
+        width: 100%;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .brand img {
+        height: 36px;
+        width: 36px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+    .brand h1 {
+        font-size: 18px;
+        margin: 0;
+        font-weight: 800;
+        color: var(--accent);
+    }
+    .container {
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .about-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .app-logo-large {
+        width: 72px;
+        height: 72px;
+        border-radius: 16px;
+        object-fit: cover;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .page-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--accent);
+        margin: 0 0 16px 0;
+    }
+    .section-box {
+        text-align: left;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+    .section-heading {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .section-text {
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--text);
+        margin: 0;
+    }
+    .author-name {
+        font-size: 16px;
+        font-weight: 700;
+        color: #333;
+        margin-top: 4px;
+    }
+    .back-btn {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 20px;
+        font-family: inherit;
+        transition: background 0.2s;
+    }
+    .back-btn:hover {
+        background: var(--accent-dark);
+    }
+</style>
+</head>
+<body>
+
+<!-- टॉप बार (लोगो + टाइटल) -->
+<div class="topbar">
+    <div class="brand">
+        <img src="https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37" alt="Logo">
+        <h1>मेवाती शब्दकोश</h1>
+    </div>
+</div>
+
+<!-- मुख्य सामग्री -->
+<div class="container">
+    <div class="about-card">
+        <!-- बड़ा ऐप लोगो -->
+        <img src="https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37" alt="App Logo" class="app-logo-large">
+        
+        <h2 class="page-title">हमारे बारे में</h2>
+
+        <!-- सेक्शन 1: शब्दकोश के बारे में -->
+        <div class="section-box">
+            <div class="section-heading">📖 शब्दकोश का उद्देश्य</div>
+            <p class="section-text">
+                यह हिंदी-मेवाती-अंग्रेज़ी शब्दकोश मेवाती भाषा के संरक्षण, संवर्धन और सुव्यवस्थित दस्तावेजीकरण का एक समर्पित प्रयास है। इसका उद्देश्य मेवाती शब्द-संपदा को संकलित कर विद्यार्थियों, शोधार्थियों और भाषा-प्रेमियों तक प्रमाणिक रूप में पहुँचाना है। 
+                <br><br>
+                इसमें प्रत्येक शब्द के शुद्ध अर्थ, पर्यायवाची, विलोम, अंग्रेज़ी अनुवाद, उच्चारण और उदाहरण दिए गए हैं।
+            </p>
+        </div>
+
+        <!-- सेक्शन 2: आपके/संपादक के बारे में (यहाँ विवरण बदलें) -->
+        <div class="section-box">
+            <div class="section-heading">👤 संपादन एवं निर्माण</div>
+            <div class="author-name">यूसुफ खान कैथवाड़ा</div>
+            <p class="section-text" style="margin-top: 6px; color: var(--muted);">
+                <!-- यहाँ अपने बारे में अतिरिक्त जानकारी लिखें -->
+                मेवाती भाषा व साहित्य संरक्षण कार्यकर्ता एवं डेवलपर।
+            </p>
+        </div>
+
+        <!-- वापस लौटने का बटन -->
+        <button class="back-btn" onclick="window.location.href='index.html'">मुख्य पेज पर लौटें</button>
+    </div>
+</div>
+
+</body>
+</html>
