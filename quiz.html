@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>मेवाती क्विज़</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<style>
+    :root {
+        --accent: #007bff;
+        --accent-dark: #0056b3;
+        --bg: #E8E4DC;
+        --card-bg: #ffffff;
+        --border: #ddd;
+        --text: #1a1a1a;
+        --muted: #777;
+        --green: #2e9e4f;
+        --green-bg: #e5f7ea;
+        --red: #d9453d;
+        --red-bg: #fce9e8;
+    }
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        font-family: 'Noto Sans Devanagari', sans-serif;
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .topbar {
+        width: 100%;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    .topbar h1 {
+        font-size: 18px;
+        margin: 0;
+        font-weight: 800;
+        color: var(--accent);
+    }
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .brand img {
+        height: 32px;
+        width: 32px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+    .score-pill {
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+        padding: 6px 16px;
+        border-radius: 20px;
+        min-width: 74px;
+        text-align: center;
+    }
+    .progress-wrap {
+        width: 100%;
+        max-width: 480px;
+        padding: 14px 20px 0;
+    }
+    .progress-track {
+        height: 6px;
+        border-radius: 3px;
+        background: #d9d4c8;
+        overflow: hidden;
+    }
+    .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 3px;
+        transition: width 0.35s ease;
+        width: 0%;
+    }
+    .progress-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 6px 2px 0;
+    }
+    .content {
+        width: 100%;
+        max-width: 480px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .question-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px 20px;
+        text-align: center;
+    }
+    .question-eyebrow {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 8px;
+    }
+    .question-word {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 6px;
+        word-break: break-word;
+    }
+    .question-sub {
+        font-size: 14px;
+        color: var(--muted);
+    }
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--card-bg);
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        padding: 14px 16px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.2s, border-color 0.2s, transform 0.15s;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .option:active { transform: scale(0.98); }
+    .option .circle {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid #bbb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: border-color 0.2s, background-color 0.2s;
+    }
+    .option .circle .material-symbols-outlined {
+        font-size: 16px;
+        color: #fff;
+        display: none;
+    }
+    .option.correct {
+        background: var(--green-bg);
+        border-color: var(--green);
+    }
+    .option.correct .circle {
+        background: var(--green);
+        border-color: var(--green);
+    }
+    .option.correct .circle .material-symbols-outlined { display: block; }
+    .option.wrong {
+        background: var(--red-bg);
+        border-color: var(--red);
+    }
+    .option.wrong .circle {
+        background: var(--red);
+        border-color: var(--red);
+    }
+    .option.wrong .circle .material-symbols-outlined { display: block; }
+    .option.disabled { cursor: default; }
+    .option.dim { opacity: 0.55; }
+    .next-btn, .primary-btn {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background-color 0.2s;
+    }
+    .next-btn:hover, .primary-btn:hover { background: var(--accent-dark); }
+    .next-btn:disabled {
+        background: #cbd3da;
+        cursor: not-allowed;
+    }
+    .result-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 36px 24px;
+        text-align: center;
+    }
+    .result-score {
+        font-size: 44px;
+        font-weight: 800;
+        color: var(--accent);
+        margin: 6px 0;
+    }
+    .result-msg {
+        font-size: 15px;
+        color: var(--muted);
+        margin-bottom: 22px;
+    }
+    #loading, #errorBox {
+        margin-top: 80px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 15px;
+    }
+    #errorBox { color: var(--red); display: none; }
+    .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="brand">
+        <img src="https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37" alt="Logo">
+        <h1>मेवाती क्विज़</h1>
+    </div>
+    <div class="score-pill" id="scorePill">स्कोर: 0</div>
+</div>
+
+<div id="loading">क्विज़ लोड हो रही है...</div>
+<div id="errorBox">त्रुटि: डेटा लोड करने में असमर्थ। कृपया पेज रीलोड करें।</div>
+
+<div class="progress-wrap hidden" id="progressWrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">सवाल 1 / 10</div>
+</div>
+
+<div class="content hidden" id="quizContent">
+    <div class="question-card">
+        <div class="question-eyebrow" id="questionEyebrow">मेवाती शब्द</div>
+        <div class="question-word" id="questionWord">―</div>
+        <div class="question-sub">का हिंदी अर्थ है―</div>
+    </div>
+    <div class="options" id="optionsBox"></div>
+    <button class="next-btn" id="nextBtn" disabled>अगला सवाल</button>
+</div>
+
+<div class="content hidden" id="resultContent">
+    <div class="result-card">
+        <div style="font-size:15px;color:var(--muted);">आपका स्कोर</div>
+        <div class="result-score" id="finalScore">0 / 10</div>
+        <div class="result-msg" id="finalMsg"></div>
+        <button class="primary-btn" id="restartBtn" style="width:100%;">फिर से खेलें</button>
+    </div>
+</div>
+
+<script>
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxCqyUdiGbBYFF7vj3YJ6gpe3mgdJK4ovyNl_nAhQrhex2T6wKUKUr9-yr9kpel7Lnlmg/exec";
+const TOTAL_QUESTIONS = 10;
+
+let pool = [];        // [{mewati, hindi, label, key}]
+let questions = [];   // this quiz's 10 questions
+let currentIndex = 0;
+let score = 0;
+let answered = false;
+let usedKeys = new Set(); // पूरे सेशन में अब तक इस्तेमाल हो चुके शब्दों की ट्रैकिंग
+
+function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+async function loadData() {
+    try {
+        const res = await fetch(SHEET_URL);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const rows = await res.json();
+
+        const seen = new Set();
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const hindiWord = (row[0] || "").trim();
+            const meaningRaw = (row[1] || "").trim();
+            const isFlagged = (row[23] || "").includes("अश्लील");
+            if (!hindiWord || !meaningRaw || isFlagged) continue;
+
+            const genderRaw = (row[7] || "").trim(); // कॉलम H: मेवाती व्याकरण/प्रकार
+            const genderArr = genderRaw ? genderRaw.split(",").map(g => g.trim()) : [];
+            const meanings = meaningRaw.split(",").map(m => m.trim());
+
+            meanings.forEach((mewati, idx) => {
+                if (!mewati) return;
+                const key = mewati + "|" + hindiWord;
+                if (seen.has(key)) return;
+                seen.add(key);
+
+                const mewatiType = genderArr[idx] || genderArr[0] || "";
+                let label = "शब्द";
+                if (mewatiType === "मुहावरा") label = "मुहावरा";
+                else if (mewatiType === "कहावत") label = "कहावत";
+
+                pool.push({ mewati, hindi: hindiWord, label, key });
+            });
+        }
+
+        if (pool.length < 4) throw new Error("पर्याप्त शब्द उपलब्ध नहीं");
+
+        document.getElementById("loading").classList.add("hidden");
+        startQuiz();
+    } catch (err) {
+        document.getElementById("loading").classList.add("hidden");
+        document.getElementById("errorBox").style.display = "block";
+    }
+}
+
+function buildQuestions() {
+    // सेशन में अभी तक न पूछे गए शब्दों में से चुनो
+    let available = pool.filter(p => !usedKeys.has(p.key));
+
+    // अगर बचे हुए शब्द 10 से कम हैं, तो ट्रैकिंग रीसेट करके पूरा पूल फिर से इस्तेमाल में लाओ
+    if (available.length < Math.min(TOTAL_QUESTIONS, pool.length)) {
+        usedKeys.clear();
+        available = pool.slice();
+    }
+
+    const count = Math.min(TOTAL_QUESTIONS, available.length);
+    const chosen = shuffle(available).slice(0, count);
+    chosen.forEach(item => usedKeys.add(item.key));
+
+    return chosen.map(item => {
+        const wrongCandidates = pool.filter(p => p.hindi !== item.hindi);
+        const wrongHindiSet = new Set();
+        shuffle(wrongCandidates).forEach(c => {
+            if (wrongHindiSet.size < 3 && c.hindi !== item.hindi) {
+                wrongHindiSet.add(c.hindi);
+            }
+        });
+        const options = shuffle([item.hindi, ...wrongHindiSet]);
+        return {
+            mewati: item.mewati,
+            label: item.label,
+            correct: item.hindi,
+            options
+        };
+    });
+}
+
+function startQuiz() {
+    questions = buildQuestions();
+    currentIndex = 0;
+    score = 0;
+    updateScorePill();
+    document.getElementById("progressWrap").classList.remove("hidden");
+    document.getElementById("quizContent").classList.remove("hidden");
+    document.getElementById("resultContent").classList.add("hidden");
+    renderQuestion();
+}
+
+function updateScorePill() {
+    document.getElementById("scorePill").textContent = "स्कोर: " + score;
+}
+
+function renderQuestion() {
+    answered = false;
+    const q = questions[currentIndex];
+    document.getElementById("questionWord").textContent = q.mewati;
+    document.getElementById("questionEyebrow").textContent = "मेवाती " + (q.label || "शब्द");
+
+    const total = questions.length;
+    document.getElementById("progressLabel").textContent = `सवाल ${currentIndex + 1} / ${total}`;
+    document.getElementById("progressFill").style.width = `${((currentIndex) / total) * 100}%`;
+
+    const box = document.getElementById("optionsBox");
+    box.innerHTML = "";
+    q.options.forEach(opt => {
+        const el = document.createElement("div");
+        el.className = "option";
+        el.innerHTML = `
+            <span class="circle"><span class="material-symbols-outlined" id="icon-${opt}"></span></span>
+            <span>${opt}</span>
+        `;
+        el.onclick = () => selectOption(el, opt, q.correct);
+        box.appendChild(el);
+    });
+
+    document.getElementById("nextBtn").disabled = true;
+    document.getElementById("nextBtn").textContent =
+        currentIndex === questions.length - 1 ? "परिणाम देखें" : "अगला सवाल";
+}
+
+function selectOption(el, chosen, correct) {
+    if (answered) return;
+    answered = true;
+
+    const allOptions = document.querySelectorAll("#optionsBox .option");
+    allOptions.forEach(o => o.classList.add("disabled"));
+
+    if (chosen === correct) {
+        el.classList.add("correct");
+        el.querySelector(".material-symbols-outlined").textContent = "check";
+        score++;
+    } else {
+        el.classList.add("wrong");
+        el.querySelector(".material-symbols-outlined").textContent = "close";
+        allOptions.forEach(o => {
+            if (o.textContent.trim() === correct) {
+                o.classList.add("correct");
+                o.querySelector(".material-symbols-outlined").textContent = "check";
+            }
+        });
+        allOptions.forEach(o => {
+            if (!o.classList.contains("correct") && !o.classList.contains("wrong")) {
+                o.classList.add("dim");
+            }
+        });
+    }
+
+    updateScorePill();
+    document.getElementById("nextBtn").disabled = false;
+}
+
+function goNext() {
+    if (!answered) return;
+    if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    document.getElementById("progressFill").style.width = "100%";
+    document.getElementById("quizContent").classList.add("hidden");
+    document.getElementById("progressWrap").classList.add("hidden");
+    document.getElementById("resultContent").classList.remove("hidden");
+
+    const total = questions.length;
+    document.getElementById("finalScore").textContent = `${score} / ${total}`;
+
+    let msg;
+    const pct = score / total;
+    if (pct === 1) msg = "वाह! सभी जवाब सही — शानदार!";
+    else if (pct >= 0.7) msg = "बहुत बढ़िया! थोड़ी और अभ्यास से पूरे नंबर आएँगे।";
+    else if (pct >= 0.4) msg = "अच्छी कोशिश! फिर से खेलकर और शब्द सीखिए।";
+    else msg = "कोई बात नहीं, अभ्यास से मेवाती शब्द और याद हो जाएँगे।";
+    document.getElementById("finalMsg").textContent = msg;
+}
+
+document.getElementById("nextBtn").addEventListener("click", goNext);
+document.getElementById("restartBtn").addEventListener("click", startQuiz);
+
+loadData();
+</script>
+</body>
+</html>
