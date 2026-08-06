@@ -253,49 +253,53 @@
 
         // फ़ॉर्म सबमिट हैंडलर
         form.addEventListener("submit", async (e) => {
-            e.preventDefault();
+    e.preventDefault();
 
-            const mewatiWord = document.getElementById("mewatiWord").value.trim();
-            const hindiMeaning = document.getElementById("hindiMeaning").value.trim();
-            const englishMeaning = document.getElementById("englishMeaning").value.trim();
-            const idiom = document.getElementById("idiom").value.trim();
-            const proverb = document.getElementById("proverb").value.trim();
+    // 1. यदि यूज़र लॉगिन नहीं है तो सबमिट न होने दें
+    if (!currentUser) {
+        showMessage("शब्द भेजने के लिए कृपया पहले लॉग इन करें।", "error");
+        alert("कृपया पहले लॉग इन करें!");
+        return;
+    }
 
-            if (!mewatiWord || !hindiMeaning) {
-                showMessage("कृपया अनिवार्य फ़ील्ड्स (मेवाती शब्द और हिन्दी अर्थ) भरें।", "error");
-                return;
-            }
+    const mewatiWord = document.getElementById("mewatiWord").value.trim();
+    const hindiMeaning = document.getElementById("hindiMeaning").value.trim();
+    const englishMeaning = document.getElementById("englishMeaning").value.trim();
+    const idiom = document.getElementById("idiom").value.trim();
+    const proverb = document.getElementById("proverb").value.trim();
 
-            // सबमिट बटन डिसेबल करें
-            submitBtn.disabled = true;
-            submitBtn.textContent = "भेजा जा रहा है...";
+    if (!mewatiWord || !hindiMeaning) {
+        showMessage("कृपया अनिवार्य फ़ील्ड्स (मेवाती शब्द और हिन्दी अर्थ) भरें।", "error");
+        return;
+    }
 
-            try {
-                // Firestore के "suggested_words" कलेक्शन में डेटा जोड़ना
-                await addDoc(collection(db, "suggested_words"), {
-                    mewatiWord: mewatiWord,
-                    hindiMeaning: hindiMeaning,
-                    englishMeaning: englishMeaning || "N/A",
-                    idiom: idiom || "N/A",
-                    proverb: proverb || "N/A",
-                    submittedBy: currentUser ? (currentUser.displayName || "यूज़र") : "अज्ञात योगदानकर्ता",
-                    userEmail: currentUser ? (currentUser.email || "N/A") : "N/A",
-                    status: "pending", // रिव्यू के लिए स्टेटस
-                    timestamp: serverTimestamp()
-                });
+    submitBtn.disabled = true;
+    submitBtn.textContent = "भेजा जा रहा है...";
 
-                // सफ़लता संदेश
-                showMessage("धन्यवाद! आपका सुझाया गया शब्द सफलतापूर्वक भेज दिया गया है।", "success");
-                form.reset();
-
-            } catch (error) {
-                console.error("Word Submission Error:", error);
-                showMessage("त्रुटि: शब्द भेजने में समस्या आई। कृपया पुनः प्रयास करें।", "error");
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = "सबमिट करें";
-            }
+    try {
+        await addDoc(collection(db, "suggested_words"), {
+            mewatiWord: mewatiWord,
+            hindiMeaning: hindiMeaning,
+            englishMeaning: englishMeaning || "N/A",
+            idiom: idiom || "N/A",
+            proverb: proverb || "N/A",
+            submittedBy: currentUser.displayName || "यूज़र",
+            userEmail: currentUser.email || "N/A",
+            status: "pending",
+            timestamp: serverTimestamp()
         });
+
+        showMessage("धन्यवाद! आपका सुझाया गया शब्द सफलतापूर्वक भेज दिया गया है।", "success");
+        form.reset();
+
+    } catch (error) {
+        console.error("Word Submission Error:", error);
+        showMessage("त्रुटि: शब्द भेजने में समस्या आई। नेटवर्क की जाँच करें या पुनः प्रयास करें।", "error");
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "सबमिट करें";
+    }
+});
 
         function showMessage(msg, type) {
             statusMsg.textContent = msg;
