@@ -1566,34 +1566,44 @@
             return await fetchFreshData();
         }
 
-        async function fetchFreshData() {
-            const loadingIndicator = document.getElementById("loadingIndicator");
-            const errorMessage = document.getElementById("errorMessage");
-            const url = "https://script.google.com/macros/s/AKfycbxCqyUdiGbBYFF7vj3YJ6gpe3mgdJK4ovyNl_nAhQrhex2T6wKUKUr9-yr9kpel7Lnlmg/exec";
+       async function fetchFreshData() {
+    const loadingIndicator = document.getElementById("loadingIndicator");
+    const errorMessage = document.getElementById("errorMessage");
+    const url = "https://script.google.com/macros/s/AKfycbxCqyUdiGbBYFF7vj3YJ6gpe3mgdJK4ovyNl_nAhQrhex2T6wKUKUr9-yr9kpel7Lnlmg/exec";
 
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                
-                const rows = await response.json();
-                
-                localStorage.setItem("mewati_dictionary_cache", JSON.stringify(rows));
-                processRows(rows);
+    try {
+        // redirect: 'follow' जोड़ने से गूगल स्क्रिप्ट का रीडायरेक्ट सही से डेटा लाता है
+        const response = await fetch(url, { redirect: 'follow' });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const rows = await response.json();
+        
+        // डेटा स्थानीय मेमोरी में सेव करें
+        localStorage.setItem("mewati_dictionary_cache", JSON.stringify(rows));
+        processRows(rows);
 
-                loadingIndicator.style.opacity = "0";
-                setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
-                return dictionary;
-            } catch (error) {
-                if (!localStorage.getItem("mewati_dictionary_cache")) {
-                    loadingIndicator.style.opacity = "0";
-                    setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
-                    errorMessage.textContent = "त्रुटि: डेटा लोड करने में असमर्थ।";
-                    errorMessage.style.display = "block";
-                }
-                return [];
-            }
+        // डेटा प्रोसेस होने के बाद UI शुरू करें
+        initializeLetterFilter();
+        initializeTrie();
+        initializeWordOfTheDay();
+        initializeDuplicateMewatiWords();
+
+        if (loadingIndicator) {
+            loadingIndicator.style.opacity = "0";
+            setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
         }
-
+        return dictionary;
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        if (loadingIndicator) loadingIndicator.style.display = "none";
+        if (errorMessage) {
+            errorMessage.textContent = "डेटा लोड करने में असमर्थ।";
+            errorMessage.style.display = "block";
+        }
+        return [];
+    }
+}
+ 
         function processRows(rows) {
             dictionary = [];
             for (let i = 1; i < rows.length; i++) {
