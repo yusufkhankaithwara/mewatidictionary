@@ -21,6 +21,9 @@
     }
     </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+    
+    <!-- Smart Fuzzy Search Engine Library -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
     <style>
         body { 
@@ -1220,7 +1223,6 @@
             text-align: right;
         }
 
-        /* एडमिन प्राप्त शब्द टेबल स्टाइल */
         .admin-words-table {
             width: 100%;
             border-collapse: collapse;
@@ -1381,7 +1383,6 @@
                     </tr>
                 </thead>
                 <tbody id="adminWordsTableBody">
-                    <!-- यहाँ फ़ायरबेस से डेटा रो के रूप में लोड होगा -->
                 </tbody>
             </table>
         </div>
@@ -1462,8 +1463,9 @@
         let dictionary = [];
         let currentSearchType = "";
         let debounceTimer = null;
+        let fuse = null;
 
-        const CURRENT_DATA_VERSION = "v1.1";
+        const CURRENT_DATA_VERSION = "v1.2";
 
         // XSS एस्केप सुरक्षा फ़ंक्शन
         function escapeHTML(str) {
@@ -1474,6 +1476,44 @@
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
+        }
+
+        // Hinglish/Roman inscript to Devanagari Phonetic Converter
+        function hinglishToDevanagari(text) {
+            if (!text) return "";
+            let str = text.toLowerCase().trim();
+
+            str = str.replace(/aa/g, "ा")
+                     .replace(/ee/g, "ी")
+                     .replace(/oo/g, "ू")
+                     .replace(/ei/g, "े")
+                     .replace(/ai/g, "ै")
+                     .replace(/ou/g, "ौ")
+                     .replace(/au/g, "ौ");
+
+            const multiMap = [
+                ['ksh', 'क्ष'], ['gya', 'ज्ञ'], ['tr', 'त्र'],
+                ['kh', 'ख'], ['gh', 'घ'], ['chh', 'छ'], ['jh', 'झ'],
+                ['th', 'थ'], ['dh', 'ध'], ['ph', 'फ'], ['bh', 'भ'],
+                ['sh', 'श'], ['rh', 'ढ़'], ['ri', 'रि'], ['ry', 'रिय']
+            ];
+
+            multiMap.forEach(([eng, dev]) => {
+                str = str.replace(new RegExp(eng, 'g'), dev);
+            });
+
+            const singleMap = {
+                'k': 'क', 'g': 'ग', 'ch': 'च', 'j': 'ज', 't': 'त', 'd': 'द',
+                'n': 'न', 'p': 'प', 'f': 'फ', 'b': 'ब', 'm': 'म', 'y': 'य',
+                'r': 'र', 'l': 'ल', 'v': 'व', 'w': 'व', 's': 'स', 'h': 'ह',
+                'a': 'ा', 'i': 'ि', 'e': 'े', 'u': 'ु', 'o': 'ो', 'q': 'क', 'z': 'ज'
+            };
+
+            for (let key in singleMap) {
+                str = str.replace(new RegExp(key, 'g'), singleMap[key]);
+            }
+
+            return str;
         }
 
         const letters = [
@@ -1579,6 +1619,8 @@
                 
                 localStorage.setItem("mewati_dictionary_cache", JSON.stringify(rows));
                 processRows(rows);
+                initializeTrie();
+                initializeFuse();
 
                 loadingIndicator.style.opacity = "0";
                 setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
@@ -1605,7 +1647,6 @@
                     type: row[3] || "",
                     gender: row[4] || "",
                     english: row[5] || "",
-                    mewatiTranslit: row[6] ? row[6].split(", ").map(t => t.trim()) : [],
                     mewatiGender: row[7] || "",
                     example: row[8] || "",
                     opposite: row[9] || "",
@@ -1635,6 +1676,7 @@
         }
 
         function initializeTrie() {
+            trie.root = new TrieNode();
             dictionary.forEach((entry, index) => {
                 const word = entry.hindiWord;
                 const hindiWords = word
@@ -1662,20 +1704,24 @@
                         trie.insert(eng, "english", { ...entry, hindiWord: word }, index);
                     });
                 }
-                entry.mewatiTranslit.forEach((translit) => {
-                    if (translit) {
-                        trie.insert(translit, "translit", {
-                            ...entry,
-                            hindiWord: word
-                        }, index);
-                    }
-                });
             }); 
+        }
+
+        function initializeFuse() {
+            fuse = new Fuse(dictionary, {
+                keys: [
+                    { name: 'hindiWord', weight: 0.4 },
+                    { name: 'meaning', weight: 0.4 },
+                    { name: 'english', weight: 0.2 }
+                ],
+                threshold: 0.4,
+                ignoreLocation: true
+            });
         }
 
         function escapeString(str) {
             if (!str || typeof str !== 'string') return "";
-            return str.replace(/'/g, "\\ me");
+            return str.replace(/'/g, "\\'");
         }
 
         function initializeLetterFilter() {
@@ -1865,7 +1911,6 @@
             }
         }
 
-        // 200ms डिबाउंस फ़ंक्शन (टाइपिंग लैग रोकने के लिए)
         function debouncedSuggestions() {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
@@ -1929,7 +1974,45 @@
             } else if (activeLetter && !input) {
                 matches = trie.searchByLetter(activeLetter);
             } else if (input) {
-                matches = trie.search(input);
+                let cleanQuery = input.trim();
+                let searchQueries = [cleanQuery];
+
+                if (/^[a-zA-Z\s]+$/.test(cleanQuery)) {
+                    let devanagariQuery = hinglishToDevanagari(cleanQuery);
+                    if (devanagariQuery) {
+                        searchQueries.unshift(devanagariQuery);
+                    }
+                }
+
+                searchQueries.forEach(q => {
+                    let trieMatches = trie.search(q);
+                    trieMatches.forEach(m => matches.push(m));
+                });
+
+                if (fuse) {
+                    searchQueries.forEach(q => {
+                        let fuseResults = fuse.search(q);
+                        fuseResults.forEach(res => {
+                            let entry = res.item;
+                            let idx = dictionary.indexOf(entry);
+
+                            entry.hindiWord.split(/[,;]\s*/).forEach(hw => {
+                                if (hw) matches.push({ word: hw, type: "hindi", data: entry, index: idx });
+                            });
+
+                            entry.meaning.split(/,\s*/).forEach(mw => {
+                                if (mw) matches.push({ word: mw, type: "mewati", data: entry, index: idx });
+                            });
+
+                            if (entry.english) {
+                                entry.english.split(/[,;]\s*/).forEach(ew => {
+                                    if (ew) matches.push({ word: ew, type: "english", data: entry, index: idx });
+                                });
+                            }
+                        });
+                    });
+                }
+
                 activeLetter = null;
                 document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
             }
@@ -1952,6 +2035,7 @@
                     suggestionsList.appendChild(li);
                 }
             });
+
             const otherSuggestions = matches.filter(match => match.type !== "hindi");
             otherSuggestions.forEach(match => {
                 let suggestionKey = `${match.word}-${match.type}-${match.index}`;
@@ -1961,19 +2045,6 @@
                 if (match.type === "mewati") {
                     suggestionKey = `${match.word}-mewati-${match.index}-${match.data.hindiWord}`;
                     displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
-                } else if (match.type === "translit") {
-                    const meanings = match.data.meaning.split(", ").map(m => m.trim());
-                    const translitIndex = match.data.mewatiTranslit.indexOf(match.word);
-                    const mewatiWord = meanings[translitIndex] || meanings[0];
-                    displayText = `${escapeHTML(mewatiWord)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
-                    selectedWord = mewatiWord;
-                    suggestionKey = `${mewatiWord}-mewati-${match.index}-${match.data.hindiWord}`;
-                    match = {
-                        word: mewatiWord,
-                        type: "mewati",
-                        data: match.data,
-                        index: match.index
-                    };
                 } else if (match.type === "english") {
                     displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning.split(", ")[0])}</span>`;
                 } else if (match.type === "tag") {
@@ -2117,17 +2188,6 @@
                         ) {
                             searchData = { word: searchWord, type: "mewati", data: {...entry}, index: idx };
                         }
-                        else if (entry.mewatiTranslit && entry.mewatiTranslit.includes(searchWord)) {
-                            const translitIndex = entry.mewatiTranslit.indexOf(searchWord);
-                            const meanings = entry.meaning.split(",").map(m => m.trim());
-
-                            searchData = {
-                                word: meanings[translitIndex] || meanings[0],
-                                type: "mewati",
-                                data: { ...entry },
-                                index: idx
-                            };
-                        }
                         else if (entry.english) {
                             const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim());
                             if (engParts.includes(searchWord)) {
@@ -2161,8 +2221,7 @@
 
                 if (
                     meanings.includes(cleanInput) ||
-                    synonyms.includes(cleanInput) ||
-                    (searchData.type === "translit" && entry.mewatiTranslit.includes(cleanInput))
+                    synonyms.includes(cleanInput)
                 ) {
                     relatedHindiWords.push(entry.hindiWord);
                 }
@@ -2347,87 +2406,6 @@
                     const safeM = escapeString(m);
                     return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
                 }).join("<br>");
-            } else if (searchData.type === "translit" && data) {
-                const d = data;
-                const meanings = d.meaning.split(/\s*,\s*/);
-                const translitIndex = d.mewatiTranslit.indexOf(cleanInput);
-                const mewatiMeaning = meanings[translitIndex] || meanings[0];
-                if (d.subject && d.subject.length) {
-                    const cleanTags = d.subject.map(tag => tag.replace("#","").trim());
-
-                    subjectLine = "विषय: " + cleanTags.map(tag =>
-                        `<button class="subject-btn" onclick="searchByTag('${escapeString(tag)}')">${escapeHTML(tag)}</button>`
-                    ).join(" ");
-                }
-                wordType = d.type ? (d.mewatiGender ? `${d.type}, ${d.mewatiGender.split(", ")[translitIndex] || d.mewatiGender}` : d.type) : (d.mewatiGender ? d.mewatiGender.split(", ")[translitIndex] : "");
-                
-                const primaryHindiParts = d.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
-                const primaryHindiLinks = primaryHindiParts.map(part => {
-                    const safePart = escapeString(part);
-                    return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
-                }).join(", ");
-
-                const otherHindiWords = relatedHindiWords.filter(hindi => hindi !== d.hindiWord).map(hindi => `<a href="#" class="unclickable-text" onclick="handleExactWordClick('${escapeString(hindi)}');return false">${escapeHTML(hindi)}</a>`).join(", ");
-                result = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के हिंदी अर्थ: ${primaryHindiLinks}${otherHindiWords ? ", " + otherHindiWords : ""}`;
-                
-                const uniqueHindiSet = new Set(relatedHindiWords);
-                const uniqueRelatedHindiWords = [...uniqueHindiSet];
-                const uniqueEnglishSet = new Set();
-                uniqueRelatedHindiWords.forEach(hindi => {
-                    const entry = dictionary.find(e => e.hindiWord === hindi);
-                    if (entry && entry.english) {
-                        const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
-                        engParts.forEach(eng => {
-                            if (eng) uniqueEnglishSet.add(eng);
-                        });
-                    }
-                });
-
-                const englishMeanings = [...uniqueEnglishSet].map(eng => {
-                    const safeDisplayEng = escapeString(eng);
-                    return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
-                }).join("<br>");
-
-                const translitFromW =
-                    (d.mewatiTranslit2 && d.mewatiTranslit2[translitIndex])
-                    ? d.mewatiTranslit2[translitIndex]
-                    : (d.mewatiTranslit2 && d.mewatiTranslit2[0])
-                    ? d.mewatiTranslit2[0]
-                    : cleanInput;
-
-                englishMeaning = `English meaning of <span class="highlight-word">${escapeHTML(translitFromW)}</span>:<br>${englishMeanings}`;  
-                
-                if (d.example) {
-                    exampleLabel = "उदाहरण:";
-                    exampleText = escapeHTML(d.example.split(", ")[translitIndex]?.trim() || d.example.split(", ")[0]?.trim() || "");
-                    const wordsToHighlight = mewatiMeaning.split(" ");
-                    wordsToHighlight.forEach(word => {
-                        const safeW = escapeHTML(word);
-                        if (exampleText && exampleText.includes(safeW)) {
-                            exampleText = exampleText.replace(new RegExp(safeW, 'g'), `<span class="highlight">${safeW}</span>`);
-                        }
-                    });
-                }
-                const allSynonyms = [...meanings.filter(m => m !== mewatiMeaning), ...(d.synonyms ? d.synonyms.split(", ").map(s => s.trim()) : [])];
-                if (allSynonyms.length) {
-                    synonymLabel = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के पर्यायवाची शब्द:`;
-                    synonymText = allSynonyms.map(s => {
-                        const safeS = escapeString(s);
-                        return `<button class="synonym-btn" onclick="showDuplicateSuggestions('${safeS}')">${escapeHTML(s)}</button>`;
-                    }).join(" ");
-                    document.getElementById("synonymBlock").style.display = "block";
-                }
-                if (d.opposite && d.opposite !== '"""""') {
-                    const opposites = d.opposite.split(", ").map(o => o.trim());
-                    if (opposites.length) {
-                        oppositeLabel = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के विलोम शब्द:`;
-                        oppositeText = opposites.map(o => {
-                            const safeO = escapeString(o);
-                            return `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>`;
-                        }).join(" ");
-                        document.getElementById("oppositeBlock").style.display = "block";
-                    }
-                }
             } else {
                 result = `कोई परिणाम नहीं मिला: <span class="highlight-word">${escapeHTML(cleanInput)}</span>`;
             }
@@ -2503,10 +2481,9 @@
             let coupletText = "";
             if (searchData.type === "mewati" && data) {
                 const meanings = data.meaning.split(", ").map(m => m.trim());
-                let meaningIndex = 0;
-                if (searchData.type === "mewati") {
-                    meaningIndex = meanings.indexOf(cleanInput);
-                } 
+                let meaningIndex = meanings.indexOf(cleanInput);
+                if (meaningIndex === -1) meaningIndex = 0;
+                
                 const coupletsColumns = [data.couplet1 || "", data.couplet2 || "", data.couplet3 || "", data.couplet4 || "", data.couplet5 || ""];
                 const authorsColumns = [data.author1 || "", data.author2 || "", data.author3 || "", data.author4 || "", data.author5 || ""];
                 let selectedCoupletStr = coupletsColumns[meaningIndex] || "";
@@ -2994,6 +2971,7 @@
             await fetchDictionaryFromGoogleSheets();
             initializeLetterFilter();
             initializeTrie();
+            initializeFuse();
             initializeWordOfTheDay();
             initializeDuplicateMewatiWords();
             if (localStorage.getItem("darkMode") === "true") {
@@ -3023,7 +3001,6 @@
         measurementId: "G-V4XXJ072VK"
       };
 
-      // Firebase Initialization
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getFirestore(app);
@@ -3032,7 +3009,6 @@
       let currentUser = null;
       const ADMIN_EMAIL = "mewatidictionary@gmail.com";
 
-      // शब्द जोड़ें के लिए लॉगिन रीडायरेक्ट चेक फ़ंक्शन
       window.checkAuthAndRedirect = function(url) {
         if (!currentUser) {
             alert("शब्द जोड़ने के लिए कृपया पहले 'लॉग इन' करें।");
@@ -3042,7 +3018,6 @@
         window.location.href = url;
       };
 
-      // Handle Authentication Login/Logout
       window.handleAuth = function() {
         if (currentUser) {
           signOut(auth).then(() => {
@@ -3061,7 +3036,6 @@
         }
       };
 
-      // Send Feedback directly to Firestore Database
       window.sendFeedback = async function() {
         const feedbackInput = document.getElementById("feedbackInput");
         const feedbackText = feedbackInput.value.trim();
@@ -3097,7 +3071,6 @@
         }
       };
 
-      // फ़ायरस्टोर से फीडबैक की कुल गिनती लोड करने का फ़ंक्शन
       async function updateFeedbackCount() {
         try {
           const querySnapshot = await getDocs(collection(db, "feedbacks"));
@@ -3108,7 +3081,6 @@
         }
       }
 
-      // सुझाए गए शब्दों की कुल गिनती लोड करने का फ़ंक्शन
       async function updateWordsCount() {
         try {
           const querySnapshot = await getDocs(collection(db, "suggested_words"));
@@ -3119,7 +3091,6 @@
         }
       }
 
-      // एडमिन द्वारा सभी सुझावों को सुरक्षित DOM Nodes द्वारा दिखाना (XSS Safe)
       window.fetchAdminFeedbacks = async function() {
         if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
           alert("केवल एडमिन ही प्राप्त सुझाव देख सकते हैं।");
@@ -3167,7 +3138,6 @@
             const card = document.createElement("div");
             card.className = "admin-feedback-card";
             
-            // XSS हैकिंग से बचाव के लिए textContent का उपयोग
             const headerDiv = document.createElement("div");
             headerDiv.className = "admin-fb-header";
             headerDiv.textContent = `${data.userName || 'अज्ञात यूज़र'} (${data.userEmail || 'N/A'})`;
@@ -3193,7 +3163,6 @@
         }
       };
 
-      // एडमिन द्वारा सभी सुझाए गए शब्दों को देखने का फ़ंक्शन (XSS Safe Table)
       window.fetchAdminSuggestedWords = async function() {
         if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
             alert("केवल एडमिन ही प्राप्त शब्द देख सकते हैं।");
@@ -3228,7 +3197,6 @@
 
             document.getElementById("wordsCountLabel").textContent = `(${wordsList.length})`;
 
-            // नवीनतम तिथि के अनुसार सॉर्ट करना
             wordsList.sort((a, b) => {
                 let tA = a.timestamp ? a.timestamp.seconds : 0;
                 let tB = b.timestamp ? b.timestamp.seconds : 0;
@@ -3242,7 +3210,6 @@
 
                 const row = document.createElement("tr");
 
-                // सुरक्षित XSS प्रूफ सेल्स
                 const cells = [
                     index + 1,
                     dateStr,
@@ -3269,7 +3236,6 @@
         }
       };
 
-      // Firebase User State Listener
       onAuthStateChanged(auth, (user) => {
         const loginTopView = document.getElementById("loginTopView");
         const loggedInTopView = document.getElementById("loggedInTopView");
@@ -3281,7 +3247,7 @@
         const loggedOutViewBottom = document.getElementById("loggedOutViewBottom");
 
         currentUser = user;
-        window.currentUser = user; // ग्लोबल विंडो स्टेट अपडेट
+        window.currentUser = user;
 
         if (user) {
           loginTopView.style.display = "none";
@@ -3294,10 +3260,9 @@
             menuUserAvatar.src = "https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37";
           }
 
-          // एडमिन पहचान चेक
           if (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
             menuUserName.textContent = "Admin";
-            menuUserName.classList.add("admin-name"); // मरून कलर स्टाइल
+            menuUserName.classList.add("admin-name");
             
             userFeedbackMenuItem.style.display = "none";
             adminMenuItem.style.display = "flex";
