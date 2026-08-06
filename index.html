@@ -1467,7 +1467,6 @@
 
         const CURRENT_DATA_VERSION = "v1.3";
 
-        // XSS एस्केप सुरक्षा फ़ंक्शन
         function escapeHTML(str) {
             if (!str || typeof str !== 'string') return "";
             return str
@@ -1478,7 +1477,6 @@
                 .replace(/'/g, "&#039;");
         }
 
-        // देवनागरी शब्दों का सटीक हिंग्लिश/रोमन रूप बनाने वाला अपडेटेड फ़ंक्शन
         function devanagariToRomanVariants(text) {
             if (!text || typeof text !== 'string') return [];
 
@@ -1495,7 +1493,6 @@
                 'क़':'q','ख़':'kh','ग़':'g','ज़':'z','ड़':'r','ढ़':'rh','फ़':'f'
             };
 
-            // नुक़्ता अक्षरों की आम बोलचाल वाली वैकल्पिक स्पेलिंग
             const altMap = { 'ज़':'j', 'फ़':'ph', 'क़':'k', 'ड़':'d', 'ढ़':'dh' };
 
             const vMap = {
@@ -1623,6 +1620,10 @@
                 try {
                     const rows = JSON.parse(cachedData);
                     processRows(rows);
+                    initializeTrie();
+                    initializeFuse();
+                    initializeWordOfTheDay();
+                    initializeDuplicateMewatiWords();
                     
                     loadingIndicator.style.opacity = "0";
                     setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
@@ -1652,6 +1653,8 @@
                 processRows(rows);
                 initializeTrie();
                 initializeFuse();
+                initializeWordOfTheDay();
+                initializeDuplicateMewatiWords();
 
                 loadingIndicator.style.opacity = "0";
                 setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
@@ -2017,15 +2020,12 @@
                 const cleanQuery = input.toLowerCase().trim();
                 const normQuery = cleanQuery.replace(/aa/g,'a').replace(/ee/g,'i').replace(/oo/g,'u');
 
-                // 1. देवनागरी Direct Trie Search — सिर्फ देवनागरी इनपुट पर चले
                 if (/[\u0900-\u097F]/.test(input)) {
                     let trieMatches = trie.search(input);
                     trieMatches.forEach(m => rawMatches.push(m));
                 }
 
-                // 2. हिंग्लिश / रोमन सर्च (dheeng, dhing, pani, paani आदि)
                 dictionary.forEach((entry, idx) => {
-                    // हिन्दी शब्दों से मैच
                     entry.hindiParts.forEach(hp => {
                         let rVariants = devanagariToRomanVariants(hp);
                         if (rVariants.some(rv => rv === cleanQuery || rv === normQuery || rv.startsWith(cleanQuery) || rv.startsWith(normQuery))) {
@@ -2033,7 +2033,6 @@
                         }
                     });
 
-                    // मेवाती शब्दों से मैच
                     entry.mewatiParts.forEach(mp => {
                         let rVariants = devanagariToRomanVariants(mp);
                         if (rVariants.some(rv => rv === cleanQuery || rv === normQuery || rv.startsWith(cleanQuery) || rv.startsWith(normQuery))) {
@@ -2041,7 +2040,6 @@
                         }
                     });
 
-                    // अंग्रेजी शब्दों से मैच
                     if (entry.english) {
                         entry.english.split(/[,;\/\n\r]+/).forEach(eng => {
                             let cleanEng = eng.trim().toLowerCase();
@@ -2056,31 +2054,30 @@
                 document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
             }
 
-            // =========================================================
-            // STRICT PRIORITY RANKING ENGINE (सटीक रैंकिंग लॉजिक)
-            // =========================================================
             const seenSuggestions = new Set();
             const cleanInput = input.toLowerCase().trim();
             const normInput = cleanInput.replace(/aa/g,'a').replace(/ee/g,'i').replace(/oo/g,'u');
 
-            let exactGroup = [];    // Priority 1: 100% एग्जैक्ट मैच
-            let prefixGroup = [];   // Priority 2: जो शब्द इससे शुरू होते हों
-            let containsGroup = []; // Priority 3: जिसमें यह शब्द बीच/अंत में आता हो
+            let exactGroup = [];
+            let prefixGroup = [];
+            let containsGroup = [];
 
             rawMatches.forEach(match => {
                 let suggestionKey = "";
                 let displayText = "";
                 let selectedWord = match.word;
 
+                const meaningText = match.data ? (match.data.meaning || match.data.hindiWord || "") : "";
+
                 if (match.type === "hindi") {
                     suggestionKey = `${match.word}-hindi-${match.index}`;
-                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning)}</span>`;
+                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(meaningText)}</span>`;
                 } else if (match.type === "mewati") {
-                    suggestionKey = `${match.word}-mewati-${match.index}-${match.data.hindiWord}`;
-                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
+                    suggestionKey = `${match.word}-mewati-${match.index}-${match.data ? match.data.hindiWord : ''}`;
+                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data ? match.data.hindiWord : '')}</span>`;
                 } else if (match.type === "english") {
                     suggestionKey = `${match.word}-english-${match.index}`;
-                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning.split(", ")[0])}</span>`;
+                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(meaningText.split(", ")[0])}</span>`;
                 }
 
                 if (!seenSuggestions.has(suggestionKey)) {
@@ -2107,7 +2104,6 @@
                 }
             });
 
-            // लम्बाई के अनुसार सॉर्टिंग (छोटे शब्द पहले)
             const sortByLength = (a, b) => a.selectedWord.length - b.selectedWord.length;
             exactGroup.sort(sortByLength);
             prefixGroup.sort(sortByLength);
@@ -2115,7 +2111,6 @@
 
             const finalSortedList = [...exactGroup, ...prefixGroup, ...containsGroup];
 
-            // DOM में रेंडर करना
             finalSortedList.forEach(item => {
                 const li = document.createElement("li");
                 li.innerHTML = item.displayText;
@@ -3023,12 +3018,7 @@
         });
 
         window.onload = async () => {
-            await fetchDictionaryFromGoogleSheets();
             initializeLetterFilter();
-            initializeTrie();
-            initializeFuse();
-            initializeWordOfTheDay();
-            initializeDuplicateMewatiWords();
             if (localStorage.getItem("darkMode") === "true") {
                 document.body.classList.add("dark-mode");
                 document.getElementById("darkModeToggle").checked = true;
@@ -3037,6 +3027,7 @@
                 document.body.classList.add("large-text");
                 document.getElementById("textSizeToggle").checked = true;
             }
+            await fetchDictionaryFromGoogleSheets();
         };
     </script>
 
