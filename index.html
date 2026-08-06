@@ -1529,11 +1529,7 @@ function devanagariToRomanVariants(text) {
                     primary += 'a';
                 }
             } else if (ch === 'ं' || ch === 'ँ') {
-                if (next && ['ग','क','ख','घ'].includes(next)) {
-                    primary += 'ng';
-                } else {
-                    primary += 'n';
-                }
+                primary += 'n';
             }
         }
 
@@ -1978,9 +1974,11 @@ function showSuggestions() {
     } else if (input) {
         const cleanQuery = input.toLowerCase().trim();
 
-        // 1. देवनागरी Direct Trie Search
-        let trieMatches = trie.search(input);
-        trieMatches.forEach(m => rawMatches.push(m));
+        // 1. देवनागरी Direct Trie Search (सिर्फ तब जब इनपुट देवनागरी में हो)
+        if (/[\u0900-\u097F]/.test(input)) {
+            let trieMatches = trie.search(input);
+            trieMatches.forEach(m => rawMatches.push(m));
+        }
 
         // 2. हिंग्लिश / रोमन सर्च (dheeng, dhing, pani, paani आदि)
         dictionary.forEach((entry, idx) => {
