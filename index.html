@@ -22,7 +22,7 @@
     </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
     
-    <!-- Smart Fuzzy Search Engine Library -->
+    <!-- Fuse.js (Fuzzy Matching Engine) -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
     <style>
@@ -1465,7 +1465,7 @@
         let debounceTimer = null;
         let fuse = null;
 
-        const CURRENT_DATA_VERSION = "v1.2";
+        const CURRENT_DATA_VERSION = "v1.3";
 
         // XSS एस्केप सुरक्षा फ़ंक्शन
         function escapeHTML(str) {
@@ -1478,42 +1478,70 @@
                 .replace(/'/g, "&#039;");
         }
 
-        // Hinglish/Roman inscript to Devanagari Phonetic Converter
-        function hinglishToDevanagari(text) {
+        // ==========================================
+        // ध्वन्यात्मक मानकीकरण (Phonetic Skeleton Algorithm)
+        // यह kitab, kitaab, bakra, bakara, chidiya, chiriya आदि का एक कॉमन साउंड कोड बनाता है
+        // ==========================================
+        function getPhoneticSignature(text) {
             if (!text) return "";
             let str = text.toLowerCase().trim();
 
-            str = str.replace(/aa/g, "ा")
-                     .replace(/ee/g, "ी")
-                     .replace(/oo/g, "ू")
-                     .replace(/ei/g, "े")
-                     .replace(/ai/g, "ै")
-                     .replace(/ou/g, "ौ")
-                     .replace(/au/g, "ौ");
+            const isDevanagari = /[\u0900-\u097F]/.test(str);
 
-            const multiMap = [
-                ['ksh', 'क्ष'], ['gya', 'ज्ञ'], ['tr', 'त्र'],
-                ['kh', 'ख'], ['gh', 'घ'], ['chh', 'छ'], ['jh', 'झ'],
-                ['th', 'थ'], ['dh', 'ध'], ['ph', 'फ'], ['bh', 'भ'],
-                ['sh', 'श'], ['rh', 'ढ़'], ['ri', 'रि'], ['ry', 'रिय']
-            ];
+            if (isDevanagari) {
+                // सभी मात्राएँ और अनुस्वार हटाएँ
+                str = str.replace(/[ािीुूृेैोौ्ंँः़]/g, "");
+                
+                const devMap = {
+                    'क':'k', 'ख':'k', 'क़':'k', 'ख़':'k',
+                    'ग':'g', 'घ':'g', 'ग़':'g',
+                    'च':'c', 'छ':'c',
+                    'ज':'j', 'झ':'j', 'ज़':'j',
+                    'ट':'t', 'ठ':'t', 'त':'t', 'थ':'t',
+                    'ड':'r', 'ढ':'r', 'द':'d', 'ध':'d', 'ड़':'r', 'ढ़':'r',
+                    'न':'n', 'ण':'n',
+                    'प':'p', 'फ':'p', 'फ़':'p',
+                    'ब':'b', 'भ':'b',
+                    'म':'m', 'य':'y', 'र':'r', 'ल':'l', 'व':'v',
+                    'श':'s', 'ष':'s', 'स':'s', 'ह':'h'
+                };
+                let res = "";
+                for (let char of str) {
+                    res += devMap[char] || char;
+                }
+                return res;
+            } else {
+                // Hinglish / English Input Processing
+                str = str.replace(/chh/g, "c")
+                         .replace(/ch/g, "c")
+                         .replace(/sh/g, "s")
+                         .replace(/kh/g, "k")
+                         .replace(/gh/g, "g")
+                         .replace(/th/g, "t")
+                         .replace(/dh/g, "d")
+                         .replace(/ph/g, "p")
+                         .replace(/bh/g, "b")
+                         .replace(/rh/g, "r")
+                         .replace(/ri/g, "r");
 
-            multiMap.forEach(([eng, dev]) => {
-                str = str.replace(new RegExp(eng, 'g'), dev);
-            });
+                // chidiya / chiriya के d और r का अंतर खत्म करना
+                str = str.replace(/d/g, "r");
 
-            const singleMap = {
-                'k': 'क', 'g': 'ग', 'ch': 'च', 'j': 'ज', 't': 'त', 'd': 'द',
-                'n': 'न', 'p': 'प', 'f': 'फ', 'b': 'ब', 'm': 'म', 'y': 'य',
-                'r': 'र', 'l': 'ल', 'v': 'व', 'w': 'व', 's': 'स', 'h': 'ह',
-                'a': 'ा', 'i': 'ि', 'e': 'े', 'u': 'ु', 'o': 'ो', 'q': 'क', 'z': 'ज'
-            };
+                let firstChar = str.charAt(0);
+                let rest = str.slice(1).replace(/[aeiouy]/g, "");
 
-            for (let key in singleMap) {
-                str = str.replace(new RegExp(key, 'g'), singleMap[key]);
+                if (/[aeiou]/.test(firstChar)) {
+                    firstChar = 'a';
+                }
+
+                str = firstChar + rest;
+
+                str = str.replace(/z/g, "j")
+                         .replace(/q/g, "k")
+                         .replace(/w/g, "v");
+
+                return str;
             }
-
-            return str;
         }
 
         const letters = [
@@ -1640,9 +1668,18 @@
             dictionary = [];
             for (let i = 1; i < rows.length; i++) {
                 const row = rows[i];
+
+                const hWord = row[0] || "";
+                const mWord = row[1] || "";
+
+                const hindiParts = hWord.split(/[,;]\s*/).map(w => w.trim()).filter(w => w);
+                const mewatiParts = mWord.split(/[,;]\s*/).map(m => m.trim()).filter(m => m);
+
                 dictionary.push({
-                    hindiWord: row[0] || "",
-                    meaning: row[1] || "",
+                    hindiWord: hWord,
+                    meaning: mWord,
+                    phoneticHindi: hindiParts.map(w => getPhoneticSignature(w)),
+                    phoneticMewati: mewatiParts.map(m => getPhoneticSignature(m)),
                     synonyms: row[2] || "",
                     type: row[3] || "",
                     gender: row[4] || "",
@@ -1974,41 +2011,56 @@
             } else if (activeLetter && !input) {
                 matches = trie.searchByLetter(activeLetter);
             } else if (input) {
-                let cleanQuery = input.trim();
-                let searchQueries = [cleanQuery];
+                // 1. डायरेक्ट देवनागरी/Trie सर्च
+                let trieMatches = trie.search(input);
+                trieMatches.forEach(m => matches.push(m));
 
-                if (/^[a-zA-Z\s]+$/.test(cleanQuery)) {
-                    let devanagariQuery = hinglishToDevanagari(cleanQuery);
-                    if (devanagariQuery) {
-                        searchQueries.unshift(devanagariQuery);
-                    }
-                }
+                // 2. साउंड स्केलेटन सर्च (Phonetic Skeleton Search)
+                const inputKey = getPhoneticSignature(input);
 
-                searchQueries.forEach(q => {
-                    let trieMatches = trie.search(q);
-                    trieMatches.forEach(m => matches.push(m));
-                });
-
-                if (fuse) {
-                    searchQueries.forEach(q => {
-                        let fuseResults = fuse.search(q);
-                        fuseResults.forEach(res => {
-                            let entry = res.item;
-                            let idx = dictionary.indexOf(entry);
-
-                            entry.hindiWord.split(/[,;]\s*/).forEach(hw => {
-                                if (hw) matches.push({ word: hw, type: "hindi", data: entry, index: idx });
-                            });
-
-                            entry.meaning.split(/,\s*/).forEach(mw => {
-                                if (mw) matches.push({ word: mw, type: "mewati", data: entry, index: idx });
-                            });
-
-                            if (entry.english) {
-                                entry.english.split(/[,;]\s*/).forEach(ew => {
-                                    if (ew) matches.push({ word: ew, type: "english", data: entry, index: idx });
+                if (inputKey && inputKey.length >= 2) {
+                    dictionary.forEach((entry, idx) => {
+                        // हिंदी शब्दों से मैच
+                        entry.phoneticHindi.forEach((phKey, pIdx) => {
+                            if (phKey && (phKey === inputKey || phKey.startsWith(inputKey))) {
+                                const wordDisplay = entry.hindiWord.split(/[,;]\s*/)[pIdx] || entry.hindiWord;
+                                matches.push({
+                                    word: wordDisplay,
+                                    type: "hindi",
+                                    data: entry,
+                                    index: idx
                                 });
                             }
+                        });
+
+                        // मेवाती शब्दों से मैच
+                        entry.phoneticMewati.forEach((pmKey, pIdx) => {
+                            if (pmKey && (pmKey === inputKey || pmKey.startsWith(inputKey))) {
+                                const mewatiDisplay = entry.meaning.split(/[,;]\s*/)[pIdx] || entry.meaning;
+                                matches.push({
+                                    word: mewatiDisplay,
+                                    type: "mewati",
+                                    data: entry,
+                                    index: idx
+                                });
+                            }
+                        });
+                    });
+                }
+
+                // 3. Fuse.js Fuzzy Matching
+                if (fuse && matches.length < 5) {
+                    let fuseResults = fuse.search(input);
+                    fuseResults.forEach(res => {
+                        let entry = res.item;
+                        let idx = dictionary.indexOf(entry);
+
+                        entry.hindiWord.split(/[,;]\s*/).forEach(hw => {
+                            if (hw) matches.push({ word: hw, type: "hindi", data: entry, index: idx });
+                        });
+
+                        entry.meaning.split(/,\s*/).forEach(mw => {
+                            if (mw) matches.push({ word: mw, type: "mewati", data: entry, index: idx });
                         });
                     });
                 }
