@@ -1955,7 +1955,7 @@
             }, 200);
         }
 
-                function showSuggestions() {
+                         function showSuggestions() {
             const input = document.getElementById("wordInput").value.trim();
             const suggestionsList = document.getElementById("suggestions");
             const wordOfTheDayDiv = document.getElementById("wordOfTheDay");
@@ -2011,11 +2011,11 @@
             } else if (activeLetter && !input) {
                 rawMatches = trie.searchByLetter(activeLetter);
             } else if (input) {
-                // 1. डायरेक्ट Trie सर्च (हिन्दी, मेवाती, टैग, अंग्रेजी)
+                // 1. Trie (Exact / Prefix) Search
                 let trieMatches = trie.search(input);
                 trieMatches.forEach(m => rawMatches.push(m));
 
-                // 2. साउंड स्केलेटन सर्च (Hinglish/Phonetic Match)
+                // 2. Sound signature search (Hinglish -> Devanagari Match)
                 const inputKey = getPhoneticSignature(input);
 
                 if (inputKey && inputKey.length >= 2) {
@@ -2046,34 +2046,21 @@
                     });
                 }
 
-                // 3. स्ट्रिक्ट Fuse.js Fuzzy Matching (केवल तब जब परिणाम कम हों)
-                if (fuse && rawMatches.length < 5) {
-                    let fuseResults = fuse.search(input);
-                    fuseResults.forEach(res => {
-                        let entry = res.item;
-                        let idx = dictionary.indexOf(entry);
-
-                        entry.hindiWord.split(/[,;]\s*/).forEach(hw => {
-                            if (hw) rawMatches.push({ word: hw, type: "hindi", data: entry, index: idx });
-                        });
-
-                        entry.meaning.split(/,\s*/).forEach(mw => {
-                            if (mw) rawMatches.push({ word: mw, type: "mewati", data: entry, index: idx });
-                        });
-                    });
-                }
-
                 activeLetter = null;
                 document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
             }
 
             // =========================================================
-            // डुप्लीकेट हटाना और स्मार्ट रैंकिंग (Priority Sorting)
+            // PROFESSIONAL CATEGORICAL SORTING ENGINE
             // =========================================================
             const seenSuggestions = new Set();
             const cleanInput = input.toLowerCase().trim();
+            const inputDevanagari = getPhoneticSignature(input);
 
-            let formattedList = [];
+            let exactGroup = [];    // Group 1: बिल्कुल सटीक शब्द (जैसे पानी / पाणी)
+            let prefixGroup = [];   // Group 2: जो शब्द इनपुट से शुरू होते हों (जैसे पानी डालना)
+            let containsGroup = []; // Group 3: जिसमें यह शब्द शामिल हो (जैसे खोलता पानी, कड़वा पानी)
+            let fallbackGroup = []; // Group 4: अन्य दूर के मैच
 
             rawMatches.forEach(match => {
                 let suggestionKey = "";
@@ -2099,34 +2086,50 @@
                 if (!seenSuggestions.has(suggestionKey)) {
                     seenSuggestions.add(suggestionKey);
 
-                    // स्कोरिंग लॉजिक:
-                    let score = 100;
-                    const wordLower = match.word.toLowerCase();
+                    const wordLower = match.word.toLowerCase().trim();
+                    const wordDev = getPhoneticSignature(match.word);
 
-                    if (wordLower === cleanInput) {
-                        score = 1; // 1st Priority: बिल्कुल सटीक शब्द
-                    } else if (wordLower.startsWith(cleanInput)) {
-                        score = 2; // 2nd Priority: जिस शब्द की शुरुआत इनपुट से हो (जैसे धड़ -> धड़मच)
-                    } else if (wordLower.includes(cleanInput)) {
-                        score = 3; // 3rd Priority: जो शब्द के अंदर हो
-                    } else {
-                        score = 4; // 4th Priority: फोनेटिक / अन्य मैच
-                    }
-
-                    formattedList.push({
-                        score: score,
+                    const item = {
                         displayText: displayText,
                         selectedWord: selectedWord,
                         matchData: match
-                    });
+                    };
+
+                    // 1st Priority: Exact Word (देवनागरी में या फोनेटिक में बिल्कुल वही शब्द)
+                    if (wordLower === cleanInput || (wordDev && wordDev === inputDevanagari)) {
+                        exactGroup.push(item);
+                    } 
+                    // 2nd Priority: Starts With (जो इस शब्द से शुरू हो)
+                    else if (wordLower.startsWith(cleanInput) || (wordDev && wordDev.startsWith(inputDevanagari))) {
+                        prefixGroup.push(item);
+                    } 
+                    // 3rd Priority: Contains (जिसके बीच या अंत में यह शब्द आए)
+                    else if (wordLower.includes(cleanInput) || (wordDev && wordDev.includes(inputDevanagari))) {
+                        containsGroup.push(item);
+                    } 
+                    // 4th Priority: अन्य दूर के शब्द
+                    else {
+                        fallbackGroup.push(item);
+                    }
                 }
             });
 
-            // स्कोर के आधार पर सॉर्ट करना (1 > 2 > 3 > 4)
-            formattedList.sort((a, b) => a.score - b.score);
+            // लम्बाई के हिसाब से आंतरिक सॉर्टिंग (छोटे शब्द पहले आएँ)
+            const sortByLength = (a, b) => a.selectedWord.length - b.selectedWord.length;
+            exactGroup.sort(sortByLength);
+            prefixGroup.sort(sortByLength);
+            containsGroup.sort(sortByLength);
+
+            // अगर Exact, Prefix या Contains में परिणाम मिल गए हैं, तो फालतू (Fallback) ग्रुप को हटा दें
+            let finalSortedList = [];
+            if (exactGroup.length > 0 || prefixGroup.length > 0 || containsGroup.length > 0) {
+                finalSortedList = [...exactGroup, ...prefixGroup, ...containsGroup];
+            } else {
+                finalSortedList = fallbackGroup;
+            }
 
             // DOM में रेंडर करना
-            formattedList.forEach(item => {
+            finalSortedList.forEach(item => {
                 const li = document.createElement("li");
                 li.innerHTML = item.displayText;
                 li.onclick = () => {
@@ -2138,6 +2141,7 @@
                 suggestionsList.appendChild(li);
             });
         }
+
 
 
         function calculateChhandPattern(word) {
