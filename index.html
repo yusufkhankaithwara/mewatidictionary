@@ -1463,7 +1463,7 @@
         let currentSearchType = "";
         let debounceTimer = null;
 
-        const CURRENT_DATA_VERSION = "v2.0";
+        const CURRENT_DATA_VERSION = "v3.0";
 
         // XSS एस्केप सुरक्षा फ़ंक्शन
         function escapeHTML(str) {
@@ -1551,13 +1551,16 @@
             if (cachedData) {
                 try {
                     const rows = JSON.parse(cachedData);
-                    processRows(rows);
-                    
-                    loadingIndicator.style.opacity = "0";
-                    setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
-                    
-                    fetchFreshData();
-                    return dictionary;
+                    if (Array.isArray(rows)) {
+                        processRows(rows);
+                        
+                        loadingIndicator.style.opacity = "0";
+                        setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
+                        
+                        fetchFreshData();
+                        return dictionary;
+                    }
+                    localStorage.removeItem("mewati_dictionary_cache");
                 } catch (e) {
                     localStorage.removeItem("mewati_dictionary_cache");
                 }
@@ -1566,45 +1569,47 @@
             return await fetchFreshData();
         }
 
-       async function fetchFreshData() {
-    const loadingIndicator = document.getElementById("loadingIndicator");
-    const errorMessage = document.getElementById("errorMessage");
-    const url = "https://script.google.com/macros/s/AKfycbxCqyUdiGbBYFF7vj3YJ6gpe3mgdJK4ovyNl_nAhQrhex2T6wKUKUr9-yr9kpel7Lnlmg/exec";
+        async function fetchFreshData() {
+            const loadingIndicator = document.getElementById("loadingIndicator");
+            const errorMessage = document.getElementById("errorMessage");
+            const url = "https://script.google.com/macros/s/AKfycbxCqyUdiGbBYFF7vj3YJ6gpe3mgdJK4ovyNl_nAhQrhex2T6wKUKUr9-yr9kpel7Lnlmg/exec";
 
-    try {
-        // redirect: 'follow' जोड़ने से गूगल स्क्रिप्ट का रीडायरेक्ट सही से डेटा लाता है
-        const response = await fetch(url, { redirect: 'follow' });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const rows = await response.json();
-        
-        // डेटा स्थानीय मेमोरी में सेव करें
-        localStorage.setItem("mewati_dictionary_cache", JSON.stringify(rows));
-        processRows(rows);
+            try {
+                const response = await fetch(url, { redirect: 'follow' });
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const rows = await response.json();
+                
+                if (!Array.isArray(rows)) {
+                    throw new Error("Invalid array data format received from API");
+                }
 
-        // डेटा प्रोसेस होने के बाद UI शुरू करें
-        initializeLetterFilter();
-        initializeTrie();
-        initializeWordOfTheDay();
-        initializeDuplicateMewatiWords();
+                localStorage.setItem("mewati_dictionary_cache", JSON.stringify(rows));
+                processRows(rows);
 
-        if (loadingIndicator) {
-            loadingIndicator.style.opacity = "0";
-            setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
+                initializeLetterFilter();
+                initializeTrie();
+                initializeWordOfTheDay();
+                initializeDuplicateMewatiWords();
+
+                if (loadingIndicator) {
+                    loadingIndicator.style.opacity = "0";
+                    setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
+                }
+                return dictionary;
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                if (loadingIndicator) loadingIndicator.style.display = "none";
+                if (errorMessage) {
+                    errorMessage.textContent = "डेटा लोड करने में असमर्थ।";
+                    errorMessage.style.display = "block";
+                }
+                return [];
+            }
         }
-        return dictionary;
-    } catch (error) {
-        console.error("Fetch Error:", error);
-        if (loadingIndicator) loadingIndicator.style.display = "none";
-        if (errorMessage) {
-            errorMessage.textContent = "डेटा लोड करने में असमर्थ।";
-            errorMessage.style.display = "block";
-        }
-        return [];
-    }
-}
  
         function processRows(rows) {
+            if (!Array.isArray(rows)) return;
             dictionary = [];
             for (let i = 1; i < rows.length; i++) {
                 const row = rows[i];
