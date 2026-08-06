@@ -1744,17 +1744,17 @@
             }); 
         }
 
-        function initializeFuse() {
+                function initializeFuse() {
             fuse = new Fuse(dictionary, {
                 keys: [
-                    { name: 'hindiWord', weight: 0.4 },
-                    { name: 'meaning', weight: 0.4 },
-                    { name: 'english', weight: 0.2 }
+                    { name: 'hindiWord', weight: 0.5 },
+                    { name: 'meaning', weight: 0.5 }
                 ],
-                threshold: 0.4,
+                threshold: 0.25, // अब बहुत दूर के अनचाहे शब्द नहीं पकड़ेगा
                 ignoreLocation: true
             });
         }
+
 
         function escapeString(str) {
             if (!str || typeof str !== 'string') return "";
@@ -1955,7 +1955,7 @@
             }, 200);
         }
 
-        function showSuggestions() {
+                function showSuggestions() {
             const input = document.getElementById("wordInput").value.trim();
             const suggestionsList = document.getElementById("suggestions");
             const wordOfTheDayDiv = document.getElementById("wordOfTheDay");
@@ -1977,7 +1977,7 @@
 
             suggestionsList.style.display = "block";
 
-            let matches = [];
+            let rawMatches = [];
 
             if (input.startsWith("*")) {
                 let query = input.slice(1);
@@ -1998,7 +1998,7 @@
                         meanings.forEach(m => {
                             const normalizedWord = mapMatra(m);
                             if (normalizedWord.endsWith(normalizedQuery)) {
-                                matches.push({
+                                rawMatches.push({
                                     word: m,
                                     type: "mewati",
                                     data: entry,
@@ -2009,22 +2009,21 @@
                     });
                 }
             } else if (activeLetter && !input) {
-                matches = trie.searchByLetter(activeLetter);
+                rawMatches = trie.searchByLetter(activeLetter);
             } else if (input) {
-                // 1. डायरेक्ट देवनागरी/Trie सर्च
+                // 1. डायरेक्ट Trie सर्च (हिन्दी, मेवाती, टैग, अंग्रेजी)
                 let trieMatches = trie.search(input);
-                trieMatches.forEach(m => matches.push(m));
+                trieMatches.forEach(m => rawMatches.push(m));
 
-                // 2. साउंड स्केलेटन सर्च (Phonetic Skeleton Search)
+                // 2. साउंड स्केलेटन सर्च (Hinglish/Phonetic Match)
                 const inputKey = getPhoneticSignature(input);
 
                 if (inputKey && inputKey.length >= 2) {
                     dictionary.forEach((entry, idx) => {
-                        // हिंदी शब्दों से मैच
                         entry.phoneticHindi.forEach((phKey, pIdx) => {
                             if (phKey && (phKey === inputKey || phKey.startsWith(inputKey))) {
                                 const wordDisplay = entry.hindiWord.split(/[,;]\s*/)[pIdx] || entry.hindiWord;
-                                matches.push({
+                                rawMatches.push({
                                     word: wordDisplay,
                                     type: "hindi",
                                     data: entry,
@@ -2033,11 +2032,10 @@
                             }
                         });
 
-                        // मेवाती शब्दों से मैच
                         entry.phoneticMewati.forEach((pmKey, pIdx) => {
                             if (pmKey && (pmKey === inputKey || pmKey.startsWith(inputKey))) {
                                 const mewatiDisplay = entry.meaning.split(/[,;]\s*/)[pIdx] || entry.meaning;
-                                matches.push({
+                                rawMatches.push({
                                     word: mewatiDisplay,
                                     type: "mewati",
                                     data: entry,
@@ -2048,19 +2046,19 @@
                     });
                 }
 
-                // 3. Fuse.js Fuzzy Matching
-                if (fuse && matches.length < 5) {
+                // 3. स्ट्रिक्ट Fuse.js Fuzzy Matching (केवल तब जब परिणाम कम हों)
+                if (fuse && rawMatches.length < 5) {
                     let fuseResults = fuse.search(input);
                     fuseResults.forEach(res => {
                         let entry = res.item;
                         let idx = dictionary.indexOf(entry);
 
                         entry.hindiWord.split(/[,;]\s*/).forEach(hw => {
-                            if (hw) matches.push({ word: hw, type: "hindi", data: entry, index: idx });
+                            if (hw) rawMatches.push({ word: hw, type: "hindi", data: entry, index: idx });
                         });
 
                         entry.meaning.split(/,\s*/).forEach(mw => {
-                            if (mw) matches.push({ word: mw, type: "mewati", data: entry, index: idx });
+                            if (mw) rawMatches.push({ word: mw, type: "mewati", data: entry, index: idx });
                         });
                     });
                 }
@@ -2069,62 +2067,78 @@
                 document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
             }
 
+            // =========================================================
+            // डुप्लीकेट हटाना और स्मार्ट रैंकिंग (Priority Sorting)
+            // =========================================================
             const seenSuggestions = new Set();
+            const cleanInput = input.toLowerCase().trim();
 
-            const hindiSuggestions = matches.filter(match => match.type === "hindi");
-            hindiSuggestions.forEach(match => {
-                const suggestionKey = `${match.word}-${match.type}-${match.index}`;
-                if (!seenSuggestions.has(suggestionKey)) {
-                    seenSuggestions.add(suggestionKey);
-                    const li = document.createElement("li");
-                    li.innerHTML = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning)}</span>`;
-                    li.onclick = () => {
-                        document.getElementById("wordInput").value = match.word;
-                        showResult(JSON.stringify(match));
-                        suggestionsList.innerHTML = "";
-                        suggestionsList.style.display = "none";
-                    };
-                    suggestionsList.appendChild(li);
-                }
-            });
+            let formattedList = [];
 
-            const otherSuggestions = matches.filter(match => match.type !== "hindi");
-            otherSuggestions.forEach(match => {
-                let suggestionKey = `${match.word}-${match.type}-${match.index}`;
-                let displayText = escapeHTML(match.word);
+            rawMatches.forEach(match => {
+                let suggestionKey = "";
+                let displayText = "";
                 let selectedWord = match.word;
 
-                if (match.type === "mewati") {
+                if (match.type === "hindi") {
+                    suggestionKey = `${match.word}-hindi-${match.index}`;
+                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning)}</span>`;
+                } else if (match.type === "mewati") {
                     suggestionKey = `${match.word}-mewati-${match.index}-${match.data.hindiWord}`;
                     displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
                 } else if (match.type === "english") {
+                    suggestionKey = `${match.word}-english-${match.index}`;
                     displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning.split(", ")[0])}</span>`;
                 } else if (match.type === "tag") {
+                    suggestionKey = `${match.data.hindiWord}-tag-${match.index}`;
                     displayText = `${escapeHTML(match.data.hindiWord)}<span>${escapeHTML(match.data.meaning)}</span>`;
                     selectedWord = match.data.hindiWord;
-
-                    match = {
-                        word: match.data.hindiWord,
-                        type: "hindi",
-                        data: match.data,
-                        index: match.index
-                    };
+                    match = { word: match.data.hindiWord, type: "hindi", data: match.data, index: match.index };
                 }
 
                 if (!seenSuggestions.has(suggestionKey)) {
                     seenSuggestions.add(suggestionKey);
-                    const li = document.createElement("li");
-                    li.innerHTML = displayText;
-                    li.onclick = () => {
-                        document.getElementById("wordInput").value = selectedWord;
-                        showResult(JSON.stringify(match));
-                        suggestionsList.innerHTML = "";
-                        suggestionsList.style.display = "none";
-                    };
-                    suggestionsList.appendChild(li);
+
+                    // स्कोरिंग लॉजिक:
+                    let score = 100;
+                    const wordLower = match.word.toLowerCase();
+
+                    if (wordLower === cleanInput) {
+                        score = 1; // 1st Priority: बिल्कुल सटीक शब्द
+                    } else if (wordLower.startsWith(cleanInput)) {
+                        score = 2; // 2nd Priority: जिस शब्द की शुरुआत इनपुट से हो (जैसे धड़ -> धड़मच)
+                    } else if (wordLower.includes(cleanInput)) {
+                        score = 3; // 3rd Priority: जो शब्द के अंदर हो
+                    } else {
+                        score = 4; // 4th Priority: फोनेटिक / अन्य मैच
+                    }
+
+                    formattedList.push({
+                        score: score,
+                        displayText: displayText,
+                        selectedWord: selectedWord,
+                        matchData: match
+                    });
                 }
             });
+
+            // स्कोर के आधार पर सॉर्ट करना (1 > 2 > 3 > 4)
+            formattedList.sort((a, b) => a.score - b.score);
+
+            // DOM में रेंडर करना
+            formattedList.forEach(item => {
+                const li = document.createElement("li");
+                li.innerHTML = item.displayText;
+                li.onclick = () => {
+                    document.getElementById("wordInput").value = item.selectedWord;
+                    showResult(JSON.stringify(item.matchData));
+                    suggestionsList.innerHTML = "";
+                    suggestionsList.style.display = "none";
+                };
+                suggestionsList.appendChild(li);
+            });
         }
+
 
         function calculateChhandPattern(word) {
             if (!word) return "";
