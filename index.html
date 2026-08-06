@@ -1330,7 +1330,7 @@
             </div>
 
             <div class="menu-item">
-                <label onclick="window.location.href='add-word.html'" style="color: #28a745; cursor:pointer; font-weight: bold;">
+                <label onclick="checkAuthAndRedirect('add-word.html')" style="color: #28a745; cursor:pointer; font-weight: bold;">
                     शब्द जोड़ें
                 </label>
             </div>
@@ -1675,7 +1675,7 @@
 
         function escapeString(str) {
             if (!str || typeof str !== 'string') return "";
-            return str.replace(/'/g, "\\'");
+            return str.replace(/'/g, "\\ me");
         }
 
         function initializeLetterFilter() {
@@ -2937,6 +2937,11 @@
         }
 
         function openFeedbackModal() {
+            if (!window.currentUser) {
+                alert("सुझाव भेजने के लिए कृपया पहले 'लॉग इन' करें।");
+                document.getElementById("settingsMenu").style.display = "none";
+                return;
+            }
             document.getElementById("feedbackModal").style.display = "block";
             document.getElementById("settingsMenu").style.display = "none";
         }
@@ -3026,6 +3031,16 @@
 
       let currentUser = null;
       const ADMIN_EMAIL = "mewatidictionary@gmail.com";
+
+      // शब्द जोड़ें के लिए लॉगिन रीडायरेक्ट चेक फ़ंक्शन
+      window.checkAuthAndRedirect = function(url) {
+        if (!currentUser) {
+            alert("शब्द जोड़ने के लिए कृपया पहले 'लॉग इन' करें।");
+            document.getElementById("settingsMenu").style.display = "none";
+            return;
+        }
+        window.location.href = url;
+      };
 
       // Handle Authentication Login/Logout
       window.handleAuth = function() {
@@ -3265,8 +3280,10 @@
         const adminWordsMenuItem = document.getElementById("adminWordsMenuItem");
         const loggedOutViewBottom = document.getElementById("loggedOutViewBottom");
 
+        currentUser = user;
+        window.currentUser = user; // ग्लोबल विंडो स्टेट अपडेट
+
         if (user) {
-          currentUser = user;
           loginTopView.style.display = "none";
           loggedInTopView.style.display = "block";
           loggedOutViewBottom.style.display = "block";
@@ -3297,7 +3314,6 @@
             if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
           }
         } else {
-          currentUser = null;
           loginTopView.style.display = "block";
           loggedInTopView.style.display = "none";
           loggedOutViewBottom.style.display = "none";
