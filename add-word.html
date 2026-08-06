@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>नया शब्द जोड़ें - Mewati Dictionary</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #E8E4DC;
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-bar {
+            width: 100%;
+            background: #ffffff;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-logo {
+            height: 36px;
+            width: 36px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .brand-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #555;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-card {
+            background: #ffffff;
+            width: 90%;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-sizing: border-box;
+        }
+
+        .form-card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #007bff;
+            font-size: 20px;
+            text-align: center;
+            border-bottom: 2px solid #e6f0fa;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .input-group label span.required {
+            color: red;
+        }
+
+        .input-group input, 
+        .input-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            background: #f9f9f9;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus, 
+        .input-group textarea:focus {
+            border-color: #007bff;
+            outline: none;
+            background: #fff;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #218838;
+        }
+
+        .submit-btn:disabled {
+            background: #94d3a2;
+            cursor: not-allowed;
+        }
+
+        /* मैसेज पॉपअप/कनफर्मेशन स्टाइल */
+        #statusMessage {
+            display: none;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .msg-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .msg-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- शीर्ष बार (Header Bar) -->
+    <div class="header-bar">
+        <div class="brand-container">
+            <!-- बाएँ लोगो -->
+            <img src="https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37" alt="Mewati Dictionary Logo" class="app-logo" onclick="window.location.href='index.html'">
+            <span class="brand-title">शब्दकोश योगदान</span>
+        </div>
+        <button class="back-btn material-symbols-outlined" onclick="window.location.href='index.html'" title="मुख्य पृष्ठ पर जाएँ">arrow_back</button>
+    </div>
+
+    <!-- शब्द फ़ॉर्म कार्ड -->
+    <div class="form-card">
+        <h2>नया शब्द जोड़ें</h2>
+
+        <!-- सबमिशन स्थिति संदेश (Status Message) -->
+        <div id="statusMessage"></div>
+
+        <form id="addWordForm">
+            <div class="input-group">
+                <label for="mewatiWord">मेवाती शब्द <span class="required">*</span></label>
+                <input type="text" id="mewatiWord" placeholder="उदा: वाड़ी" required autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="hindiMeaning">हिन्दी अर्थ <span class="required">*</span></label>
+                <input type="text" id="hindiMeaning" placeholder="उदा: मित्र" required autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="englishMeaning">अंग्रेजी अर्थ</label>
+                <input type="text" id="englishMeaning" placeholder="उदा: Friend" autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="idiom">मेवाती शब्द से सम्बंधित मुहावरा</label>
+                <textarea id="idiom" placeholder="यदि कोई मुहावरा हो तो लिखें..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="proverb">मेवाती शब्द से सम्बंधित कहावत</label>
+                <textarea id="proverb" placeholder="यदि कोई कहावत हो तो लिखें..."></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn" class="submit-btn">सबमिट करें</button>
+        </form>
+    </div>
+
+    <!-- Firebase SDK & Database Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // फ़ायरबेस कॉन्फ़िगरेशन (आपकी मुख्य फ़ाइल के अनुसार)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
+            authDomain: "mewati-dictionary.firebaseapp.com",
+            projectId: "mewati-dictionary",
+            storageBucket: "mewati-dictionary.firebasestorage.app",
+            messagingSenderId: "258178654948",
+            appId: "1:258178654948:web:e726a480fac76b3dce42f1",
+            measurementId: "G-V4XXJ072VK"
+        };
+
+        // फ़ायरबेस इनिशियलाइज़ेशन
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // यूज़र सेशन ट्रैक करें
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+        });
+
+        const form = document.getElementById("addWordForm");
+        const submitBtn = document.getElementById("submitBtn");
+        const statusMsg = document.getElementById("statusMessage");
+
+        // फ़ॉर्म सबमिट हैंडलर
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const mewatiWord = document.getElementById("mewatiWord").value.trim();
+            const hindiMeaning = document.getElementById("hindiMeaning").value.trim();
+            const englishMeaning = document.getElementById("englishMeaning").value.trim();
+            const idiom = document.getElementById("idiom").value.trim();
+            const proverb = document.getElementById("proverb").value.trim();
+
+            if (!mewatiWord || !hindiMeaning) {
+                showMessage("कृपया अनिवार्य फ़ील्ड्स (मेवाती शब्द और हिन्दी अर्थ) भरें।", "error");
+                return;
+            }
+
+            // सबमिट बटन डिसेबल करें
+            submitBtn.disabled = true;
+            submitBtn.textContent = "भेजा जा रहा है...";
+
+            try {
+                // Firestore के "suggested_words" कलेक्शन में डेटा जोड़ना
+                await addDoc(collection(db, "suggested_words"), {
+                    mewatiWord: mewatiWord,
+                    hindiMeaning: hindiMeaning,
+                    englishMeaning: englishMeaning || "N/A",
+                    idiom: idiom || "N/A",
+                    proverb: proverb || "N/A",
+                    submittedBy: currentUser ? (currentUser.displayName || "यूज़र") : "अज्ञात योगदानकर्ता",
+                    userEmail: currentUser ? (currentUser.email || "N/A") : "N/A",
+                    status: "pending", // रिव्यू के लिए स्टेटस
+                    timestamp: serverTimestamp()
+                });
+
+                // सफ़लता संदेश
+                showMessage("धन्यवाद! आपका सुझाया गया शब्द सफलतापूर्वक भेज दिया गया है।", "success");
+                form.reset();
+
+            } catch (error) {
+                console.error("Word Submission Error:", error);
+                showMessage("त्रुटि: शब्द भेजने में समस्या आई। कृपया पुनः प्रयास करें।", "error");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "सबमिट करें";
+            }
+        });
+
+        function showMessage(msg, type) {
+            statusMsg.textContent = msg;
+            statusMsg.className = type === "success" ? "msg-success" : "msg-error";
+            statusMsg.style.display = "block";
+
+            // 5 सेकंड बाद ऑटो हाइड
+            setTimeout(() => {
+                statusMsg.style.display = "none";
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
