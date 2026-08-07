@@ -1220,7 +1220,6 @@
             text-align: right;
         }
 
-        /* एडमिन प्राप्त शब्द टेबल स्टाइल */
         .admin-words-table {
             width: 100%;
             border-collapse: collapse;
@@ -1381,7 +1380,6 @@
                     </tr>
                 </thead>
                 <tbody id="adminWordsTableBody">
-                    <!-- यहाँ फ़ायरबेस से डेटा रो के रूप में लोड होगा -->
                 </tbody>
             </table>
         </div>
@@ -1465,7 +1463,6 @@
 
         const CURRENT_DATA_VERSION = "v3.0";
 
-        // XSS एस्केप सुरक्षा फ़ंक्शन
         function escapeHTML(str) {
             if (!str || typeof str !== 'string') return "";
             return str
@@ -1794,11 +1791,12 @@
                 document.getElementById("wordOfTheDay").style.display = "none";
             };
 
-            if (!document.getElementById("wordInput").value.trim() && !activeLetter) {
-                wordOfTheDayDiv.style.display = "block";
-                document.getElementById("duplicateSection").style.display = "block";
-            }
-        } 
+           if (!document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
+    wordOfTheDayDiv.style.display = "block";
+} else {
+    wordOfTheDayDiv.style.display = "none";
+}
+         } 
 
         function initializeDuplicateMewatiWords() {
             const wordMap = {};
@@ -1875,17 +1873,26 @@
                 }
             });
 
-            if (slider.children.length > 0 && !document.getElementById("wordInput").value.trim() && !activeLetter) {
-                document.getElementById("duplicateSection").style.display = "block";
-            }
-        }
+              if (slider.children.length > 0 && !document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
+    document.getElementById("duplicateSection").style.display = "block";
+} else {
+    document.getElementById("duplicateSection").style.display = "none";
+}
+      }
 
-        // 200ms डिबाउंस फ़ंक्शन (टाइपिंग लैग रोकने के लिए)
         function debouncedSuggestions() {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 showSuggestions();
             }, 200);
+        }
+
+        // देवनागरी शब्दकोशीय तुलना (Sorting) फ़ंक्शन
+        function compareHindiWords(a, b) {
+            const wordA = a.word || "";
+            const wordB = b.word || "";
+
+            return wordA.localeCompare(wordB, 'hi-IN', { sensitivity: 'variant', numeric: true });
         }
 
         function showSuggestions() {
@@ -1943,10 +1950,12 @@
                 }
             } else if (activeLetter && !input) {
                 matches = trie.searchByLetter(activeLetter);
+                matches.sort(compareHindiWords);
             } else if (input) {
                 matches = trie.search(input);
                 activeLetter = null;
                 document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
+                matches.sort(compareHindiWords);
             }
 
             const seenSuggestions = new Set();
@@ -3038,7 +3047,6 @@
         measurementId: "G-V4XXJ072VK"
       };
 
-      // Firebase Initialization
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getFirestore(app);
@@ -3047,7 +3055,6 @@
       let currentUser = null;
       const ADMIN_EMAIL = "mewatidictionary@gmail.com";
 
-      // शब्द जोड़ें के लिए लॉगिन रीडायरेक्ट चेक फ़ंक्शन
       window.checkAuthAndRedirect = function(url) {
         if (!currentUser) {
             alert("शब्द जोड़ने के लिए कृपया पहले 'लॉग इन' करें।");
@@ -3057,7 +3064,6 @@
         window.location.href = url;
       };
 
-      // Handle Authentication Login/Logout
       window.handleAuth = function() {
         if (currentUser) {
           signOut(auth).then(() => {
@@ -3076,7 +3082,6 @@
         }
       };
 
-      // Send Feedback directly to Firestore Database
       window.sendFeedback = async function() {
         const feedbackInput = document.getElementById("feedbackInput");
         const feedbackText = feedbackInput.value.trim();
@@ -3112,7 +3117,6 @@
         }
       };
 
-      // फ़ायरस्टोर से फीडबैक की कुल गिनती लोड करने का फ़ंक्शन
       async function updateFeedbackCount() {
         try {
           const querySnapshot = await getDocs(collection(db, "feedbacks"));
@@ -3123,7 +3127,6 @@
         }
       }
 
-      // सुझाए गए शब्दों की कुल गिनती लोड करने का फ़ंक्शन
       async function updateWordsCount() {
         try {
           const querySnapshot = await getDocs(collection(db, "suggested_words"));
@@ -3134,7 +3137,6 @@
         }
       }
 
-      // एडमिन द्वारा सभी सुझावों को सुरक्षित DOM Nodes द्वारा दिखाना (XSS Safe)
       window.fetchAdminFeedbacks = async function() {
         if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
           alert("केवल एडमिन ही प्राप्त सुझाव देख सकते हैं।");
@@ -3182,7 +3184,6 @@
             const card = document.createElement("div");
             card.className = "admin-feedback-card";
             
-            // XSS हैकिंग से बचाव के लिए textContent का उपयोग
             const headerDiv = document.createElement("div");
             headerDiv.className = "admin-fb-header";
             headerDiv.textContent = `${data.userName || 'अज्ञात यूज़र'} (${data.userEmail || 'N/A'})`;
@@ -3208,7 +3209,6 @@
         }
       };
 
-      // एडमिन द्वारा सभी सुझाए गए शब्दों को देखने का फ़ंक्शन (XSS Safe Table)
       window.fetchAdminSuggestedWords = async function() {
         if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
             alert("केवल एडमिन ही प्राप्त शब्द देख सकते हैं।");
@@ -3243,7 +3243,6 @@
 
             document.getElementById("wordsCountLabel").textContent = `(${wordsList.length})`;
 
-            // नवीनतम तिथि के अनुसार सॉर्ट करना
             wordsList.sort((a, b) => {
                 let tA = a.timestamp ? a.timestamp.seconds : 0;
                 let tB = b.timestamp ? b.timestamp.seconds : 0;
@@ -3257,7 +3256,6 @@
 
                 const row = document.createElement("tr");
 
-                // सुरक्षित XSS प्रूफ सेल्स
                 const cells = [
                     index + 1,
                     dateStr,
@@ -3284,7 +3282,6 @@
         }
       };
 
-      // Firebase User State Listener
       onAuthStateChanged(auth, (user) => {
         const loginTopView = document.getElementById("loginTopView");
         const loggedInTopView = document.getElementById("loggedInTopView");
@@ -3296,7 +3293,7 @@
         const loggedOutViewBottom = document.getElementById("loggedOutViewBottom");
 
         currentUser = user;
-        window.currentUser = user; // ग्लोबल विंडो स्टेट अपडेट
+        window.currentUser = user;
 
         if (user) {
           loginTopView.style.display = "none";
@@ -3309,10 +3306,9 @@
             menuUserAvatar.src = "https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37";
           }
 
-          // एडमिन पहचान चेक
           if (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
             menuUserName.textContent = "Admin";
-            menuUserName.classList.add("admin-name"); // मरून कलर स्टाइल
+            menuUserName.classList.add("admin-name");
             
             userFeedbackMenuItem.style.display = "none";
             adminMenuItem.style.display = "flex";
