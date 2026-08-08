@@ -2962,8 +2962,7 @@
 
         function openFeedbackModal() {
             if (!window.currentUser) {
-                alert("सुझाव भेजने के लिए कृपया पहले 'लॉग इन' करें।");
-                document.getElementById("settingsMenu").style.display = "none";
+                window.location.href = 'login.html?redirect=index.html';
                 return;
             }
             document.getElementById("feedbackModal").style.display = "block";
@@ -3057,8 +3056,7 @@
 
       window.checkAuthAndRedirect = function(url) {
         if (!currentUser) {
-            alert("शब्द जोड़ने के लिए कृपया पहले 'लॉग इन' करें।");
-            document.getElementById("settingsMenu").style.display = "none";
+            window.location.href = `login.html?redirect=${encodeURIComponent(url)}`;
             return;
         }
         window.location.href = url;
@@ -3068,17 +3066,12 @@
         if (currentUser) {
           signOut(auth).then(() => {
             console.log("Logged out successfully");
+            window.location.reload();
           }).catch((error) => {
             console.error("Sign Out Error:", error);
           });
         } else {
-          signInWithPopup(auth, provider)
-            .then((result) => {
-              console.log("Logged in user:", result.user);
-            })
-            .catch((error) => {
-              console.error("Login Error:", error);
-            });
+          window.location.href = "login.html?redirect=index.html";
         }
       };
 
