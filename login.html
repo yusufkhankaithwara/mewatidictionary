@@ -1,231 +1,3141 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>लॉगइन - मेवाती शब्दकोश (Mewati Dictionary Login)</title>
+    <title>Mewati Dictionary - हिंदी ⇄ मेवाती शब्दकोश</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
-    <!-- SEO & Keywords for Google Search Indexing -->
-    <meta name="description" content="मेवाती शब्दकोश लॉगइन पोर्टल। शब्द जोड़ने, सुझाव देने और विस्तृत उपयोग के लिए गूगल से लॉगिन करें।">
-    <meta name="keywords" content="Mewati Dictionary login, मेवाती शब्दकोश लॉगिन, मेवाती शब्दकोश लॉग इन, हिंदी मेवाती शब्दकोश, Mewati dictionary log in">
-    <link rel="canonical" href="https://mewatidictionary.in/login.html">
-
-    <!-- Open Graph Metadata -->
+    <meta name="description" content="हिंदी-मेवाती शब्दकोश। मेवाती भाषा के शब्दों के अर्थ, उदाहरण और मुहावरे।">
     <meta property="og:site_name" content="Mewati Dictionary" />
-    <meta property="og:title" content="लॉगइन - मेवाती शब्दकोश" />
-    <meta property="og:url" content="https://mewatidictionary.in/login.html" />
+    <meta property="og:title" content="Mewati Dictionary - हिंदी ⇄ मेवाती शब्दकोश" />
+    <meta property="og:url" content="https://mewatidictionary.in/" />
     <meta property="og:type" content="website" />
-
-    <!-- Schema.org JSON-LD Structured Data for Google -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "लॉगइन - मेवाती शब्दकोश",
-      "alternateName": ["Mewati Dictionary Login", "मेवाती शब्दकोश लॉग इन"],
-      "url": "https://mewatidictionary.in/login.html",
-      "description": "मेवाती शब्दकोश का विस्तृत उपयोग करने, नए शब्द जोड़ने और सुझाव देने के लिए आधिकारिक लॉग इन पृष्ठ।",
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "Mewati Dictionary",
-        "alternateName": ["मेवाती शब्दकोश", "MewatiDictionary"],
-        "url": "https://mewatidictionary.in/"
-      }
+      "@type": "WebSite",
+      "name": "Mewati Dictionary",
+      "alternateName": ["मेवाती शब्दकोश", "MewatiDictionary"],
+      "url": "https://mewatidictionary.in/"
     }
     </script>
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
 
     <style>
-        * {
+        body { 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            transition: background-color 0.3s, color 0.3s;
+            background: #E8E4DC;
+        }
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        body.large-text {
+            font-size: 18px;
+        }
+        body.large-text input {
+            font-size: 18px;
+        }
+        body.large-text #suggestions li {
+            font-size: 18px;
+        }
+        body.large-text #suggestions li span {
+            font-size: 14px;
+        }
+        body.large-text #wordType,
+        body.large-text #pluralLine,
+        body.large-text #subjectLine {
+            font-size: 12px;
+        }
+        body.large-text #result,
+        body.large-text #englishMeaning,
+        body.large-text #exampleLabel,
+        body.large-text #example,
+        body.large-text #synonymLabel,
+        body.large-text #oppositeLabel,
+        body.large-text #rhymeLabel,
+        body.large-text #relatedLabel,
+        body.large-text #synonyms,
+        body.large-text #opposite,
+        body.large-text #rhymes,
+        body.large-text #related,
+        body.large-text .synonym-btn,
+        body.large-text .opposite-btn,
+        body.large-text .rhyme-word-btn,
+        body.large-text .related-btn {
+            font-size: 16px;
+        }
+        body.large-text .letter-btn {
+            font-size: 16px;
+        }
+        body.large-text .pattern-btn {
+            font-size: 18px;
+        }
+        body.large-text .settings-menu label {
+            font-size: 16px;
+        }
+        .search-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            padding: 10px 20px;   
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            z-index: 1000;
+            box-sizing: border-box;
+            gap: 10px;
+        }
+        body.dark-mode .search-container {
+            background: #2a2a2a;
+        }
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center; 
+        }
+        input { 
+            padding: 4px 35px 4px 35px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            border-radius: 20px; 
+            background: #f5f5f5; 
+            border: 1px solid #ccc; 
+            font-size: 14px; 
+            color: #1a1a1a;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+        input:focus {
+            border-color: #800000;
+            outline: none;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.15);
+        }
+        
+        input:not(:focus) {
+            color: #888;
+        }
+
+        body.dark-mode input {
+            background: #333;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        body.dark-mode input:not(:focus) {
+            color: #aaa;
+        }
+
+        input::placeholder { 
+            color: #888; 
+        }
+        body.dark-mode input::placeholder {
+            color: #aaa;
+        }
+        #letterFilter {
+            position: fixed;
+            top: 45px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 10px 20px 5px;
+            border-bottom: 1px solid #ccc;
+            border-radius: 0 0 16px 16px;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            background: linear-gradient(
+                to bottom,
+                #ffffff 0%,
+                #ffffff 100%
+            );
+            z-index: 999;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        body.dark-mode #letterFilter {
+            background: linear-gradient(
+                to bottom,
+                #2a2a2a 0%,
+                #1f1f1f 100%
+            );
+            border-color: #555;
+        }
+
+        #stickyWordStrip {
+            position: fixed;
+            top: 90px;
+            left: 0;
+            right: 0;
+            background: #E8E4DC;
+            padding: 6px 20px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #1a1a1a;
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin: 0 auto;
             box-sizing: border-box;
         }
-        body {
-            margin: 0;
-            padding: 20px 15px;
-            font-family: Arial, sans-serif;
-            background-color: #E8E4DC; /* शब्दकोश का मुख्य बैकग्राउंड */
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #1a1a1a;
+
+        #stickyWordStrip.visible {
+            opacity: 1;
+            visibility: visible;
         }
 
-        .header-section {
-            text-align: center;
-            margin-bottom: 25px;
+        body.dark-mode #stickyWordStrip {
+            background: #1a1a1a;
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-                .logo-container-box {
-            width: 110px;
-            height: 110px;
+        .letter-btn { 
+            background: #f5f5f5; 
+            border: 1px solid #ccc; 
+            border-radius: 50%; 
+            width: 30px; 
+            height: 30px; 
+            margin: 2px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            color: #333; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0; 
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body.dark-mode .letter-btn {
+            background: #444;
+            border-color: #666;
+            color: #e0e0e0;
+        }
+        .letter-btn:hover { 
+            background: #e0e0e0; 
+        }
+        body.dark-mode .letter-btn:hover {
+            background: #555;
+        }
+        .letter-btn.active { 
+            background: #bfe2ff; 
+            color: blue; 
+            border-color: blue; 
+        }
+        body.dark-mode .letter-btn.active {
+            background: #87ceeb;
+            color: #1e90ff;
+            border-color: #1e90ff;
+        }
+        .content-container { 
+            margin-top: 100px; 
+            width: 100%; 
+            max-width: 600px; 
+        }
+        #suggestions { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0 20px; 
+            display: none; 
+        }
+        #suggestions li { 
+            cursor: pointer; 
+            padding: 8px 15px; 
+            font-size: 16px; 
+            color: #333; 
+            border: 1px solid #ccc; 
+            border-radius: 10px; 
+            overflow: hidden;
+            margin: 5px 0; 
             background: #ffffff;
-            border-radius: 50%; /* गोल फ्रेम के लिए */
-            border: 2px solid #ccc;
-            padding: 5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            margin: 0 auto 15px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+        body.dark-mode #suggestions li {
+            color: #e0e0e0;
+            border-color: #555;
+            background: #333;
+        }
+        #suggestions li:hover { 
+            background: #f0f0f0; 
+        }
+        body.dark-mode #suggestions li:hover {
+            background: #444;
+        }
+        #suggestions li:active { 
+            background: #FAF7F2; 
+            border-color: #800000; 
+        }
+        #suggestions li span { 
+            display: block; 
+            font-size: 12px; 
+            color: #666; 
+        }
+        body.dark-mode #suggestions li span {
+            color: #aaa;
+        }
+        #wordType, #subjectLine, #pluralLine {    
+            color: #666;
+            font-size: 10px;
+            margin: 5px 20px;
+            display: none;
+        }
+        body.dark-mode #wordType,
+        body.dark-mode #subjectLine,
+        body.dark-mode #pluralLine {
+            color: #aaa;
+        }
+        #result, #englishMeaning { 
+            font-size: 14px; 
+            color: #888; 
+            margin: 5px 20px; 
+            display: none; 
         }
 
-        .logo-container-box img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%; /* लोगो इमेज को गोल रखने के लिए */
-            object-fit: cover;
+        body.dark-mode #result,
+        body.dark-mode #englishMeaning {
+            color: #bbb !important;
         }
 
-
-        .main-title {
-            font-size: 28px;
+        #result .highlight-word,
+        #englishMeaning .highlight-word {
+            color: #000;
             font-weight: bold;
-            color: #1a1a1a;
-            margin: 0 0 8px 0;
         }
 
-        .sub-title {
-            font-size: 14px;
-            color: #666666;
+        body.dark-mode #result .highlight-word,
+        body.dark-mode #englishMeaning .highlight-word {
+            color: #fff;
+        }
+        #exampleLabel { 
+            font-size: 14px; 
+            color: #555; 
+            margin: 5px 20px; 
+            display: none; 
+        }
+        body.dark-mode #exampleLabel {
+            color: #999;
+        }
+        #example { 
+            font-size: 14px; 
+            color: #1a1a1a; 
+            margin: 0 20px 10px; 
+            display: none; 
+        }
+        body.dark-mode #example {
+            color: #e0e0e0;
+        }
+        #synonymLabel, #oppositeLabel, #rhymeLabel, #relatedLabel, #idiomLabel, #proverbLabel {
+            font-size: 14px; 
+            color: #888; 
+            margin: 5px 20px;
+        }
+        body.dark-mode #synonymLabel, body.dark-mode #oppositeLabel, body.dark-mode #rhymeLabel, body.dark-mode #relatedLabel {
+            color: #bbb;
+        }
+        #synonyms, #opposite, #rhymes, #related { 
+            font-size: 14px; 
+            color: #333; 
             margin: 0;
-            max-width: 320px;
-            line-height: 1.5;
         }
-
-        .login-card {
-            background: #ffffff; /* मुख्य शब्दकोश के कार्ड्स का सफ़ेद रंग */
-            width: 100%;
-            max-width: 380px;
-            border-radius: 16px;
-            padding: 30px 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-            border: 1px solid #ccc;
-            text-align: center;
+        body.dark-mode #synonyms, body.dark-mode #opposite, body.dark-mode #rhymes, body.dark-mode #related, body.dark-mode #idiomLabel {
+            color: #e0e0e0;
         }
-
-        .welcome-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #1a1a1a;
-            margin: 0 0 8px 0;
+        .related-btn, .opposite-btn, .synonym-btn, .rhyme-word-btn { 
+            background: #e6f2ff; 
+            border: none; 
+            padding: 5px 10px; 
+            margin: 2px 2px 2px 0; 
+            cursor: pointer; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            transition: background-color 0.3s, color 0.3s;
         }
-
-        .welcome-desc {
-            font-size: 13px;
-            color: #666666;
-            margin: 0 0 25px 0;
-            line-height: 1.4;
+        body.dark-mode .related-btn, body.dark-mode .opposite-btn, body.dark-mode .synonym-btn, body.dark-mode .rhyme-word-btn {
+            background: #808080;
+            color: #ffffff;
         }
-
-        .google-btn {
-            width: 100%;
-            background: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            color: #333333;
+        .related-btn:hover, .opposite-btn:hover, .synonym-btn:hover, .rhyme-word-btn:hover { 
+            background: #87ceeb; 
+        }
+        body.dark-mode .related-btn:hover, body.dark-mode .opposite-btn:hover, body.dark-mode .synonym-btn:hover, body.dark-mode .rhyme-word-btn:hover {
+            background: #999999;
+        }
+        .subject-btn {
+            background: #e6f2ff;
+            border: none;
+            padding: 1px 6px;
+            margin: 0 4px 0 0;
+            color: #007bff;
             cursor: pointer;
-            transition: background-color 0.2s, border-color 0.2s;
+            border-radius: 3px;
+            font-size: 10px;
         }
 
-        .google-btn:hover {
-            background-color: #f5f5f5;
-            border-color: #bbb;
+        .subject-btn:hover {
+            background: #bfe2ff;
+        }
+        body.dark-mode .subject-btn {
+            background: #3a3a3a;
+            color: #87ceeb;
+        }
+        .unclickable-btn { 
+            background: #d1e7f0; 
+            border: none; 
+            padding: 5px 10px; 
+            margin: 2px; 
+            color: #4682b4; 
+            cursor: pointer; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode .unclickable-btn {
+            background: #808080; 
+            color: #ffffff;
+        }
+        .unclickable-btn:hover { 
+            background: #87ceeb; 
+        }
+        body.dark-mode .unclickable-btn:hover {
+            background: #999999;
+        }
+        .unclickable-text { 
+            color: #4682b4; 
+            text-decoration: none; 
+            font-weight: bold; 
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        body.dark-mode .unclickable-text {
+            color: #87ceeb;
+        }
+        .meaning-link {
+            color: #007bff;
+            text-decoration: none;
         }
 
-        .google-icon {
-            width: 20px;
-            height: 20px;
+        body.dark-mode .meaning-link {
+            color: #fff;
+        }
+        .highlight { 
+            font-weight: bold; 
+        }
+        .highlight-word {
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+        body.dark-mode .highlight-word {
+            color: #ffffff;
+        }
+        .english-word {
+            color: #007bff !important;
+            font-size: 14px; 
+        }
+        body.dark-mode .english-word {
+            color: #66b0ff !important;
+        }
+        .search-icon { 
+            position: absolute; 
+            left: 10px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: #888; 
+            font-size: 20px; 
+            transition: color 0.3s;
+        }
+        body.dark-mode .search-icon {
+            color: #bbb;
+        }
+        .settings-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #800000;
+        }
+        body.dark-mode .settings-icon {
+            color: #bbb;
+        }
+        .material-symbols-outlined { 
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; 
+        }
+        #rhymePatterns { 
+            display: flex; 
+            justify-content: flex-start; 
+            flex-wrap: nowrap; 
+            overflow-x: auto; 
+            margin: 0; 
+            padding: 10px 0; 
+            white-space: nowrap; 
+            -webkit-overflow-scrolling: touch; 
+        }
+        .pattern-btn { 
+            background: none; 
+            border: none; 
+            padding: 5px 10px; 
+            margin: 2px 5px 2px 0; 
+            cursor: pointer; 
+            font-size: 16px; 
+            color: #888; 
+            position: relative; 
+            flex-shrink: 0; 
+            transition: color 0.3s;
+        }
+        body.dark-mode .pattern-btn {
+            color: #87ceeb;
+        }
+        .pattern-btn:hover { 
+            color: #87ceeb; 
+        }
+        body.dark-mode .pattern-btn:hover {
+            color: #66b0ff;
+        }
+        .pattern-btn.active::after { 
+            content: ''; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 2px; 
+            background-color: #add8e6; 
+        }
+        body.dark-mode .pattern-btn.active::after {
+            background-color: #87ceeb;
+        }
+        #rhymes { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: flex-start; 
+            margin: 0;
+        }
+        .synonym-block, .opposite-block, .rhyme-block, .related-block, .couplet-block, .proverb-block, .idiom-block { 
+            border: 1px solid #ccc; 
+            border-radius: 10px; 
+            margin: 0 20px 10px; 
+            padding: 10px 10px 10px 15px; 
+            background: #ffffff;
+            display: none; 
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        body.dark-mode .synonym-block, body.dark-mode .opposite-block, body.dark-mode .rhyme-block, body.dark-mode .related-block, body.dark-mode .couplet-block,  body.dark-mode .proverb-block, body.dark-mode .idiom-block {
+            background: #333;
+            border-color: #555;
         }
 
-        .security-badge {
-            display: inline-flex;
+        /* --- कंपैक्ट (Compact) सेटिंग्स मेनू स्टाइलिंग --- */
+        .settings-menu {
+            position: absolute;
+            top: 45px;
+            right: 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1001;
+            display: none;
+            padding: 10px;
+            width: 200px;
+            box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        body.dark-mode .settings-menu {
+            background: #2a2a2a;
+            border-color: #555;
+        }
+
+        .settings-menu .menu-item {
+            display: flex;
             align-items: center;
-            gap: 6px;
-            margin-top: 25px;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        body.dark-mode .settings-menu .menu-item {
+            border-bottom-color: #444;
+        }
+
+        .settings-menu .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-icon {
+            font-size: 18px;
+            color: #555;
+        }
+
+        body.dark-mode .menu-icon {
+            color: #bbb;
+        }
+
+        .menu-icon-text {
             font-size: 12px;
-            color: #666666;
-            background: #e6f2ff; /* विषय/समान शब्द वाले बॉक्स का हल्का नीला रंग */
-            padding: 6px 14px;
+            font-weight: bold;
+            color: #555;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        body.dark-mode .menu-icon-text {
+            color: #bbb;
+        }
+
+        .settings-menu label {
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        body.dark-mode .settings-menu label {
+            color: #e0e0e0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 36px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
             border-radius: 20px;
         }
 
-        .security-badge span {
-            font-size: 16px;
-            color: #007bff;
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #007bff; /* शब्दकोश का मुख्य लिंक कलर */
-            text-decoration: none;
-            font-size: 14px;
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
+        .user-info-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #eee;
+            width: 100%;
+        }
+
+        body.dark-mode .user-info-container {
+            border-bottom-color: #444;
+        }
+
+        .user-info-container img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+
+        .user-name-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 130px;
+        }
+
+        body.dark-mode .user-name-text {
+            color: #e0e0e0;
+        }
+
+        .user-name-text.admin-name {
+            color: #800000 !important;
             font-weight: bold;
         }
 
-        .back-link:hover {
+        body.dark-mode .user-name-text.admin-name {
+            color: #ff6666 !important;
+        }
+
+        .login-top-item {
+            border-bottom: 1px solid #eee;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+        }
+
+        body.dark-mode .login-top-item {
+            border-color: #444;
+        }
+
+        .login-menu-item {
+            border-top: 1px solid #eee;
+            margin-top: 6px;
+            padding-top: 6px;
+        }
+
+        body.dark-mode .login-menu-item {
+            border-color: #444;
+        }
+
+        .auth-btn-logout {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+            transition: background 0.3s;
+            text-align: center;
+        }
+
+        .auth-btn-logout:hover {
+            background: #c82333;
+        }
+
+        .login-text-btn {
+            color: #007bff;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 2px 0;
+            text-align: left;
+            width: 100%;
+        }
+
+        body.dark-mode .login-text-btn {
+            color: #66b0ff;
+        }
+
+        .login-text-btn:hover {
             text-decoration: underline;
         }
 
-        .footer-text {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #888888;
+        .quiz-color { color: #007bff !important; }
+        .add-word-color { color: #28a745 !important; }
+        .feedback-color { color: #17a2b8 !important; }
+        .admin-color { color: #007bff !important; }
+        .admin-words-color { color: #28a745 !important; }
+
+        .word-of-the-day-container {
+            position: relative;
+            margin: 10px 20px;
             text-align: center;
+            display: none;
+        }
+        .word-of-the-day-container h2 {
+            font-size: 12px;
+            color: #333;
+            margin: 0 0 5px 0;
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e6f0fa;
+            padding: 0 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            transition: color 0.3s, background-color 0.3s;
+        }
+        body.dark-mode .word-of-the-day-container h2 {
+            color: #e0e0e0;
+            background: #1a1a1a;
+        }
+        .word-of-the-day {
+            background-color: #e6f0fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        body.dark-mode .word-of-the-day {
+            background-color: #333;
+            border-color: #555;
+        }
+        .word-of-the-day h3 {
+            font-size: 15px;
+            color: #007bff;
+            margin: 0 0 10px 0;
+        }
+        body.dark-mode .word-of-the-day h3 {
+            color: #66b0ff;
+        }
+        .hindi-meaning-label {
+            background-color: #e6f0fa;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #333;
+            display: inline-block;
+            margin-bottom: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode .hindi-meaning-label {
+            background-color: #333;
+            color: #e0e0e0;
+        }
+        .word-of-the-day p {
+            font-size: 15px;
+            color: #555;
+            margin: 0;
+        }
+        body.dark-mode .word-of-the-day p {
+            color: #bbb;
+        }
+        .clickable-word {
+            cursor: pointer;
+            transition: color 0.3s;
+            color: #007bff;
+            text-decoration: none !important;
+        }
+        .clickable-word:hover {
+            color: #0056b3;
+        }
+        body.dark-mode .clickable-word {
+            color: #40c4ff;
+        }
+        body.dark-mode .clickable-word:hover {
+            color: #99c2ff;
+        }
+        #aboutSection {
+            display: none;
+            position: absolute;
+            height: 400px;
+            width: 300px; 
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1002;
+            max-width: 300px;
+            text-align: center;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        body.dark-mode #aboutSection {
+            background: #2a2a2a;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        #loadingIndicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            z-index: 2000;
+        }
+
+        .loading-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-logo {
+            width: 120px;
+            height: auto;
+            border-radius: 16px;
+            animation: logoAnimation 3s infinite ease-in-out;
+        }
+
+        @keyframes logoAnimation {
+            0%   { transform: scale(1); opacity: 0.6; }
+            50%  { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+
+        body.dark-mode .loading-logo {
+            filter: drop-shadow(0 0 10px rgba(100, 200, 255, 0.6));
+        }
+        #errorMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: red;
+            display: none;
+        }
+        #coupletLabel { 
+            font-size: 14px; 
+            color: #888; 
+            margin: 5px 20px;
+        }
+        body.dark-mode #coupletLabel {
+            color: #bbb;
+        }
+        #couplets {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0 20px;
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+            scrollbar-width: thin;
+        }
+
+        body.dark-mode #couplets {
+            color: #e0e0e0;
+        }
+
+        .couplet-item {
+            display: inline-block;
+            width: auto;
+            max-width: 600px;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            vertical-align: top;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+            white-space: normal;
+            box-sizing: border-box;
+        }
+
+        body.dark-mode .couplet-item {
+            border-color: #666;
+            background: #444;
+        }
+
+        .couplet-text {
+            white-space: pre-wrap;
+            font-style: italic;
+        }
+
+        .couplet-line {
+            margin-bottom: 5px;
+            white-space: nowrap;
+        }
+
+        .author-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        body.dark-mode .author-text {
+            color: #aaa;
+        }
+
+        .small-font {
+            font-size: 12px;
+        }
+        .image-block { 
+            border: 1px solid #ccc; 
+            border-radius: 10px; 
+            margin: 0 20px 10px; 
+            padding: 10px; 
+            background: #ffffff; 
+            display: none; 
+            text-align: center;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        body.dark-mode .image-block {
+            background: #333;
+            border-color: #555;
+        }
+        .reference-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        #imageLabel {
+            font-size: 14px; 
+            color: #888; 
+            margin: 5px 20px;
+            display: none;
+        }
+        body.dark-mode #imageLabel {
+            color: #bbb;
+        }
+        #englishMeaning a,
+        #result a {
+            text-decoration: none;
+        }
+        body.dark-mode #result a,
+        body.dark-mode #englishMeaning a {
+            color: #fff;
+        }
+        .duplicate-section {
+            position: relative;
+            margin: 10px 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .duplicate-slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding-top: 10px;
+            align-items: flex-start;
+        }
+        .duplicate-card {
+            background-color: #e6f0fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            flex: 0 0 90%;
+            margin-right: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            height: auto;
+        }
+
+        body.dark-mode .duplicate-card {
+            background-color: #333;
+            border-color: #555;
+        }
+        .duplicate-item-block {
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .duplicate-item-block:hover {
+            background-color: rgba(0, 123, 255, 0.08);
+        }
+        body.dark-mode .duplicate-item-block:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        .duplicate-word {
+            font-size: 15px;
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 8px;
+        }
+        body.dark-mode .duplicate-word {
+            color: #66b0ff;
+        }
+
+        .duplicate-hindi-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            margin-bottom: 2px;
+            display: block;
+        }
+
+        body.dark-mode .duplicate-hindi-label {
+            color: #fff;
+        }
+        .duplicate-hindi-text {
+            font-size: 15px;
+            color: #555;
+        }
+
+        body.dark-mode .duplicate-hindi-text {
+            color: #bbb;
+        }
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
+        }
+        .duplicate-section h2 {
+            font-size: 12px;
+            color: #333;
+            margin: 0 0 5px 0;
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e6f0fa;
+            padding: 0 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        body.dark-mode .duplicate-section h2 {
+            color: #e0e0e0;
+            background: #1a1a1a;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .app-logo {
+            height: 32px;
+            width: 32px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .clear-icon {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            cursor: pointer;
+            color: #888;
+            display: none;
+            padding: 3px;
+            line-height: 1;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            user-select: none;
+        }
+
+        .clear-icon:hover {
+            color: #000;
+        }
+
+        body.dark-mode .clear-icon {
+            color: #bbb;
+        }
+
+        .idiom-item {
+            margin-bottom: 10px;
+        }
+
+        .idiom-word {
+            font-size: 14px;
+            color: #007bff; 
+            cursor: pointer;
+        }
+
+        body.dark-mode .idiom-word {
+            color: #ffffff;
+        }
+
+        .idiom-hindi {
+            font-size: 14px;
+            color: #888;
+        }
+        body.dark-mode .idiom-hindi {
+            color: #bbb;
+        }
+
+        .proverb-item {
+            margin-bottom: 10px;
+        }
+
+        .proverb-word {
+            font-size: 14px;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        body.dark-mode .proverb-word {
+            color: #ffffff;
+        }
+
+        .proverb-hindi {
+            font-size: 14px;
+            color: #888;
+        }
+
+        body.dark-mode .proverb-hindi {
+            color: #bbb;
+        }
+        body.dark-mode #pluralLine span {
+            color: #ffffff !important;
+        }
+
+        #feedbackModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 1003;
+            width: 90%;
+            max-width: 360px;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode #feedbackModal {
+            background: #2a2a2a;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        #feedbackModal h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #007bff;
+        }
+        body.dark-mode #feedbackModal h3 {
+            color: #66b0ff;
+        }
+        #feedbackModal textarea {
+            width: 100%;
+            height: 90px;
+            padding: 8px;
+            box-sizing: border-box;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            resize: none;
+            margin-bottom: 12px;
+            background: #f9f9f9;
+            color: #333;
+        }
+        body.dark-mode #feedbackModal textarea {
+            background: #333;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        .feedback-btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .feedback-submit-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .feedback-close-btn {
+            background: #ccc;
+            color: #333;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        body.dark-mode .feedback-close-btn {
+            background: #555;
+            color: #e0e0e0;
+        }
+
+        .admin-feedback-card {
+            background: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+        body.dark-mode .admin-feedback-card {
+            background: #333;
+            border-color: #555;
+        }
+        .admin-fb-header {
+            font-size: 12px;
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        body.dark-mode .admin-fb-header {
+            color: #66b0ff;
+        }
+        .admin-fb-msg {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 6px;
+            white-space: pre-wrap;
+        }
+        body.dark-mode .admin-fb-msg {
+            color: #e0e0e0;
+        }
+        .admin-fb-time {
+            font-size: 10px;
+            color: #888;
+            text-align: right;
+        }
+
+        .admin-words-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 650px;
+        }
+
+        .admin-words-table th, 
+        .admin-words-table td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .admin-words-table th {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .admin-words-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        body.dark-mode .admin-words-table {
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .admin-words-table th {
+            background-color: #1e7e34;
+        }
+
+        body.dark-mode .admin-words-table td, 
+        body.dark-mode .admin-words-table th {
+            border-color: #444;
+        }
+
+        body.dark-mode .admin-words-table tr:nth-child(even) {
+            background-color: #333;
         }
     </style>
 </head>
 <body>
-
-    <div class="header-section">
-        <div class="logo-container-box">
-            <img src="https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37" alt="मेवाती शब्दकोश लोगो">
-        </div>
-        <h1 class="main-title">मेवाती शब्दकोश</h1>
-        <p class="sub-title">हिंदी ⇄ मेवाती शब्दकोश — मेवाती भाषा और शब्द-संपदा का डिजिटल दस्तावेजीकरण</p>
-    </div>
-
-    <div class="login-card">
-        <h2 class="welcome-title">स्वागत है!</h2>
-        <p class="welcome-desc">मेवाती शब्दकोश का विस्तृत एवं पूर्ण उपयोग करने के लिए लॉगिन करें</p>
-
-        <button class="google-btn" id="loginBtn" onclick="loginWithGoogle()">
-            <svg class="google-icon" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-            Google से लॉगिन करें
-        </button>
-
-        <div class="security-badge">
-            <span class="material-symbols-outlined">lock</span>
-            सुरक्षित और आसान लॉगिन
+    <div id="loadingIndicator">
+        <div class="loading-wrapper">
+            <img src="https://lh3.googleusercontent.com/d/12Vbap2mMbSYJZqUbwY36OvnE4V1XDIU7" class="loading-logo" alt="Logo">
         </div>
     </div>
+    <div id="errorMessage"></div>
+    <div class="search-container">
+        <span class="logo-container">
+            <img src="https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37" alt="Logo" class="app-logo">
+        </span>
 
-    <a href="index.html" class="back-link">← मुख्य शब्दकोश पर वापस जाएँ</a>
+        <div class="search-box">
+            <span class="search-icon material-symbols-outlined">search</span>
+            <input type="text" id="wordInput" placeholder="शब्दार्थ खोजिए" oninput="debouncedSuggestions(); toggleClearIcon();" autocomplete="off">
+            <span class="clear-icon" id="clearSearch" onclick="clearSearch()">×</span>
+        </div>
 
-    <div class="footer-text">
-        © 2026 मेवाती शब्दकोश | सभी अधिकार सुरक्षित
+        <span class="settings-icon material-symbols-outlined" onclick="toggleSettingsMenu()">menu</span>
+
+        <div class="settings-menu" id="settingsMenu">
+            <div class="menu-item login-top-item" id="loginTopView">
+                <button class="login-text-btn" onclick="handleAuth()">लॉग इन करें</button>
+            </div>
+
+            <div class="user-info-container" id="loggedInTopView" style="display: none;">
+                <img id="menuUserAvatar" src="" alt="User">
+                <span class="user-name-text" id="menuUserName">यूज़र</span>
+            </div>
+
+            <!-- डार्क मोड -->
+            <div class="menu-item">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon">dark_mode</span>
+                    <label for="darkModeToggle">डार्क मोड</label>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- टेक्स्ट साइज़ -->
+            <div class="menu-item">
+                <div class="menu-item-left">
+                    <span class="menu-icon-text">A A</span>
+                    <label for="textSizeToggle">टेक्स्ट साइज</label>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="textSizeToggle" onchange="toggleTextSize()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- हमारे बारे में -->
+            <div class="menu-item" onclick="window.location.href='about.html'">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon">home</span>
+                    <label>हमारे बारे में</label>
+                </div>
+            </div>
+
+            <!-- मेवाती क्विज़ -->
+            <div class="menu-item" onclick="window.location.href='quiz.html'">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon quiz-color">menu_book</span>
+                    <label class="quiz-color">मेवाती क्विज़</label>
+                </div>
+            </div>
+
+            <!-- शब्द जोड़ें -->
+            <div class="menu-item" onclick="checkAuthAndRedirect('add-word.html')">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon add-word-color">add_box</span>
+                    <label class="add-word-color">शब्द जोड़ें</label>
+                </div>
+            </div>
+
+            <!-- सुझाव दें (यूज़र) -->
+            <div class="menu-item" id="userFeedbackMenuItem" onclick="openFeedbackModal()">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon feedback-color">chat_bubble_outline</span>
+                    <label class="feedback-color">सुझाव दें</label>
+                </div>
+            </div>
+
+            <!-- प्राप्त सुझाव (एडमिन) -->
+            <div class="menu-item" id="adminFeedbackMenuItem" style="display: none;" onclick="fetchAdminFeedbacks()">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon admin-color">mark_chat_unread</span>
+                    <label class="admin-color">प्राप्त सुझाव <span id="feedbackCountLabel">(0)</span></label>
+                </div>
+            </div>
+
+            <!-- प्राप्त शब्द (एडमिन) -->
+            <div class="menu-item" id="adminWordsMenuItem" style="display: none;" onclick="fetchAdminSuggestedWords()">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon admin-words-color">note_add</span>
+                    <label class="admin-words-color">प्राप्त शब्द <span id="wordsCountLabel">(0)</span></label>
+                </div>
+            </div>
+
+            <!-- लॉग आउट बटन -->
+            <div class="login-menu-item" id="loggedOutViewBottom" style="display: none;">
+                <button class="auth-btn-logout" onclick="handleAuth()">लॉग आउट करें</button>
+            </div>
+        </div>
+    </div>
+    <div id="letterFilter"></div>
+    <div id="stickyWordStrip"></div>
+
+    <div class="content-container">
+        <div id="adminFeedbackBlock" style="display: none; margin: 10px 20px;">
+            <h3 style="font-size: 16px; color: #007bff; margin-bottom: 12px; text-align: left;">यूज़र्स द्वारा भेजे गए सुझाव</h3>
+            <div id="adminFeedbackContainer"></div>
+        </div>
+
+        <div id="adminWordsBlock" style="display: none; margin: 10px 10px; overflow-x: auto;">
+            <h3 style="font-size: 16px; color: #28a745; margin-bottom: 12px; text-align: left;">यूज़र्स द्वारा सुझाए गए नए शब्द</h3>
+            <table class="admin-words-table">
+                <thead>
+                    <tr>
+                        <th>क्र.सं.</th>
+                        <th>तारीख</th>
+                        <th>भेजने वाला</th>
+                        <th>मेवाती शब्द</th>
+                        <th>हिन्दी अर्थ</th>
+                        <th>अंग्रेजी अर्थ</th>
+                        <th>मुहावरा</th>
+                        <th>कहावत</th>
+                    </tr>
+                </thead>
+                <tbody id="adminWordsTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="word-of-the-day-container" id="wordOfTheDay">
+            <h2>आज का शब्द</h2>
+            <div class="word-of-the-day">
+                <h3 id="wotdMewati" class="clickable-word"></h3>
+                <div class="hindi-meaning-label">हिंदी अर्थ</div>
+                <p id="wotdHindi"><span id="wotdHindiMeaning"></span></p>
+            </div>
+        </div>
+        <div class="duplicate-section" id="duplicateSection" style="display:none;">
+            <h2 class="duplicate-heading">समान मेवाती शब्द</h2>
+            <div class="duplicate-slider" id="duplicateSlider"></div>
+        </div>
+        <ul id="suggestions"></ul>
+        <p id="wordType"></p>
+        <p id="subjectLine"></p>
+        <p id="pluralLine"></p>
+        <p id="result"></p>
+        <p id="englishMeaning"></p>
+        <p id="exampleLabel"></p>
+        <p id="example"></p>
+        <p id="imageLabel"></p>
+        <div class="image-block" id="imageBlock">
+            <div id="imageContainer"></div>
+        </div>
+        <p id="synonymLabel"></p>
+        <div class="synonym-block" id="synonymBlock">
+            <div id="synonyms"></div>
+        </div>
+        <p id="oppositeLabel"></p>
+        <div class="opposite-block" id="oppositeBlock">
+            <div id="opposite"></div>
+        </div>
+        <p id="rhymeLabel"></p>
+        <div class="rhyme-block" id="rhymeBlock">
+            <div id="rhymePatterns"></div>
+            <div id="rhymes"></div>
+        </div>
+        <p id="coupletLabel"></p>
+        <div class="couplet-block" id="coupletBlock">
+            <div id="couplets"></div>
+        </div>
+        <p id="idiomLabel"></p>
+        <div class="idiom-block" id="idiomBlock">
+            <div id="idioms"></div>
+        </div>
+        <p id="proverbLabel"></p>
+        <div class="proverb-block" id="proverbBlock">
+            <div id="proverbs"></div>
+        </div>
+        <p id="relatedLabel"></p>
+        <div class="related-block" id="relatedBlock">
+            <div id="related"></div>
+        </div>
     </div>
 
-    <!-- Firebase SDK & Auth Engine -->
+    <div id="feedbackModal">
+        <h3>अपना सुझाव दें</h3>
+        <textarea id="feedbackInput" placeholder="यहाँ अपना सुझाव या प्रतिक्रिया लिखें..."></textarea>
+        <div class="feedback-btn-group">
+            <button class="feedback-close-btn" onclick="closeFeedbackModal()">रद्द करें</button>
+            <button class="feedback-submit-btn" onclick="sendFeedback()">भेजें</button>
+        </div>
+    </div>
+
+    <div id="aboutSection">
+        <h3>हमारे बारे में</h3>
+        <p>यह हिंदी-मेवाती-अंग्रेज़ी शब्दकोश मेवाती भाषा के संरक्षण, संवर्धन और सुव्यवस्थित दस्तावेजीकरण का एक समर्पित प्रयास है। इसका उद्देश्य मेवाती शब्द-संपदा को संकलित कर विद्यार्थियों, शोधार्थियों और भाषा-प्रेमियों तक प्रमाणिक रूप में पहुँचाना है।
+इसमें प्रत्येक हिंदी शब्द के शुद्ध मेवाती अर्थ, पर्यायवाची, विलोम, अंग्रेज़ी अनुवाद, उच्चारण, उदाहरण तथा विषय-वर्गीकरण सहित आवश्यक संदर्भ दिए गए हैं, ताकि भाषा सीखना सरल और व्यवस्थित हो सके। यह शब्दकोश निरंतर अद्यतन किया जा रहा है; यदि आपको कोई त्रुटि मिले या नया शब्द सुझाना हो तो आपका सहयोग सादर आमंत्रित है।</p>
+        <p>यूसुफ खान कैथवाड़ा</p>
+        <button onclick="hideAbout()" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">बंद करें</button>
+    </div>
+
+    <script>
+        let dictionary = [];
+        let currentSearchType = "";
+        let debounceTimer = null;
+
+        const CURRENT_DATA_VERSION = "v3.0";
+
+        function escapeHTML(str) {
+            if (!str || typeof str !== 'string') return "";
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        const letters = [
+            "अ", "आ", "इ", "ई", "उ", "ऊ", "ए", "ऐ", "ओ", "औ",
+            "क", "ख", "ग", "घ",
+            "च", "छ", "ज", "झ",
+            "ट", "ठ", "ड", "ढ",
+            "त", "थ", "द", "ध", "न",
+            "प", "फ", "ब", "भ", "म",
+            "य", "र", "ल", "व",
+            "श", "ष", "स", "ह",
+            "क़", "ख़", "ग़", "ज़", "फ़"
+        ];
+
+        class TrieNode {
+            constructor() {
+                this.children = {};
+                this.words = new Set();
+            }
+        }
+
+        class Trie {
+            constructor() {
+                this.root = new TrieNode();
+            }
+
+            insert(word, type, data, index) {
+                let node = this.root;
+                const key = word.toLowerCase();
+                for (let char of key) {
+                    if (!node.children[char]) {
+                        node.children[char] = new TrieNode();
+                    }
+                    node = node.children[char];
+                    node.words.add(JSON.stringify({ word, type, data, index }));
+                }
+            }
+
+            search(prefix) {
+                let node = this.root;
+                const key = prefix.toLowerCase();
+                for (let char of key) {
+                    if (!node.children[char]) return [];
+                    node = node.children[char];
+                }
+                return [...node.words].map(item => JSON.parse(item));
+            }
+
+            searchByLetter(letter) {
+                let node = this.root;
+                const char = letter.toLowerCase();
+                if (!node.children[char]) return [];
+                return [...node.children[char].words].map(item => JSON.parse(item));
+            }
+        }
+
+        const trie = new Trie();
+
+        async function fetchDictionaryFromGoogleSheets() {
+            const loadingIndicator = document.getElementById("loadingIndicator");
+            const errorMessage = document.getElementById("errorMessage");
+            loadingIndicator.style.display = "block";
+            loadingIndicator.style.opacity = "1";
+            errorMessage.style.display = "none";
+
+            const savedVersion = localStorage.getItem("mewati_dict_version");
+
+            if (savedVersion !== CURRENT_DATA_VERSION) {
+                localStorage.removeItem("mewati_dictionary_cache");
+                localStorage.setItem("mewati_dict_version", CURRENT_DATA_VERSION);
+            }
+
+            const cachedData = localStorage.getItem("mewati_dictionary_cache");
+
+            if (cachedData) {
+                try {
+                    const rows = JSON.parse(cachedData);
+                    if (Array.isArray(rows)) {
+                        processRows(rows);
+                        
+                        loadingIndicator.style.opacity = "0";
+                        setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
+                        
+                        fetchFreshData();
+                        return dictionary;
+                    }
+                    localStorage.removeItem("mewati_dictionary_cache");
+                } catch (e) {
+                    localStorage.removeItem("mewati_dictionary_cache");
+                }
+            }
+
+            return await fetchFreshData();
+        }
+
+        async function fetchFreshData() {
+            const loadingIndicator = document.getElementById("loadingIndicator");
+            const errorMessage = document.getElementById("errorMessage");
+            const url = "https://script.google.com/macros/s/AKfycbxCqyUdiGbBYFF7vj3YJ6gpe3mgdJK4ovyNl_nAhQrhex2T6wKUKUr9-yr9kpel7Lnlmg/exec";
+
+            try {
+                const response = await fetch(url, { redirect: 'follow' });
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const rows = await response.json();
+                
+                if (!Array.isArray(rows)) {
+                    throw new Error("Invalid array data format received from API");
+                }
+
+                localStorage.setItem("mewati_dictionary_cache", JSON.stringify(rows));
+                processRows(rows);
+
+                initializeLetterFilter();
+                initializeTrie();
+                initializeWordOfTheDay();
+                initializeDuplicateMewatiWords();
+
+                if (loadingIndicator) {
+                    loadingIndicator.style.opacity = "0";
+                    setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
+                }
+                return dictionary;
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                if (loadingIndicator) loadingIndicator.style.display = "none";
+                if (errorMessage) {
+                    errorMessage.textContent = "डेटा लोड करने में असमर्थ।";
+                    errorMessage.style.display = "block";
+                }
+                return [];
+            }
+        }
+ 
+        function processRows(rows) {
+            if (!Array.isArray(rows)) return;
+            dictionary = [];
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                dictionary.push({
+                    hindiWord: row[0] || "",
+                    meaning: row[1] || "",
+                    synonyms: row[2] || "",
+                    type: row[3] || "",
+                    gender: row[4] || "",
+                    english: row[5] || "",
+                    mewatiTranslit: row[6] ? row[6].split(", ").map(t => t.trim()) : [],
+                    mewatiGender: row[7] || "",
+                    example: row[8] || "",
+                    opposite: row[9] || "",
+                    couplet1: row[10] || "",
+                    couplet2: row[11] || "",
+                    couplet3: row[12] || "",
+                    couplet4: row[13] || "",
+                    couplet5: row[14] || "",
+                    author1: row[15] || "",
+                    author2: row[16] || "",
+                    author3: row[17] || "",
+                    author4: row[18] || "",
+                    author5: row[19] || "",
+                    visualImage: row[20] || "",
+                    mewatiTranslit2: row[22] ? row[22].split(", ").map(t => t.trim()) : [],
+                    subject: row[23] ? row[23].split(",").map(t => t.trim()) : [],
+                    plural: row[24] ? row[24].split(",").map(t => t.trim()) : []
+                });
+            }
+
+            window.allMewatiWords = new Set();
+            dictionary.forEach(entry => {
+                entry.meaning.split(", ").map(m => m.trim()).forEach(m => {
+                    if (m) allMewatiWords.add(m);
+                });
+            });
+        }
+
+        function initializeTrie() {
+            dictionary.forEach((entry, index) => {
+                const word = entry.hindiWord;
+                const hindiWords = word
+                    .split(/[,;]\s*/)
+                    .map(w => w.trim())
+                    .filter(w => w);
+
+                hindiWords.forEach(part => {
+                    trie.insert(part, "hindi", entry, index);
+                });
+                const meanings = entry.meaning.split(/,\s*/).map(m => m.trim());
+                meanings.forEach(meaning => {
+                    if (meaning) {
+                        trie.insert(meaning, "mewati", { ...entry, hindiWord: word }, index);
+                    }
+                });
+                entry.subject.forEach(tag => {
+                    if(tag){
+                        trie.insert(tag, "tag", entry, index);
+                    }
+                });
+                if (entry.english) {
+                    const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
+                    engParts.forEach(eng => {
+                        trie.insert(eng, "english", { ...entry, hindiWord: word }, index);
+                    });
+                }
+                entry.mewatiTranslit.forEach((translit) => {
+                    if (translit) {
+                        trie.insert(translit, "translit", {
+                            ...entry,
+                            hindiWord: word
+                        }, index);
+                    }
+                });
+            }); 
+        }
+
+        function escapeString(str) {
+            if (!str || typeof str !== 'string') return "";
+            return str.replace(/'/g, "\\ me");
+        }
+
+        function initializeLetterFilter() {
+            const letterFilter = document.getElementById("letterFilter");
+            letterFilter.innerHTML = "";
+            letters.forEach(letter => {
+                const button = document.createElement("button");
+                button.className = "letter-btn";
+                button.textContent = letter;
+                button.onclick = () => filterByLetter(letter);
+                letterFilter.appendChild(button);
+            });
+        }
+
+        let activeLetter = null;
+
+        function filterByLetter(letter) {
+            const buttons = document.querySelectorAll(".letter-btn");
+            buttons.forEach(btn => btn.classList.remove("active"));
+            
+            const clickedButton = Array.from(buttons).find(btn => btn.textContent === letter);
+            if (activeLetter === letter) {
+                activeLetter = null;
+            } else {
+                clickedButton.classList.add("active");
+                activeLetter = letter;
+            }
+
+            document.getElementById("wordInput").value = "";
+            showSuggestions();
+        }
+
+        function initializeWordOfTheDay() {
+            const wordOfTheDayDiv = document.getElementById("wordOfTheDay");
+            const wotdMewati = document.getElementById("wotdMewati");
+            const wotdHindiMeaning = document.getElementById("wotdHindiMeaning");
+
+            const mewatiWords = [];
+            const seen = new Set();
+            dictionary.forEach(entry => {
+                const isFlagged = entry.subject && entry.subject.some(
+                    tag => tag.replace("#", "").trim() === "अश्लील"
+                );
+                if (isFlagged) return;
+
+                const meanings = entry.meaning.split(", ").map(m => m.trim());
+                meanings.forEach(meaning => {
+                    if (meaning && !seen.has(meaning)) {
+                        seen.add(meaning);
+                        mewatiWords.push({ mewati: meaning, hindi: entry.hindiWord });
+                    }
+                });
+            });
+
+            if (mewatiWords.length === 0) return;
+
+            const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+            const startDate = new Date('2025-01-01');
+            const todayDate = new Date(today);
+            const diffTime = todayDate - startDate;
+            const dayNumber = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            const totalWords = mewatiWords.length;
+            const index = dayNumber % totalWords;
+
+            const selected = mewatiWords[index];
+            const selectedWord = selected.mewati;
+            const selectedHindi = selected.hindi;
+
+            wotdMewati.textContent = selectedWord;
+            wotdHindiMeaning.textContent = selectedHindi;
+
+            document.getElementById("wordOfTheDay").onclick = () => {
+                const cleanWord = selectedWord.trim();
+                const cleanHindi = selectedHindi.trim();
+
+                const exactIndex = dictionary.findIndex(entry => {
+                    const meanings = entry.meaning
+                        ? entry.meaning.split(",").map(m => m.trim())
+                        : [];
+
+                    return (
+                        entry.hindiWord === cleanHindi &&
+                        meanings.includes(cleanWord)
+                    );
+                });
+
+                if (exactIndex !== -1) {
+                    showResult(JSON.stringify({
+                        word: cleanWord,
+                        type: "mewati",
+                        data: dictionary[exactIndex],
+                        index: exactIndex
+                    }));
+                } else {
+                    showResult(cleanWord);
+                }
+
+                toggleClearIcon();
+                document.getElementById("duplicateSection").style.display = "none";
+                document.getElementById("wordOfTheDay").style.display = "none";
+            };
+
+           if (!document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
+    wordOfTheDayDiv.style.display = "block";
+} else {
+    wordOfTheDayDiv.style.display = "none";
+}
+         } 
+
+        function initializeDuplicateMewatiWords() {
+            const wordMap = {};
+
+            dictionary.forEach((entry, index) => {
+                const meanings = entry.meaning.split(",").map(m => m.trim());
+                meanings.forEach(m => {
+                    if (!m) return;
+
+                    if (!wordMap[m]) {
+                        wordMap[m] = [];
+                    }
+
+                    wordMap[m].push({
+                        hindi: entry.hindiWord,
+                        index: index
+                    });
+                });
+            });
+
+            const slider = document.getElementById("duplicateSlider");
+            slider.innerHTML = "";
+
+            Object.keys(wordMap).forEach(word => {
+                if (wordMap[word].length >= 2) {
+                    const card = document.createElement("div");
+                    card.className = "duplicate-card";
+
+                    wordMap[word].forEach((item, i) => {
+                        const itemBlock = document.createElement("div");
+                        itemBlock.className = "duplicate-item-block";
+
+                        itemBlock.onclick = (e) => {
+                            e.stopPropagation();
+                            const cleanWord = word.trim();
+                            document.getElementById("wordInput").value = cleanWord;
+                            
+                            showResult(JSON.stringify({
+                                word: cleanWord,
+                                type: "mewati",
+                                data: dictionary[item.index],
+                                index: item.index
+                            }));
+
+                            document.getElementById("duplicateSection").style.display = "none";
+                        };
+
+                        const wordDiv = document.createElement("div");
+                        wordDiv.className = "duplicate-word";
+                        wordDiv.textContent = word;
+
+                        const labelDiv = document.createElement("div");
+                        labelDiv.className = "duplicate-hindi-label";
+                        labelDiv.textContent = "हिंदी अर्थ";
+
+                        const hindiDiv = document.createElement("div");
+                        hindiDiv.className = "duplicate-hindi-text";
+                        hindiDiv.textContent = item.hindi;
+
+                        itemBlock.appendChild(wordDiv);
+                        itemBlock.appendChild(labelDiv);
+                        itemBlock.appendChild(hindiDiv);
+
+                        card.appendChild(itemBlock);
+
+                        if (i < wordMap[word].length - 1) {
+                            const divider = document.createElement("div");
+                            divider.className = "divider";
+                            card.appendChild(divider);
+                        }
+                    });
+
+                    slider.appendChild(card);
+                }
+            });
+
+              if (slider.children.length > 0 && !document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
+    document.getElementById("duplicateSection").style.display = "block";
+} else {
+    document.getElementById("duplicateSection").style.display = "none";
+}
+      }
+
+        function debouncedSuggestions() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                showSuggestions();
+            }, 200);
+        }
+
+        function compareHindiWords(a, b) {
+            const wordA = a.word || "";
+            const wordB = b.word || "";
+
+            return wordA.localeCompare(wordB, 'hi-IN', { sensitivity: 'variant', numeric: true });
+        }
+
+        function showSuggestions() {
+            const input = document.getElementById("wordInput").value.trim();
+            const suggestionsList = document.getElementById("suggestions");
+            const wordOfTheDayDiv = document.getElementById("wordOfTheDay");
+            suggestionsList.innerHTML = "";
+
+            if (input || activeLetter) {
+                wordOfTheDayDiv.style.display = "none";
+                document.getElementById("duplicateSection").style.display = "none";
+            } else {
+                wordOfTheDayDiv.style.display = "block";
+                document.getElementById("duplicateSection").style.display = "block";
+            } 
+            clearResults();
+
+            if (!input && !activeLetter) {
+                suggestionsList.style.display = "none";
+                return;
+            }
+
+            suggestionsList.style.display = "block";
+
+            let matches = [];
+
+            if (input.startsWith("*")) {
+                let query = input.slice(1);
+                if (query) {
+                    const mapMatra = (text) => {
+                        return text
+                            .replace(/ा/g, 'आ').replace(/ि/g, 'इ').replace(/ी/g, 'ई')
+                            .replace(/ु/g, 'उ').replace(/ू/g, 'ऊ').replace(/े/g, 'ए')
+                            .replace(/ै/g, 'ऐ').replace(/ो/g, 'ओ').replace(/ौ/g, 'औ')
+                            .replace(/([क-ह])(?![ा-ौ्])/g, '$1अ') 
+                            .replace(/ं/g, ''); 
+                    };
+         
+                    const normalizedQuery = mapMatra(query);
+
+                    dictionary.forEach((entry, index) => {
+                        const meanings = entry.meaning.split(",").map(m => m.trim());
+                        meanings.forEach(m => {
+                            const normalizedWord = mapMatra(m);
+                            if (normalizedWord.endsWith(normalizedQuery)) {
+                                matches.push({
+                                    word: m,
+                                    type: "mewati",
+                                    data: entry,
+                                    index: index
+                                });
+                            }
+                        });
+                    });
+                }
+            } else if (activeLetter && !input) {
+                matches = trie.searchByLetter(activeLetter);
+                matches.sort(compareHindiWords);
+            } else if (input) {
+                matches = trie.search(input);
+                activeLetter = null;
+                document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
+                matches.sort(compareHindiWords);
+            }
+
+            const seenSuggestions = new Set();
+
+            const hindiSuggestions = matches.filter(match => match.type === "hindi");
+            hindiSuggestions.forEach(match => {
+                const suggestionKey = `${match.word}-${match.type}-${match.index}`;
+                if (!seenSuggestions.has(suggestionKey)) {
+                    seenSuggestions.add(suggestionKey);
+                    const li = document.createElement("li");
+                    li.innerHTML = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning)}</span>`;
+                    li.onclick = () => {
+                        document.getElementById("wordInput").value = match.word;
+                        showResult(JSON.stringify(match));
+                        suggestionsList.innerHTML = "";
+                        suggestionsList.style.display = "none";
+                    };
+                    suggestionsList.appendChild(li);
+                }
+            });
+            const otherSuggestions = matches.filter(match => match.type !== "hindi");
+            otherSuggestions.forEach(match => {
+                let suggestionKey = `${match.word}-${match.type}-${match.index}`;
+                let displayText = escapeHTML(match.word);
+                let selectedWord = match.word;
+
+                if (match.type === "mewati") {
+                    suggestionKey = `${match.word}-mewati-${match.index}-${match.data.hindiWord}`;
+                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
+                } else if (match.type === "translit") {
+                    const meanings = match.data.meaning.split(", ").map(m => m.trim());
+                    const translitIndex = match.data.mewatiTranslit.indexOf(match.word);
+                    const mewatiWord = meanings[translitIndex] || meanings[0];
+                    displayText = `${escapeHTML(mewatiWord)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
+                    selectedWord = mewatiWord;
+                    suggestionKey = `${mewatiWord}-mewati-${match.index}-${match.data.hindiWord}`;
+                    match = {
+                        word: mewatiWord,
+                        type: "mewati",
+                        data: match.data,
+                        index: match.index
+                    };
+                } else if (match.type === "english") {
+                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning.split(", ")[0])}</span>`;
+                } else if (match.type === "tag") {
+                    displayText = `${escapeHTML(match.data.hindiWord)}<span>${escapeHTML(match.data.meaning)}</span>`;
+                    selectedWord = match.data.hindiWord;
+
+                    match = {
+                        word: match.data.hindiWord,
+                        type: "hindi",
+                        data: match.data,
+                        index: match.index
+                    };
+                }
+
+                if (!seenSuggestions.has(suggestionKey)) {
+                    seenSuggestions.add(suggestionKey);
+                    const li = document.createElement("li");
+                    li.innerHTML = displayText;
+                    li.onclick = () => {
+                        document.getElementById("wordInput").value = selectedWord;
+                        showResult(JSON.stringify(match));
+                        suggestionsList.innerHTML = "";
+                        suggestionsList.style.display = "none";
+                    };
+                    suggestionsList.appendChild(li);
+                }
+            });
+        }
+
+        function calculateChhandPattern(word) {
+            if (!word) return "";
+            let pattern = "";
+            let i = 0;
+            const chars = Array.from(word);
+
+            const guruMatras = ['ा', 'ी', 'ू', 'े', 'ै', 'ो', 'ौ', 'ं', 'ः'];
+            const laghuMatras = ['ि', 'ु', 'ँ'];
+            const guruSwar = ['आ', 'ई', 'ऊ', 'ए', 'ऐ', 'ओ', 'औ'];
+
+            while (i < chars.length) {
+                let char = chars[i];
+                let next = chars[i + 1];
+                let matra = 1;
+
+                if (guruSwar.includes(char)) {
+                    matra = 2;
+                } else if (next && guruMatras.includes(next)) {
+                    matra = 2;
+                    i++;
+                } else if (next && laghuMatras.includes(next)) {
+                    matra = 1;
+                    i++;
+                } else if (next === '्') {
+                    matra = 2; 
+                    i++; 
+                } else {
+                    matra = 1;
+                }
+
+                if (chars[i + 1] === 'ं') {
+                    matra = 2;
+                    i++;
+                }
+
+                pattern += matra;
+                i++;
+            }
+            return pattern.replace(/0/g, ""); 
+        }
+   
+        function findAllRhymingWords(input) {
+            const patterns = {};
+
+            function getStrictRhymeKey(word) {
+                if (!word) return "";
+                let chars = Array.from(word);
+                
+                if (word.includes('ं')) {
+                    return chars.slice(-3).join("");
+                } 
+                
+                return chars.slice(-2).join("");
+            }
+
+            const inputKey = getStrictRhymeKey(input);
+
+            dictionary.forEach(entry => {
+                const meanings = entry.meaning.split(", ").map(m => m.trim());
+                meanings.forEach(meaning => {
+                    if (meaning !== input && getStrictRhymeKey(meaning) === inputKey) {
+                        const pattern = calculateChhandPattern(meaning);
+                        if (!patterns[pattern]) {
+                            patterns[pattern] = new Set();
+                        }
+                        patterns[pattern].add(meaning);
+                    }
+                });
+            });
+
+            const sortedPatterns = Object.keys(patterns).sort((a, b) => a.localeCompare(b));
+            const result = {};
+            sortedPatterns.forEach(pattern => {
+                result[pattern] = [...patterns[pattern]].sort((a, b) => a.localeCompare(b, 'hi'));
+            });
+            return result;
+        }
+
+        function showResult(input) {
+            clearResults();
+            let searchData = {};
+            
+            if (typeof input === "object" && input !== null) {
+                searchData = input;
+            } else if (typeof input === "string" && input.startsWith("{") && input.endsWith("}")) {
+                try {
+                    searchData = JSON.parse(input);
+                } catch(e) {
+                    searchData = { word: input, type: "unknown", data: null, index: -1 };
+                }
+            } else {
+                searchData = { word: input, type: "unknown", data: null, index: -1 };
+            }
+
+            if (!searchData.type || searchData.type === "unknown") {
+                const searchWord = searchData.word || input;
+                
+                for (let idx = 0; idx < dictionary.length; idx++) {
+                    const entry = dictionary[idx];
+                    const hindiParts = entry.hindiWord ? entry.hindiWord.split(/[,;]\s*/).map(w => w.trim()) : [];
+                    if (hindiParts.includes(searchWord)) {
+                        searchData = { word: searchWord, type: "hindi", data: entry, index: idx };
+                        break;
+                    }
+                }
+
+                if (searchData.type === "unknown") {
+                    dictionary.forEach((entry, idx) => {
+                        if (
+                            entry.meaning.split(",").map(m => m.trim()).some(m => m === searchWord) ||
+                            (entry.synonyms && entry.synonyms.split(",").map(s => s.trim()).some(s => s === searchWord))
+                        ) {
+                            searchData = { word: searchWord, type: "mewati", data: {...entry}, index: idx };
+                        }
+                        else if (entry.mewatiTranslit && entry.mewatiTranslit.includes(searchWord)) {
+                            const translitIndex = entry.mewatiTranslit.indexOf(searchWord);
+                            const meanings = entry.meaning.split(",").map(m => m.trim());
+
+                            searchData = {
+                                word: meanings[translitIndex] || meanings[0],
+                                type: "mewati",
+                                data: { ...entry },
+                                index: idx
+                            };
+                        }
+                        else if (entry.english) {
+                            const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim());
+                            if (engParts.includes(searchWord)) {
+                                searchData = { word: searchWord, type: "english", data: { ...entry, hindiWord: entry.hindiWord }, index: idx };
+                            }
+                        }
+                    });
+                }
+            }
+
+            const cleanInput = searchData.word;
+            const data = searchData.data;
+
+            currentSearchType = searchData.type;
+
+            let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
+                imageLabel = "", imageHtml = "",
+                synonymLabel = "", synonymText = "", oppositeLabel = "", oppositeText = "", 
+                relatedLabel = "", relatedText = "", rhymeLabel = "";
+
+            const relatedHindiWords = [];
+
+            dictionary.forEach(entry => {
+                const meanings = entry.meaning
+                    ? entry.meaning.split(",").map(m => m.trim())
+                    : [];
+
+                const synonyms = entry.synonyms
+                    ? entry.synonyms.split(",").map(s => s.trim())
+                    : [];
+
+                if (
+                    meanings.includes(cleanInput) ||
+                    synonyms.includes(cleanInput) ||
+                    (searchData.type === "translit" && entry.mewatiTranslit.includes(cleanInput))
+                ) {
+                    relatedHindiWords.push(entry.hindiWord);
+                }
+            });
+
+            if (searchData.type === "hindi" && data) {
+                const d = data;
+                wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
+                const meanings = d.meaning.split(/\s*,\s*/);
+                result = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के मेवाती अर्थ:<br>` + meanings.map(m => {
+                    const safeM = escapeString(m);
+                    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
+                }).join("<br>");
+
+                if (d.english) {
+                    const engParts = d.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
+                    const engLinks = engParts.map(eng => {
+                        const safeEng = escapeString(eng);
+                        const safeEngDisplay = escapeHTML(eng);
+                        return `<a href="#" class="english-word" onclick="showResult('${safeEng}'); return false;">• ${safeEngDisplay}</a>`;
+                    }).join("<br>");
+                    englishMeaning = `English meaning:<br>${engLinks}`;
+                }
+            } else if (searchData.type === "mewati" && data) {
+                const d = data;
+                const meanings = d.meaning.split(/\s*,\s*/);
+                const meaningIndex = meanings.indexOf(cleanInput);
+                if (d.subject && d.subject.length) {
+                    const cleanTags = d.subject.map(tag => tag.replace("#","").trim());
+
+                    subjectLine = "विषय: " + cleanTags.map(tag =>
+                        `<button class="subject-btn" onclick="searchByTag('${escapeString(tag)}')">${escapeHTML(tag)}</button>`
+                    ).join(" ");
+                }
+                if (d.plural && d.plural.length) {
+                    const plurals = d.plural;
+                    const pluralWord = plurals[meaningIndex] || plurals[0];
+
+                    if (pluralWord) {
+                        pluralLine = `बहुवचन: <span style="color:black">${escapeHTML(pluralWord)}</span>`;
+                    }
+                }
+                let mewatiType = d.mewatiGender ? d.mewatiGender.split(", ")[meaningIndex] || d.mewatiGender : "";
+
+                if (mewatiType === "मुहावरा") {
+                    wordType = "मुहावरा";
+                } 
+                else if (mewatiType === "कहावत") {
+                    wordType = "कहावत";
+                }
+                else {
+                    wordType = d.type 
+                        ? (mewatiType ? `${d.type}, ${mewatiType}` : d.type) 
+                        : mewatiType;
+                }
+                const uniqueHindiSet = new Set(relatedHindiWords);
+                const uniqueRelatedHindiWords = [...uniqueHindiSet];
+                const hindiWordsList = uniqueRelatedHindiWords.map(hindi => {
+                    const parts = hindi.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
+                    const linksForThisEntry = parts.map(part => {
+                        const safePart = escapeString(part);
+                        return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
+                    }).join(", ");
+                    return `• ${linksForThisEntry}`;
+                }).join("<br>");
+
+                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiWordsList}`;
+
+                document.getElementById("stickyWordStrip").textContent = cleanInput;
+                
+                const uniqueEnglishSet = new Set();
+                uniqueRelatedHindiWords.forEach(hindi => {
+                    const entry = dictionary.find(e => e.hindiWord === hindi);
+                    if (entry && entry.english) {
+                        const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
+                        engParts.forEach(eng => {
+                            if (eng) uniqueEnglishSet.add(eng);
+                        });
+                    }
+                });
+
+                const englishMeanings = [...uniqueEnglishSet].map(eng => {
+                    const safeDisplayEng = escapeString(eng);
+                    return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
+                }).join("<br>");
+
+                const translitFromW =
+                    (d.mewatiTranslit2 && d.mewatiTranslit2[meaningIndex])
+                    ? d.mewatiTranslit2[meaningIndex]
+                    : (d.mewatiTranslit2 && d.mewatiTranslit2[0])
+                    ? d.mewatiTranslit2[0]
+                    : cleanInput;
+
+                englishMeaning = `English meaning of <span class="highlight-word">${escapeHTML(translitFromW)}</span>:<br>${englishMeanings}`;
+                
+                if (d.example) {
+                    exampleLabel = "उदाहरण:";
+                    exampleText = escapeHTML(d.example.split(", ")[meaningIndex]?.trim() || d.example.split(", ")[0]?.trim() || "");
+                    const wordsToHighlight = cleanInput.split(" ");
+                    wordsToHighlight.forEach(word => {
+                        const safeW = escapeHTML(word);
+                        if (exampleText && exampleText.includes(safeW)) {
+                            exampleText = exampleText.replace(new RegExp(safeW, 'g'), `<span class="highlight">${safeW}</span>`);
+                        }
+                    });
+                }
+
+                let synonymSet = new Set();
+                let initialWords = [
+                    ...d.meaning.split(",").map(m => m.trim()), 
+                    ...(d.synonyms ? d.synonyms.split(",").map(s => s.trim()) : [])
+                ];
+                initialWords.forEach(w => { if(w !== cleanInput) synonymSet.add(w); });
+
+                let firstLevel = Array.from(synonymSet);
+                dictionary.forEach(entry => {
+                    let entryB = entry.meaning.split(",").map(m => m.trim());
+                    let entryC = entry.synonyms ? entry.synonyms.split(",").map(s => s.trim()) : [];
+                    let isMatch = firstLevel.some(s => entryB.includes(s) || entryC.includes(s));
+                    if (isMatch) {
+                        entryB.forEach(m => synonymSet.add(m));
+                        entryC.forEach(s => synonymSet.add(s));
+                    }
+                });
+
+                synonymSet.delete(cleanInput);
+                const allSynonyms = Array.from(synonymSet);
+
+                if (allSynonyms.length) {
+                    synonymLabel = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के पर्यायवाची शब्द:`;
+                    synonymText = allSynonyms.map(s => {
+                        const safeS = escapeString(s);
+                        return `<button class="synonym-btn" onclick="showDuplicateSuggestions('${safeS}')">${escapeHTML(s)}</button>`;
+                    }).join(" ");
+                    document.getElementById("synonymBlock").style.display = "block";
+                }
+
+                if (d.opposite && d.opposite !== '"""""') {
+                    const opposites = d.opposite.split(", ").map(o => o.trim());
+                    if (opposites.length) {
+                        oppositeLabel = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के विलोम शब्द:`;
+                        oppositeText = opposites.map(o => {
+                            const safeO = escapeString(o);
+                            return `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>`;
+                        }).join(" ");
+                        document.getElementById("oppositeBlock").style.display = "block";
+                    }
+                } else {
+                    const advancedOppositeSet = new Set();
+                    allSynonyms.forEach(synWord => {
+                        dictionary.forEach(entry => {
+                            const entryMeanings = entry.meaning.split(",").map(m => m.trim());
+                            if (entryMeanings.includes(synWord) && entry.opposite) {
+                                entry.opposite.split(",").map(o => o.trim()).forEach(o => {
+                                    if (o && o !== cleanInput) advancedOppositeSet.add(o);
+                                });
+                            }
+                        });
+                    });
+                    const allOpposites = Array.from(advancedOppositeSet);
+                    if (allOpposites.length) {
+                        oppositeLabel = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के विलोम शब्द:`;
+                        oppositeText = allOpposites.map(o => {
+                            const safeO = escapeString(o);
+                            return `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>`;
+                        }).join(" ");
+                        document.getElementById("oppositeBlock").style.display = "block";
+                    }
+                }
+            } else if (searchData.type === "english" && data) {
+                const d = data;
+                wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
+                
+                const hindiParts = d.hindiWord ? d.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h) : [];
+                const hindiLinks = hindiParts.map(part => {
+                    const safePart = escapeString(part);
+                    return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
+                }).join(", ");
+
+                const meanings = d.meaning.split(/\s*,\s*/);
+                result = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ: ${hindiLinks}<br>मेवाती अर्थ:<br>` + meanings.map(m => {
+                    const safeM = escapeString(m);
+                    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
+                }).join("<br>");
+            } else if (searchData.type === "translit" && data) {
+                const d = data;
+                const meanings = d.meaning.split(/\s*,\s*/);
+                const translitIndex = d.mewatiTranslit.indexOf(cleanInput);
+                const mewatiMeaning = meanings[translitIndex] || meanings[0];
+                if (d.subject && d.subject.length) {
+                    const cleanTags = d.subject.map(tag => tag.replace("#","").trim());
+
+                    subjectLine = "विषय: " + cleanTags.map(tag =>
+                        `<button class="subject-btn" onclick="searchByTag('${escapeString(tag)}')">${escapeHTML(tag)}</button>`
+                    ).join(" ");
+                }
+                wordType = d.type ? (d.mewatiGender ? `${d.type}, ${d.mewatiGender.split(", ")[translitIndex] || d.mewatiGender}` : d.type) : (d.mewatiGender ? d.mewatiGender.split(", ")[translitIndex] : "");
+                
+                const primaryHindiParts = d.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
+                const primaryHindiLinks = primaryHindiParts.map(part => {
+                    const safePart = escapeString(part);
+                    return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
+                }).join(", ");
+
+                const otherHindiWords = relatedHindiWords.filter(hindi => hindi !== d.hindiWord).map(hindi => `<a href="#" class="unclickable-text" onclick="handleExactWordClick('${escapeString(hindi)}');return false">${escapeHTML(hindi)}</a>`).join(", ");
+                result = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के हिंदी अर्थ: ${primaryHindiLinks}${otherHindiWords ? ", " + otherHindiWords : ""}`;
+                
+                const uniqueHindiSet = new Set(relatedHindiWords);
+                const uniqueRelatedHindiWords = [...uniqueHindiSet];
+                const uniqueEnglishSet = new Set();
+                uniqueRelatedHindiWords.forEach(hindi => {
+                    const entry = dictionary.find(e => e.hindiWord === hindi);
+                    if (entry && entry.english) {
+                        const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
+                        engParts.forEach(eng => {
+                            if (eng) uniqueEnglishSet.add(eng);
+                        });
+                    }
+                });
+
+                const englishMeanings = [...uniqueEnglishSet].map(eng => {
+                    const safeDisplayEng = escapeString(eng);
+                    return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
+                }).join("<br>");
+
+                const translitFromW =
+                    (d.mewatiTranslit2 && d.mewatiTranslit2[translitIndex])
+                    ? d.mewatiTranslit2[translitIndex]
+                    : (d.mewatiTranslit2 && d.mewatiTranslit2[0])
+                    ? d.mewatiTranslit2[0]
+                    : cleanInput;
+
+                englishMeaning = `English meaning of <span class="highlight-word">${escapeHTML(translitFromW)}</span>:<br>${englishMeanings}`;  
+                
+                if (d.example) {
+                    exampleLabel = "उदाहरण:";
+                    exampleText = escapeHTML(d.example.split(", ")[translitIndex]?.trim() || d.example.split(", ")[0]?.trim() || "");
+                    const wordsToHighlight = mewatiMeaning.split(" ");
+                    wordsToHighlight.forEach(word => {
+                        const safeW = escapeHTML(word);
+                        if (exampleText && exampleText.includes(safeW)) {
+                            exampleText = exampleText.replace(new RegExp(safeW, 'g'), `<span class="highlight">${safeW}</span>`);
+                        }
+                    });
+                }
+                const allSynonyms = [...meanings.filter(m => m !== mewatiMeaning), ...(d.synonyms ? d.synonyms.split(", ").map(s => s.trim()) : [])];
+                if (allSynonyms.length) {
+                    synonymLabel = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के पर्यायवाची शब्द:`;
+                    synonymText = allSynonyms.map(s => {
+                        const safeS = escapeString(s);
+                        return `<button class="synonym-btn" onclick="showDuplicateSuggestions('${safeS}')">${escapeHTML(s)}</button>`;
+                    }).join(" ");
+                    document.getElementById("synonymBlock").style.display = "block";
+                }
+                if (d.opposite && d.opposite !== '"""""') {
+                    const opposites = d.opposite.split(", ").map(o => o.trim());
+                    if (opposites.length) {
+                        oppositeLabel = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के विलोम शब्द:`;
+                        oppositeText = opposites.map(o => {
+                            const safeO = escapeString(o);
+                            return `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>`;
+                        }).join(" ");
+                        document.getElementById("oppositeBlock").style.display = "block";
+                    }
+                }
+            } else {
+                result = `कोई परिणाम नहीं मिला: <span class="highlight-word">${escapeHTML(cleanInput)}</span>`;
+            }
+
+            if (data && data.visualImage && data.visualImage.trim() !== "") {
+                imageLabel = "चित्रात्मक संदर्भ:";
+                imageHtml = `<img src="${escapeHTML(data.visualImage)}" class="reference-image" onerror="this.parentElement.parentElement.style.display='none'">`;
+                document.getElementById("imageBlock").style.display = "block";
+            } else {
+                document.getElementById("imageBlock").style.display = "none";
+            }
+
+            if (searchData.type === "mewati") {
+                const rhymeData = findAllRhymingWords(cleanInput);
+                const patterns = Object.keys(rhymeData);
+                if (patterns.length) {
+                    rhymeLabel = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के अंत्यानुप्रास शब्द:`;
+                    const rhymePatternsDiv = document.getElementById("rhymePatterns");
+                    rhymePatternsDiv.innerHTML = "";
+                    patterns.forEach(pattern => {
+                        const button = document.createElement("button");
+                        button.className = "pattern-btn";
+                        button.textContent = pattern;
+                        button.onclick = () => {
+                            document.querySelectorAll(".pattern-btn").forEach(btn => btn.classList.remove("active"));
+                            button.classList.add("active");
+                            const rhymingWords = rhymeData[pattern];
+                            const rhymesDiv = document.getElementById("rhymes");
+                            rhymesDiv.innerHTML = "";
+                            rhymingWords.forEach(word => {
+                                const wordButton = document.createElement("button");
+                                wordButton.className = "rhyme-word-btn";
+                                wordButton.textContent = word;
+                                wordButton.onclick = () => {
+                                    showDuplicateSuggestions(word);
+                                };
+                                rhymesDiv.appendChild(wordButton);
+                            });
+                        };
+                        rhymePatternsDiv.appendChild(button);
+                    });
+                    if (patterns.length > 0) {
+                        const firstButton = rhymePatternsDiv.querySelector(".pattern-btn");
+                        firstButton.classList.add("active");
+                        const rhymingWords = rhymeData[patterns[0]];
+                        const rhymesDiv = document.getElementById("rhymes");
+                        rhymesDiv.innerHTML = "";
+                        rhymingWords.forEach(word => {
+                            const wordButton = document.createElement("button");
+                            wordButton.className = "rhyme-word-btn";
+                            wordButton.textContent = word;
+                            wordButton.onclick = () => {
+                                showDuplicateSuggestions(word);
+                            };
+                            rhymesDiv.appendChild(wordButton);
+                        });
+                    }
+                    document.getElementById("rhymeBlock").style.display = "block";
+                }
+            }
+
+            const relatedWords = findRelatedWords(cleanInput).filter(w => w !== cleanInput);
+            if (relatedWords.length) {
+                relatedLabel = "खोजे गए शब्द से संबंधित परिणाम:";
+                relatedText = relatedWords.filter(w => w && w.trim()).map(w => {
+                    const safeW = escapeString(w);
+                    return `<button class="related-btn" onclick="handleExactWordClick('${safeW}'); return false;">${escapeHTML(w)}</button>`;
+                }).join(" ");
+                document.getElementById("relatedBlock").style.display = "block";
+            }
+
+            let coupletLabelText = "";
+            let coupletText = "";
+            if (searchData.type === "mewati" && data) {
+                const meanings = data.meaning.split(", ").map(m => m.trim());
+                let meaningIndex = 0;
+                if (searchData.type === "mewati") {
+                    meaningIndex = meanings.indexOf(cleanInput);
+                } 
+                const coupletsColumns = [data.couplet1 || "", data.couplet2 || "", data.couplet3 || "", data.couplet4 || "", data.couplet5 || ""];
+                const authorsColumns = [data.author1 || "", data.author2 || "", data.author3 || "", data.author4 || "", data.author5 || ""];
+                let selectedCoupletStr = coupletsColumns[meaningIndex] || "";
+                let selectedAuthorStr = authorsColumns[meaningIndex] || "";
+                if (selectedCoupletStr) {
+                    const couplets = selectedCoupletStr.split("।।").map(c => c.trim()).filter(c => c);
+                    const authors = selectedAuthorStr.split(",").map(a => a.trim()).filter(a => a);
+                    const mewatiMeaning = meanings[meaningIndex] || cleanInput;
+                    coupletLabelText = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> से संबंधित शेर:`;
+                    couplets.forEach((couplet, idx) => {
+                        let authorForThis = authors[idx] || "अज्ञात";
+                        let coupletClass = "couplet-text";
+                        if (couplet.length > 200) coupletClass += " small-font";
+                        const clickableCouplet = makeMewatiWordsClickable(couplet);
+                        coupletText += `<div class="couplet-item"><div class="${coupletClass}">${clickableCouplet}</div><div class="author-text">― ${escapeHTML(authorForThis)}</div></div>`;
+                    });
+                    document.getElementById("coupletBlock").style.display = "block";
+                }
+            }
+
+            let idiomLabelText = "";
+            let idiomHtml = "";
+
+            if (searchData.type === "mewati" && data) {
+                const searchedWord = cleanInput.trim();
+                let idiomList = [];
+
+                dictionary.forEach(entry => {
+                    const meanings = entry.meaning
+                        ? entry.meaning.split(",").map(m => m.trim())
+                        : [];
+
+                    if (
+                        entry.mewatiGender &&
+                        entry.mewatiGender.includes("मुहावरा") &&
+                        meanings.some(m => m.includes(searchedWord))
+                    ) {
+                        idiomList.push({
+                            mewati: meanings[0],
+                            hindi: entry.hindiWord
+                        });
+                    }
+                });
+
+                if (idiomList.length > 0) {
+                    idiomLabelText = `<span class="highlight-word">${escapeHTML(searchedWord)}</span> से संबंधित मुहावरे:`;
+                    idiomHtml = idiomList.map(item => `
+                        <div class="idiom-item">
+                            <div class="idiom-word" onclick="showResult('${escapeString(item.mewati)}'); return false;">
+                                ${escapeHTML(item.mewati)}
+                            </div>
+                            <div class="idiom-hindi">
+                                ${escapeHTML(item.hindi)}
+                            </div>
+                        </div>
+                    `).join("");
+
+                    document.getElementById("idiomBlock").style.display = "block";
+                } else {
+                    document.getElementById("idiomBlock").style.display = "none";
+                }
+            }
+
+            document.getElementById("idiomLabel").innerHTML = idiomLabelText;
+            document.getElementById("idioms").innerHTML = idiomHtml;
+
+            let proverbItems = [];
+
+            dictionary.forEach(entry => {
+                const meanings = entry.meaning.split(",").map(m => m.trim());
+                meanings.forEach((meaning, i) => {
+                    const mewatiType = entry.mewatiGender
+                        ? entry.mewatiGender.split(", ")[i]
+                        : "";
+
+                    if (mewatiType === "कहावत" && meaning.includes(cleanInput)) {
+                        proverbItems.push({
+                            mewati: meaning,
+                            hindi: entry.hindiWord
+                        });
+                    }
+                });
+            });
+
+            let proverbLabelText = "";
+            let proverbHtml = "";
+
+            if (proverbItems.length > 0) {
+                proverbLabelText = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> से सम्बंधित कहावतें:`;
+                proverbHtml = proverbItems.map(item => `
+                    <div class="proverb-item">
+                        <div class="proverb-word" onclick="showDuplicateSuggestions('${escapeString(item.mewati)}')">
+                            ${escapeHTML(item.mewati)}
+                        </div>
+                        <div class="proverb-hindi">
+                            ${escapeHTML(item.hindi)}
+                        </div>
+                    </div>
+                `).join("");
+
+                document.getElementById("proverbBlock").style.display = "block";
+            } else {
+                document.getElementById("proverbBlock").style.display = "none";
+            }
+
+            document.getElementById("proverbLabel").innerHTML = proverbLabelText;
+            document.getElementById("proverbs").innerHTML = proverbHtml;
+
+            document.getElementById("wordType").textContent = wordType;
+            document.getElementById("wordType").style.display = wordType ? "block" : "none";
+            document.getElementById("subjectLine").innerHTML = subjectLine;
+            document.getElementById("subjectLine").style.display = subjectLine ? "block" : "none";
+            if (pluralLine) {
+                document.getElementById("pluralLine").innerHTML = pluralLine;
+                document.getElementById("pluralLine").style.display = "block";
+            }
+            document.getElementById("result").innerHTML = result;
+            document.getElementById("result").style.display = result ? "block" : "none";
+            document.getElementById("englishMeaning").innerHTML = englishMeaning;
+            document.getElementById("englishMeaning").style.display = englishMeaning ? "block" : "none";
+            if (searchData.type !== "hindi") {
+                document.getElementById("exampleLabel").textContent = exampleLabel;
+                document.getElementById("exampleLabel").style.display = exampleLabel ? "block" : "none";
+                document.getElementById("example").innerHTML = exampleText;
+                document.getElementById("example").style.display = exampleText ? "block" : "none";
+            }
+            document.getElementById("imageLabel").textContent = imageLabel;
+            document.getElementById("imageLabel").style.display = imageLabel ? "block" : "none";
+            document.getElementById("imageContainer").innerHTML = imageHtml;
+
+            document.getElementById("synonymLabel").innerHTML = synonymLabel;
+            document.getElementById("synonyms").innerHTML = synonymText;
+            document.getElementById("oppositeLabel").innerHTML = oppositeLabel;
+            document.getElementById("opposite").innerHTML = oppositeText;
+            document.getElementById("rhymeLabel").innerHTML = rhymeLabel;
+            document.getElementById("coupletLabel").innerHTML = coupletLabelText;
+            document.getElementById("couplets").innerHTML = coupletText;
+            document.getElementById("relatedLabel").textContent = relatedLabel;
+            document.getElementById("related").innerHTML = relatedText;
+
+            document.getElementById("wordOfTheDay").style.display = "none";
+            document.getElementById("duplicateSection").style.display = "none";
+            document.getElementById("adminFeedbackBlock").style.display = "none";
+            document.getElementById("adminWordsBlock").style.display = "none";
+        }
+
+        function showDuplicateSuggestions(word) {
+            document.getElementById("wordInput").value = word;
+            const hindiEntry = dictionary.find(e => e.hindiWord === word);
+
+            if (hindiEntry) {
+                handleExactWordClick(word);
+                return;
+            }
+
+            let matched = [];
+
+            dictionary.forEach((entry, idx) => {
+                const meanings = entry.meaning
+                    ? entry.meaning.split(",").map(m => m.trim())
+                    : [];
+
+                if (meanings.includes(word)) {
+                    matched.push({
+                        word: word,
+                        type: "mewati",
+                        data: entry,
+                        index: idx
+                    });
+                }
+            });
+
+            if (matched.length === 1) {
+                showResult(JSON.stringify(matched[0]));
+                document.getElementById("suggestions").style.display = "none";
+                return;
+            }
+
+            if (matched.length > 1) {
+                const suggestionsList = document.getElementById("suggestions");
+                suggestionsList.innerHTML = "";
+                suggestionsList.style.display = "block";
+
+                matched.forEach(match => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `${escapeHTML(word)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
+                    li.onclick = () => {
+                        showResult(JSON.stringify(match));
+                        suggestionsList.innerHTML = "";
+                        suggestionsList.style.display = "none";
+                    };
+                    suggestionsList.appendChild(li);
+                });
+
+                clearResults();
+            }
+        }
+
+        function searchByTag(tag){
+            const searchValue = "#" + tag;
+            document.getElementById("wordInput").value = searchValue;
+
+            showSuggestions();
+
+            document.getElementById("result").innerHTML = "";
+            document.getElementById("englishMeaning").innerHTML = "";
+            document.getElementById("subjectLine").innerHTML = "";
+        }
+
+        function findRelatedWords(input) {
+            const relatedWords = new Set();
+            const cleanLowerInput = input.toLowerCase();
+
+            dictionary.forEach(entry => {
+                const hindiWords = entry.hindiWord
+                    .split(/[,;]\s*/)
+                    .map(w => w.trim())
+                    .filter(w => w);
+
+                hindiWords.forEach(word => {
+                    if (word !== input && (word.includes(input) || input.includes(word))) {
+                        relatedWords.add(word);
+                    }
+                });
+
+                entry.meaning.split(/,\s*/).map(m => m.trim()).forEach(m => {
+                    if (m === input || !m) return;
+                    if (m.includes(input) || input.includes(m)) relatedWords.add(m);
+                });
+
+                if (entry.english) {
+                    const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
+                    engParts.forEach(eng => {
+                        const engLower = eng.toLowerCase();
+                        if (engLower !== cleanLowerInput && (engLower.includes(cleanLowerInput) || cleanLowerInput.includes(engLower))) {
+                            relatedWords.add(eng);
+                        }
+                    });
+                }
+            });
+            return [...relatedWords].filter(word => word && word.trim()).sort((a, b) => a.localeCompare(b, 'hi'));
+        }
+
+        function handleExactWordClick(word) {
+            clearResults();
+            const input = document.getElementById("wordInput");
+            input.value = word;
+
+            document.getElementById("wordOfTheDay").style.display = "none";
+            document.getElementById("duplicateSection").style.display = "none";
+
+            const exactMatches = [];
+
+            dictionary.forEach((entry, idx) => {
+                const meanings = entry.meaning.split(",").map(m => m.trim());
+                const hindiWords = entry.hindiWord.split(/[,;]/).map(h => h.trim());
+                const engParts = entry.english ? entry.english.split(/[,;]\s*/).map(e => e.trim()) : [];
+
+                if (hindiWords.includes(word)) {
+                    exactMatches.push({
+                        word: word,
+                        type: "hindi",
+                        data: entry,
+                        index: idx
+                    });
+                }
+                else if (meanings.includes(word)) {
+                    exactMatches.push({
+                        word: word,
+                        type: "mewati",
+                        data: entry,
+                        index: idx
+                    });
+                }
+                else if (engParts.includes(word)) {
+                    exactMatches.push({
+                        word: word,
+                        type: "english",
+                        data: entry,
+                        index: idx
+                    });
+                }
+            });
+
+            if (exactMatches.length === 1) {
+                showResult(JSON.stringify(exactMatches[0]));
+            }
+            else if (exactMatches.length > 1) {
+                const suggestionsList = document.getElementById("suggestions");
+                suggestionsList.innerHTML = "";
+                suggestionsList.style.display = "block";
+
+                exactMatches.forEach(match => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning)}</span>`;
+                    li.onclick = () => {
+                        showResult(JSON.stringify(match));
+                        suggestionsList.style.display = "none";
+                    };
+                    suggestionsList.appendChild(li);
+                });
+            } else {
+                showResult(word);
+            }
+        }
+
+        function makeMewatiWordsClickable(text) {
+            const lines = text.split('।').map(line => line.trim()).filter(line => line);
+            return lines.map(line => {
+                const words = line.split(/\s+/).map(word => {
+                    let cleanWord = word.replace(/[^\u0900-\u097F]/g, '');
+                    if (allMewatiWords && allMewatiWords.has(cleanWord)) {
+                        const safeWord = escapeString(cleanWord);
+                        return `<a href="#" class="clickable-word" onclick="showResult('${safeWord}'); return false;">${escapeHTML(word)}</a>`;
+                    } else {
+                        return escapeHTML(word);
+                    }
+                }).join(' ');
+                return `<div class="couplet-line">${words}</div>`;
+            }).join('');
+        }
+
+        function clearResults() {
+            currentSearchType = "";
+            document.getElementById("pluralLine").style.display = "none";
+            
+            const stickyStrip = document.getElementById("stickyWordStrip");
+            stickyStrip.classList.remove("visible");
+
+            document.querySelectorAll("#wordType, #subjectLine, #result, #englishMeaning, #plural, #exampleLabel, #example, #imageLabel, #imageContainer, #synonymLabel, #synonyms, #oppositeLabel, #opposite, #rhymeLabel, #rhymePatterns, #rhymes, #relatedLabel, #related, #coupletLabel, #couplets, #idiomLabel, #idioms, #proverbLabel, #proverbs")
+            .forEach(el => el.innerHTML = "");
+            
+            document.querySelectorAll(".synonym-block, .opposite-block, .rhyme-block, .related-block, .couplet-block, .image-block, .idiom-block, .proverb-block").forEach(block => block.style.display = "none");
+            
+            document.getElementById("adminFeedbackBlock").style.display = "none";
+            document.getElementById("adminWordsBlock").style.display = "none";
+
+            if (!document.getElementById("wordInput").value.trim() && !activeLetter) {
+                document.getElementById("wordOfTheDay").style.display = "block";
+            }
+        }
+
+        window.addEventListener("scroll", function() {
+            if (currentSearchType !== "mewati") {
+                document.getElementById("stickyWordStrip").classList.remove("visible");
+                return;
+            }
+
+            const mainWordEl = document.getElementById("mainMewatiWord");
+            const stickyStrip = document.getElementById("stickyWordStrip");
+
+            if (mainWordEl) {
+                const rect = mainWordEl.getBoundingClientRect();
+                if (rect.top <= 90) {
+                    stickyStrip.classList.add("visible");
+                } else {
+                    stickyStrip.classList.remove("visible");
+                }
+            } else {
+                stickyStrip.classList.remove("visible");
+            }
+        });
+
+        function toggleSettingsMenu() {
+            const menu = document.getElementById("settingsMenu");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+            document.getElementById("darkModeToggle").checked = document.body.classList.contains("dark-mode");
+        }
+
+        function toggleTextSize() {
+            document.body.classList.toggle("large-text");
+            localStorage.setItem("largeText", document.body.classList.contains("large-text"));
+            document.getElementById("textSizeToggle").checked = document.body.classList.contains("large-text");
+        }
+
+        function toggleClearIcon() {
+            const input = document.getElementById("wordInput");
+            const clearBtn = document.getElementById("clearSearch");
+
+            if (input.value.length > 0) {
+                clearBtn.style.display = "block";
+            } else {
+                clearBtn.style.display = "none";
+            }
+        }
+
+        function clearSearch() {
+            const input = document.getElementById("wordInput");
+            input.value = "";
+            document.getElementById("clearSearch").style.display = "none";
+            showSuggestions();
+        }
+
+        const inputEl = document.getElementById("wordInput");
+        const clearBtnEl = document.getElementById("clearSearch");
+
+        const originalDescriptor = Object.getOwnPropertyDescriptor(
+            HTMLInputElement.prototype, "value"
+        );
+
+        Object.defineProperty(inputEl, "value", {
+            get: function () {
+                return originalDescriptor.get.call(this);
+            },
+            set: function (val) {
+                originalDescriptor.set.call(this, val);
+                
+                if (val.length > 0) {
+                    clearBtnEl.style.display = "block";
+                } else {
+                    clearBtnEl.style.display = "none";
+                }
+            }
+        });
+
+        function showAbout() {
+            document.getElementById("aboutSection").style.display = "block";
+            document.getElementById("settingsMenu").style.display = "none";
+        }
+
+        function hideAbout() {
+            document.getElementById("aboutSection").style.display = "none";
+        }
+
+        function openFeedbackModal() {
+            if (!window.currentUser) {
+                window.location.href = 'login.html?redirect=index.html';
+                return;
+            }
+            document.getElementById("feedbackModal").style.display = "block";
+            document.getElementById("settingsMenu").style.display = "none";
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById("feedbackModal").style.display = "none";
+            document.getElementById("feedbackInput").value = "";
+        }
+
+        document.querySelector(".app-logo").onclick = function () {
+            document.getElementById("wordInput").value = "";
+
+            activeLetter = null;
+            document.querySelectorAll(".letter-btn")
+                .forEach(btn => btn.classList.remove("active"));
+
+            document.getElementById("suggestions").style.display = "none";
+
+            clearResults();
+
+            document.getElementById("wordOfTheDay").style.display = "block";
+
+            document.getElementById("duplicateSection").style.display = "block";
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        document.addEventListener('click', function(event) {
+            const settingsMenu = document.getElementById("settingsMenu");
+            const settingsIcon = document.querySelector(".settings-icon");
+            const aboutSection = document.getElementById("aboutSection");
+            const feedbackModal = document.getElementById("feedbackModal");
+            
+            if (
+                settingsMenu &&
+                !settingsMenu.contains(event.target) &&
+                settingsIcon &&
+                !settingsIcon.contains(event.target) &&
+                aboutSection &&
+                !aboutSection.contains(event.target) &&
+                feedbackModal &&
+                !feedbackModal.contains(event.target)
+            ) {
+                settingsMenu.style.display = "none";
+                aboutSection.style.display = "none";
+            }
+        });
+
+        window.onload = async () => {
+            await fetchDictionaryFromGoogleSheets();
+            initializeLetterFilter();
+            initializeTrie();
+            initializeWordOfTheDay();
+            initializeDuplicateMewatiWords();
+            if (localStorage.getItem("darkMode") === "true") {
+                document.body.classList.add("dark-mode");
+                document.getElementById("darkModeToggle").checked = true;
+            }
+            if (localStorage.getItem("largeText") === "true") {
+                document.body.classList.add("large-text");
+                document.getElementById("textSizeToggle").checked = true;
+            }
+        };
+    </script>
+
+    <!-- Firebase SDK, Firestore & Authentication Engine -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-      import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
@@ -239,33 +3149,285 @@
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
+      const db = getFirestore(app);
       const provider = new GoogleAuthProvider();
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const redirectTarget = urlParams.get('redirect') || 'index.html';
+      let currentUser = null;
+      const ADMIN_EMAIL = "mewatidictionary@gmail.com";
+
+      window.checkAuthAndRedirect = function(url) {
+        if (!currentUser) {
+            window.location.href = `login.html?redirect=${encodeURIComponent(url)}`;
+            return;
+        }
+        window.location.href = url;
+      };
+
+      window.handleAuth = function() {
+        if (currentUser) {
+          signOut(auth).then(() => {
+            console.log("Logged out successfully");
+            window.location.reload();
+          }).catch((error) => {
+            console.error("Sign Out Error:", error);
+          });
+        } else {
+          window.location.href = "login.html?redirect=index.html";
+        }
+      };
+
+      window.sendFeedback = async function() {
+        const feedbackInput = document.getElementById("feedbackInput");
+        const feedbackText = feedbackInput.value.trim();
+        
+        if (!feedbackText) {
+          alert("कृपया भेजने से पहले अपना सुझाव लिखें।");
+          return;
+        }
+
+        try {
+          await addDoc(collection(db, "feedbacks"), {
+            userName: currentUser ? (currentUser.displayName || "यूज़र") : "अज्ञात यूज़र",
+            userEmail: currentUser ? (currentUser.email || "N/A") : "N/A",
+            message: feedbackText,
+            timestamp: serverTimestamp()
+          });
+
+          feedbackInput.value = "";
+          window.closeFeedbackModal();
+
+          const msg = document.createElement("div");
+          msg.style.cssText = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#28a745; color:#fff; padding:10px 20px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:3000; font-size:14px;";
+          msg.textContent = "धन्यवाद! आपका सुझाव सफलतापूर्वक प्राप्त हो गया है।";
+          document.body.appendChild(msg);
+
+          setTimeout(() => {
+            msg.remove();
+          }, 3000);
+
+        } catch (error) {
+          console.error("Feedback Save Error:", error);
+          alert("त्रुटि: सुझाव भेजने में समस्या आई। कृपया पुनः प्रयास करें।");
+        }
+      };
+
+      async function updateFeedbackCount() {
+        try {
+          const querySnapshot = await getDocs(collection(db, "feedbacks"));
+          const count = querySnapshot.size;
+          document.getElementById("feedbackCountLabel").textContent = `(${count})`;
+        } catch (error) {
+          console.error("Count Fetch Error:", error);
+        }
+      }
+
+      async function updateWordsCount() {
+        try {
+          const querySnapshot = await getDocs(collection(db, "suggested_words"));
+          const count = querySnapshot.size;
+          document.getElementById("wordsCountLabel").textContent = `(${count})`;
+        } catch (error) {
+          console.error("Words Count Fetch Error:", error);
+        }
+      }
+
+      window.fetchAdminFeedbacks = async function() {
+        if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+          alert("केवल एडमिन ही प्राप्त सुझाव देख सकते हैं।");
+          return;
+        }
+
+        const adminBlock = document.getElementById("adminFeedbackBlock");
+        const container = document.getElementById("adminFeedbackContainer");
+        
+        document.getElementById("settingsMenu").style.display = "none";
+        clearResults();
+        
+        container.innerHTML = "<p style='font-size:13px; color:#888;'>लोड हो रहा है...</p>";
+        adminBlock.style.display = "block";
+        document.getElementById("adminWordsBlock").style.display = "none";
+        document.getElementById("wordOfTheDay").style.display = "none";
+        document.getElementById("duplicateSection").style.display = "none";
+
+        try {
+          const querySnapshot = await getDocs(collection(db, "feedbacks"));
+
+          if (querySnapshot.empty) {
+            container.innerHTML = "<p style='font-size:13px; color:#888;'>अभी तक कोई सुझाव प्राप्त नहीं हुआ है।</p>";
+            document.getElementById("feedbackCountLabel").textContent = "(0)";
+            return;
+          }
+
+          let feedbackList = [];
+          querySnapshot.forEach((doc) => {
+            feedbackList.push({ id: doc.id, ...doc.data() });
+          });
+
+          document.getElementById("feedbackCountLabel").textContent = `(${feedbackList.length})`;
+
+          feedbackList.sort((a, b) => {
+            let tA = a.timestamp ? a.timestamp.seconds : 0;
+            let tB = b.timestamp ? b.timestamp.seconds : 0;
+            return tB - tA;
+          });
+
+          container.innerHTML = "";
+          feedbackList.forEach((data) => {
+            const dateStr = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('hi-IN') : "समय उपलब्ध नहीं";
+
+            const card = document.createElement("div");
+            card.className = "admin-feedback-card";
+            
+            const headerDiv = document.createElement("div");
+            headerDiv.className = "admin-fb-header";
+            headerDiv.textContent = `${data.userName || 'अज्ञात यूज़र'} (${data.userEmail || 'N/A'})`;
+
+            const msgDiv = document.createElement("div");
+            msgDiv.className = "admin-fb-msg";
+            msgDiv.textContent = data.message || '';
+
+            const timeDiv = document.createElement("div");
+            timeDiv.className = "admin-fb-time";
+            timeDiv.textContent = `📅 ${dateStr}`;
+
+            card.appendChild(headerDiv);
+            card.appendChild(msgDiv);
+            card.appendChild(timeDiv);
+
+            container.appendChild(card);
+          });
+
+        } catch (error) {
+          console.error("Fetch Feedbacks Error:", error);
+          container.innerHTML = "<p style='font-size:13px; color:red;'>सुझाव लोड करने में समस्या आई।</p>";
+        }
+      };
+
+      window.fetchAdminSuggestedWords = async function() {
+        if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+            alert("केवल एडमिन ही प्राप्त शब्द देख सकते हैं।");
+            return;
+        }
+
+        const adminWordsBlock = document.getElementById("adminWordsBlock");
+        const tableBody = document.getElementById("adminWordsTableBody");
+        
+        document.getElementById("settingsMenu").style.display = "none";
+        clearResults();
+        
+        tableBody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:#888;'>लोड हो रहा है...</td></tr>";
+        adminWordsBlock.style.display = "block";
+        document.getElementById("adminFeedbackBlock").style.display = "none";
+        document.getElementById("wordOfTheDay").style.display = "none";
+        document.getElementById("duplicateSection").style.display = "none";
+
+        try {
+            const querySnapshot = await getDocs(collection(db, "suggested_words"));
+
+            if (querySnapshot.empty) {
+                tableBody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:#888;'>अभी तक कोई शब्द प्राप्त नहीं हुआ है।</td></tr>";
+                document.getElementById("wordsCountLabel").textContent = "(0)";
+                return;
+            }
+
+            let wordsList = [];
+            querySnapshot.forEach((doc) => {
+                wordsList.push({ id: doc.id, ...doc.data() });
+            });
+
+            document.getElementById("wordsCountLabel").textContent = `(${wordsList.length})`;
+
+            wordsList.sort((a, b) => {
+                let tA = a.timestamp ? a.timestamp.seconds : 0;
+                let tB = b.timestamp ? b.timestamp.seconds : 0;
+                return tB - tA;
+            });
+
+            tableBody.innerHTML = "";
+            
+            wordsList.forEach((data, index) => {
+                const dateStr = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('hi-IN') : "N/A";
+
+                const row = document.createElement("tr");
+
+                const cells = [
+                    index + 1,
+                    dateStr,
+                    `${data.submittedBy || 'अज्ञात'}\n(${data.userEmail || 'N/A'})`,
+                    data.mewatiWord || '-',
+                    data.hindiMeaning || '-',
+                    data.englishMeaning || '-',
+                    data.idiom || '-',
+                    data.proverb || '-'
+                ];
+
+                cells.forEach((text) => {
+                    const td = document.createElement("td");
+                    td.textContent = text;
+                    row.appendChild(td);
+                });
+
+                tableBody.appendChild(row);
+            });
+
+        } catch (error) {
+            console.error("Fetch Words Error:", error);
+            tableBody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>";
+        }
+      };
 
       onAuthStateChanged(auth, (user) => {
+        const loginTopView = document.getElementById("loginTopView");
+        const loggedInTopView = document.getElementById("loggedInTopView");
+        const menuUserAvatar = document.getElementById("menuUserAvatar");
+        const menuUserName = document.getElementById("menuUserName");
+        const userFeedbackMenuItem = document.getElementById("userFeedbackMenuItem");
+        const adminMenuItem = document.getElementById("adminFeedbackMenuItem");
+        const adminWordsMenuItem = document.getElementById("adminWordsMenuItem");
+        const loggedOutViewBottom = document.getElementById("loggedOutViewBottom");
+
+        currentUser = user;
+        window.currentUser = user;
+
         if (user) {
-          window.location.href = redirectTarget;
+          loginTopView.style.display = "none";
+          loggedInTopView.style.display = "flex";
+          loggedOutViewBottom.style.display = "block";
+
+          if (user.photoURL) {
+            menuUserAvatar.src = user.photoURL;
+          } else {
+            menuUserAvatar.src = "https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37";
+          }
+
+          if (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+            menuUserName.textContent = "Admin";
+            menuUserName.classList.add("admin-name");
+            
+            userFeedbackMenuItem.style.display = "none";
+            adminMenuItem.style.display = "flex";
+            if (adminWordsMenuItem) adminWordsMenuItem.style.display = "flex";
+
+            updateFeedbackCount();
+            updateWordsCount();
+          } else {
+            menuUserName.textContent = user.displayName || "यूज़र";
+            menuUserName.classList.remove("admin-name");
+            
+            userFeedbackMenuItem.style.display = "flex";
+            adminMenuItem.style.display = "none";
+            if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
+          }
+        } else {
+          loginTopView.style.display = "block";
+          loggedInTopView.style.display = "none";
+          loggedOutViewBottom.style.display = "none";
+          userFeedbackMenuItem.style.display = "flex";
+          adminMenuItem.style.display = "none";
+          if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
+          menuUserName.classList.remove("admin-name");
         }
       });
-
-      window.loginWithGoogle = function() {
-        const btn = document.getElementById("loginBtn");
-        btn.disabled = true;
-        btn.style.opacity = "0.7";
-
-        signInWithPopup(auth, provider)
-          .then((result) => {
-            window.location.href = redirectTarget;
-          })
-          .catch((error) => {
-            console.error("Login Error:", error);
-            alert("लॉगिन करने में समस्या आई। कृपया पुनः प्रयास करें।");
-            btn.disabled = false;
-            btn.style.opacity = "1";
-          });
-      };
     </script>
 </body>
 </html>
