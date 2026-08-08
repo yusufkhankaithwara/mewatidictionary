@@ -1777,7 +1777,7 @@
                     }
                 });
                 if (entry.english) {
-                    const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
+                    const engParts = entry.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                     engParts.forEach(eng => {
                         trie.insert(eng, "english", { ...entry, hindiWord: word }, index);
                     });
@@ -2260,7 +2260,7 @@
                             };
                         }
                         else if (entry.english) {
-                            const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim());
+                            const engParts = entry.english.split(/[;]\s*/).map(e => e.trim());
                             if (engParts.includes(searchWord)) {
                                 searchData = { word: searchWord, type: "english", data: { ...entry, hindiWord: entry.hindiWord }, index: idx };
                             }
@@ -2309,7 +2309,7 @@
                 }).join("<br>");
 
                 if (d.english) {
-                    const engParts = d.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
+                    const engParts = d.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                     const engLinks = engParts.map(eng => {
                         const safeEng = escapeString(eng);
                         const safeEngDisplay = escapeHTML(eng);
@@ -2368,7 +2368,7 @@
                 uniqueRelatedHindiWords.forEach(hindi => {
                     const entry = dictionary.find(e => e.hindiWord === hindi);
                     if (entry && entry.english) {
-                        const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
+                        const engParts = entry.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                         engParts.forEach(eng => {
                             if (eng) uniqueEnglishSet.add(eng);
                         });
@@ -2507,7 +2507,7 @@
                 uniqueRelatedHindiWords.forEach(hindi => {
                     const entry = dictionary.find(e => e.hindiWord === hindi);
                     if (entry && entry.english) {
-                        const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
+                        const engParts = entry.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                         engParts.forEach(eng => {
                             if (eng) uniqueEnglishSet.add(eng);
                         });
@@ -2869,7 +2869,7 @@
                 });
 
                 if (entry.english) {
-                    const engParts = entry.english.split(/[,;]\s*/).map(e => e.trim()).filter(e => e);
+                    const engParts = entry.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                     engParts.forEach(eng => {
                         const engLower = eng.toLowerCase();
                         if (engLower !== cleanLowerInput && (engLower.includes(cleanLowerInput) || cleanLowerInput.includes(engLower))) {
@@ -2894,7 +2894,7 @@
             dictionary.forEach((entry, idx) => {
                 const meanings = entry.meaning.split(",").map(m => m.trim());
                 const hindiWords = entry.hindiWord.split(/[,;]/).map(h => h.trim());
-                const engParts = entry.english ? entry.english.split(/[,;]\s*/).map(e => e.trim()) : [];
+                const engParts = entry.english ? entry.english.split(/[;]\s*/).map(e => e.trim()) : [];
 
                 if (hindiWords.includes(word)) {
                     exactMatches.push({
