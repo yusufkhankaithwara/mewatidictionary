@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>लॉग इन - मेवाती शब्दकोश</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #E8E4DC;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .login-card {
+            background: #ffffff;
+            padding: 30px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+        }
+        .login-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .login-card h2 {
+            margin: 0 0 10px;
+            color: #1a1a1a;
+            font-size: 20px;
+        }
+        .login-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        .google-btn {
+            background: #4285F4;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+        .google-btn:hover {
+            background: #357ae8;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <img src="https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37" alt="Logo">
+        <h2>मेवाती शब्दकोश</h2>
+        <p>शब्द जोड़ने, सुझाव देने और एडमिन सुविधाओं के लिए लॉग इन करें।</p>
+        
+        <button class="google-btn" id="loginBtn" onclick="loginWithGoogle()">
+            गूगल से लॉग इन करें
+        </button>
+
+        <a href="index.html" class="back-link">← मुख्य पृष्ठ पर वापस जाएँ</a>
+    </div>
+
+    <!-- Firebase SDK & Auth Engine -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
+        authDomain: "mewati-dictionary.firebaseapp.com",
+        projectId: "mewati-dictionary",
+        storageBucket: "mewati-dictionary.firebasestorage.app",
+        messagingSenderId: "258178654948",
+        appId: "1:258178654948:web:e726a480fac76b3dce42f1",
+        measurementId: "G-V4XXJ072VK"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+
+      // जिस पेज से यूज़र लॉग इन पर आया था, उसे रीडायरेक्ट यूआरएल के रूप में लें
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTarget = urlParams.get('redirect') || 'index.html';
+
+      // यदि यूज़र पहले से लॉग इन है, तो उसे लक्षित पेज पर भेज दें
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          window.location.href = redirectTarget;
+        }
+      });
+
+      window.loginWithGoogle = function() {
+        const btn = document.getElementById("loginBtn");
+        btn.disabled = true;
+        btn.textContent = "प्रतीक्षा करें...";
+
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            window.location.href = redirectTarget;
+          })
+          .catch((error) => {
+            console.error("Login Error:", error);
+            alert("लॉग इन करने में समस्या आई। कृपया पुनः प्रयास करें।");
+            btn.disabled = false;
+            btn.textContent = "गूगल से लॉग इन करें";
+          });
+      };
+    </script>
+</body>
+</html>
