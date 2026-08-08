@@ -117,12 +117,12 @@
             color: #1a1a1a;
             transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
-input:focus {
-    border-color: #800000;
-    outline: none;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.15);
-}
+        input:focus {
+            border-color: #800000;
+            outline: none;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.15);
+        }
         
         input:not(:focus) {
             color: #888;
@@ -278,10 +278,10 @@ input:focus {
         body.dark-mode #suggestions li:hover {
             background: #444;
         }
-#suggestions li:active { 
-    background: #FAF7F2; /* हल्का क्रीमी बैकग्राउंड */
-    border-color: #800000; /* मरून बॉर्डर */
-}
+        #suggestions li:active { 
+            background: #FAF7F2;
+            border-color: #800000;
+        }
         #suggestions li span { 
             display: block; 
             font-size: 12px; 
@@ -536,49 +536,197 @@ input:focus {
             background: #333;
             border-color: #555;
         }
+
+        /* --- अपडेटेड सेटिंग्स मेनू स्टाइलिंग --- */
         .settings-menu {
-            position: absolute;
-            top: 45px;
-            right: 10px;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: fixed;
+            top: 55px;
+            right: 15px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
             z-index: 1001;
             display: none;
-            padding: 10px;
-            width: 200px;
+            padding: 18px;
+            width: 310px;
+            box-sizing: border-box;
             transition: background-color 0.3s, border-color 0.3s;
+            font-family: inherit;
         }
+
         body.dark-mode .settings-menu {
-            background: #2a2a2a;
-            border-color: #555;
+            background: #242424;
+            border: 1px solid #383838;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
+
+        .menu-close-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #333;
+            font-size: 20px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        body.dark-mode .menu-close-btn {
+            background: #383838;
+            color: #e0e0e0;
+        }
+
+        .user-profile-header {
+            padding-bottom: 14px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        body.dark-mode .user-profile-header {
+            border-bottom-color: #333;
+        }
+
+        .user-info-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-right: 35px;
+        }
+
+        .user-info-container img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-name-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+        body.dark-mode .user-name-text {
+            color: #ffffff;
+        }
+
+        .user-name-text.admin-name {
+            color: #800000 !important;
+            font-weight: 800;
+        }
+
+        body.dark-mode .user-name-text.admin-name {
+            color: #ff6666 !important;
+        }
+
         .settings-menu .menu-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 5px 0;
-        }
-        .settings-menu label {
-            font-size: 14px;
-            color: #333;
-            transition: color 0.3s;
+            padding: 12px 0;
+            border-bottom: 1px solid #f2f2f2;
             cursor: pointer;
         }
+
+        body.dark-mode .settings-menu .menu-item {
+            border-bottom-color: #333;
+        }
+
+        .settings-menu .menu-item:last-of-type {
+            border-bottom: none;
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-icon {
+            font-size: 22px;
+            color: #444;
+        }
+
+        body.dark-mode .menu-icon {
+            color: #ccc;
+        }
+
+        .menu-icon-text {
+            font-size: 15px;
+            font-weight: 700;
+            color: #444;
+            min-width: 22px;
+            text-align: center;
+        }
+
+        body.dark-mode .menu-icon-text {
+            color: #ccc;
+        }
+
+        .settings-menu label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #222;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
         body.dark-mode .settings-menu label {
             color: #e0e0e0;
         }
+
+        .arrow-icon {
+            font-size: 20px;
+            color: #888;
+        }
+
+        body.dark-mode .arrow-icon {
+            color: #aaa;
+        }
+
+        .quiz-color {
+            color: #1a73e8 !important;
+        }
+
+        .add-word-color {
+            color: #28a745 !important;
+        }
+
+        .feedback-color {
+            color: #17a2b8 !important;
+        }
+
+        .admin-color {
+            color: #007bff !important;
+        }
+
+        .admin-words-color {
+            color: #28a745 !important;
+        }
+
         .toggle-switch {
             position: relative;
-            width: 40px;
-            height: 20px;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
         }
+
         .toggle-switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
+
         .slider {
             position: absolute;
             cursor: pointer;
@@ -586,27 +734,69 @@ input:focus {
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #ccc;
+            background-color: #cccccc;
             transition: 0.3s;
-            border-radius: 20px;
+            border-radius: 24px;
         }
+
         .slider:before {
             position: absolute;
             content: "";
-            height: 16px;
-            width: 16px;
-            left: 2px;
-            bottom: 2px;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
             background-color: white;
             transition: 0.3s;
             border-radius: 50%;
         }
+
         input:checked + .slider {
-            background-color: #2196F3;
+            background-color: #1a73e8;
         }
+
         input:checked + .slider:before {
             transform: translateX(20px);
         }
+
+        .logout-container {
+            margin-top: 14px;
+            padding-top: 4px;
+        }
+
+        .auth-btn-logout {
+            background: #e53935;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .auth-btn-logout:hover {
+            background: #d32f2f;
+        }
+
+        .login-text-btn {
+            color: #1a73e8;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 8px 0;
+            text-align: left;
+            width: 100%;
+        }
+
         .word-of-the-day-container {
             position: relative;
             margin: 10px 20px;
@@ -1029,93 +1219,6 @@ input:focus {
             color: #ffffff !important;
         }
 
-        .login-top-item {
-            border-bottom: 1px solid #eee;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-        }
-        body.dark-mode .login-top-item {
-            border-color: #444;
-        }
-
-        .login-text-btn {
-            color: #007bff;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 2px 0;
-            text-align: left;
-            width: 100%;
-        }
-        body.dark-mode .login-text-btn {
-            color: #66b0ff;
-        }
-        .login-text-btn:hover {
-            text-decoration: underline;
-        }
-
-        .login-menu-item {
-            border-top: 1px solid #eee;
-            margin-top: 8px;
-            padding-top: 8px;
-        }
-        body.dark-mode .login-menu-item {
-            border-color: #444;
-        }
-
-        .user-info-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 6px;
-            width: 100%;
-        }
-        .user-info-container img {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid #ccc;
-        }
-        .user-name-text {
-            font-size: 13px;
-            font-weight: 600;
-            color: #333;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 130px;
-        }
-        body.dark-mode .user-name-text {
-            color: #e0e0e0;
-        }
-
-        .user-name-text.admin-name {
-            color: #800000 !important;
-            font-weight: bold;
-        }
-        body.dark-mode .user-name-text.admin-name {
-            color: #ff6666 !important;
-        }
-
-        .auth-btn-logout {
-            background: #dc3545;
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            width: 100%;
-            transition: background 0.3s;
-            text-align: center;
-        }
-        .auth-btn-logout:hover {
-            background: #c82333;
-        }
-
         #feedbackModal {
             display: none;
             position: fixed;
@@ -1300,68 +1403,103 @@ input:focus {
         <span class="settings-icon material-symbols-outlined" onclick="toggleSettingsMenu()">menu</span>
 
         <div class="settings-menu" id="settingsMenu">
+            <span class="menu-close-btn material-symbols-outlined" onclick="toggleSettingsMenu()">close</span>
+
             <div class="menu-item login-top-item" id="loginTopView">
-                <button class="login-text-btn" onclick="handleAuth()">लॉग इन</button>
+                <button class="login-text-btn" onclick="handleAuth()">लॉग इन करें</button>
             </div>
 
-            <div class="menu-item login-top-item" id="loggedInTopView" style="display: none;">
-                <div class="user-info-container" style="margin-bottom: 0;">
+            <div class="user-profile-header" id="loggedInTopView" style="display: none;">
+                <div class="user-info-container">
                     <img id="menuUserAvatar" src="" alt="User">
                     <span class="user-name-text" id="menuUserName">यूज़र</span>
                 </div>
             </div>
 
+            <!-- डार्क मोड -->
             <div class="menu-item">
-                <label>डार्क मोड</label>
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon">dark_mode</span>
+                    <label for="darkModeToggle">डार्क मोड</label>
+                </div>
                 <label class="toggle-switch">
                     <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
                     <span class="slider"></span>
                 </label>
             </div>
 
+            <!-- टेक्स्ट साइज़ -->
             <div class="menu-item">
-                <label>
-                    <span style="font-size: 12px;">A</span>
-                    <span style="font-size: 16px;">A</span>
-                </label>
+                <div class="menu-item-left">
+                    <span class="menu-icon-text">A A</span>
+                    <label for="textSizeToggle">टेक्स्ट साइज (A A)</label>
+                </div>
                 <label class="toggle-switch">
                     <input type="checkbox" id="textSizeToggle" onchange="toggleTextSize()">
                     <span class="slider"></span>
                 </label>
             </div>
 
-            <div class="menu-item">
-                <label onclick="window.location.href='about.html'" style="cursor:pointer;">हमारे बारे में</label>
+            <!-- हमारे बारे में -->
+            <div class="menu-item" onclick="window.location.href='about.html'">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon">home</span>
+                    <label>हमारे बारे में</label>
+                </div>
+                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
-            <div class="menu-item">
-                <label onclick="window.location.href='quiz.html'" style="color: #007bff; cursor:pointer;">मेवाती क्विज़</label>
+            <!-- मेवाती क्विज़ -->
+            <div class="menu-item" onclick="window.location.href='quiz.html'">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon quiz-color">menu_book</span>
+                    <label class="quiz-color">मेवाती क्विज़</label>
+                </div>
+                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
-            <div class="menu-item">
-                <label onclick="checkAuthAndRedirect('add-word.html')" style="color: #28a745; cursor:pointer; font-weight: bold;">
-                    शब्द जोड़ें
-                </label>
+            <!-- शब्द जोड़ें -->
+            <div class="menu-item" onclick="checkAuthAndRedirect('add-word.html')">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon add-word-color">menu_book</span>
+                    <label class="add-word-color">शब्द जोड़ें</label>
+                </div>
+                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
-            <div class="menu-item" id="userFeedbackMenuItem">
-                <label onclick="openFeedbackModal()" style="color: #40ceeb; cursor: pointer; font-size: 14px;">सुझाव दें</label>
+            <!-- सुझाव दें (यूज़र) -->
+            <div class="menu-item" id="userFeedbackMenuItem" onclick="openFeedbackModal()">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon feedback-color">chat_bubble_outline</span>
+                    <label class="feedback-color">सुझाव दें</label>
+                </div>
+                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
-            <div class="menu-item" id="adminFeedbackMenuItem" style="display: none;">
-                <label onclick="fetchAdminFeedbacks()" style="color: #007bff; cursor: pointer; font-size: 14px; font-weight: bold;">
-                    प्राप्त सुझाव <span id="feedbackCountLabel">(0)</span>
-                </label>
+            <!-- प्राप्त सुझाव (एडमिन) -->
+            <div class="menu-item" id="adminFeedbackMenuItem" style="display: none;" onclick="fetchAdminFeedbacks()">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon admin-color">mark_chat_unread</span>
+                    <label class="admin-color">प्राप्त सुझाव <span id="feedbackCountLabel">(0)</span></label>
+                </div>
+                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
-            <div class="menu-item" id="adminWordsMenuItem" style="display: none;">
-                <label onclick="fetchAdminSuggestedWords()" style="color: #28a745; cursor: pointer; font-size: 14px; font-weight: bold;">
-                    प्राप्त शब्द <span id="wordsCountLabel">(0)</span>
-                </label>
+            <!-- प्राप्त शब्द (एडमिन) -->
+            <div class="menu-item" id="adminWordsMenuItem" style="display: none;" onclick="fetchAdminSuggestedWords()">
+                <div class="menu-item-left">
+                    <span class="material-symbols-outlined menu-icon admin-words-color">note_add</span>
+                    <label class="admin-words-color">प्राप्त शब्द <span id="wordsCountLabel">(0)</span></label>
+                </div>
+                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
-            <div class="login-menu-item" id="loggedOutViewBottom" style="display: none;">
-                <button class="auth-btn-logout" onclick="handleAuth()">लॉग आउट करें</button>
+            <!-- लॉग आउट बटन -->
+            <div class="logout-container" id="loggedOutViewBottom" style="display: none;">
+                <button class="auth-btn-logout" onclick="handleAuth()">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>लॉग आउट करें</span>
+                </button>
             </div>
         </div>
     </div>
@@ -1897,7 +2035,6 @@ input:focus {
             }, 200);
         }
 
-        // देवनागरी शब्दकोशीय तुलना (Sorting) फ़ंक्शन
         function compareHindiWords(a, b) {
             const wordA = a.word || "";
             const wordB = b.word || "";
