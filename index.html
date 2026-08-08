@@ -279,8 +279,8 @@
             background: #444;
         }
         #suggestions li:active { 
-            background: #FAF7F2;
-            border-color: #800000;
+            background: #FAF7F2; 
+            border-color: #800000; 
         }
         #suggestions li span { 
             display: block; 
@@ -537,146 +537,75 @@
             border-color: #555;
         }
 
-        /* --- अपडेटेड सेटिंग्स मेनू स्टाइलिंग --- */
+        /* --- कंपैक्ट (Compact) सेटिंग्स मेनू स्टाइलिंग --- */
         .settings-menu {
-            position: fixed;
-            top: 55px;
-            right: 15px;
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            position: absolute;
+            top: 45px;
+            right: 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 1001;
             display: none;
-            padding: 18px;
-            width: 310px;
+            padding: 10px;
+            width: 200px;
             box-sizing: border-box;
             transition: background-color 0.3s, border-color 0.3s;
-            font-family: inherit;
         }
 
         body.dark-mode .settings-menu {
-            background: #242424;
-            border: 1px solid #383838;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .menu-close-btn {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            background: #f0f0f0;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #333;
-            font-size: 20px;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        body.dark-mode .menu-close-btn {
-            background: #383838;
-            color: #e0e0e0;
-        }
-
-        .user-profile-header {
-            padding-bottom: 14px;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        body.dark-mode .user-profile-header {
-            border-bottom-color: #333;
-        }
-
-        .user-info-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-right: 35px;
-        }
-
-        .user-info-container img {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .user-name-text {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1a1a1a;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 180px;
-        }
-
-        body.dark-mode .user-name-text {
-            color: #ffffff;
-        }
-
-        .user-name-text.admin-name {
-            color: #800000 !important;
-            font-weight: 800;
-        }
-
-        body.dark-mode .user-name-text.admin-name {
-            color: #ff6666 !important;
+            background: #2a2a2a;
+            border-color: #555;
         }
 
         .settings-menu .menu-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #f2f2f2;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
             cursor: pointer;
         }
 
         body.dark-mode .settings-menu .menu-item {
-            border-bottom-color: #333;
+            border-bottom-color: #444;
         }
 
-        .settings-menu .menu-item:last-of-type {
+        .settings-menu .menu-item:last-child {
             border-bottom: none;
         }
 
         .menu-item-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .menu-icon {
-            font-size: 22px;
-            color: #444;
+            font-size: 18px;
+            color: #555;
         }
 
         body.dark-mode .menu-icon {
-            color: #ccc;
+            color: #bbb;
         }
 
         .menu-icon-text {
-            font-size: 15px;
-            font-weight: 700;
-            color: #444;
-            min-width: 22px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+            min-width: 18px;
             text-align: center;
         }
 
         body.dark-mode .menu-icon-text {
-            color: #ccc;
+            color: #bbb;
         }
 
         .settings-menu label {
-            font-size: 15px;
-            font-weight: 600;
-            color: #222;
+            font-size: 13px;
+            color: #333;
             cursor: pointer;
             transition: color 0.3s;
         }
@@ -685,39 +614,10 @@
             color: #e0e0e0;
         }
 
-        .arrow-icon {
-            font-size: 20px;
-            color: #888;
-        }
-
-        body.dark-mode .arrow-icon {
-            color: #aaa;
-        }
-
-        .quiz-color {
-            color: #1a73e8 !important;
-        }
-
-        .add-word-color {
-            color: #28a745 !important;
-        }
-
-        .feedback-color {
-            color: #17a2b8 !important;
-        }
-
-        .admin-color {
-            color: #007bff !important;
-        }
-
-        .admin-words-color {
-            color: #28a745 !important;
-        }
-
         .toggle-switch {
             position: relative;
-            width: 44px;
-            height: 24px;
+            width: 36px;
+            height: 18px;
             flex-shrink: 0;
         }
 
@@ -730,72 +630,139 @@
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #cccccc;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
             transition: 0.3s;
-            border-radius: 24px;
+            border-radius: 20px;
         }
 
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
+            height: 14px;
+            width: 14px;
+            left: 2px;
+            bottom: 2px;
             background-color: white;
             transition: 0.3s;
             border-radius: 50%;
         }
 
         input:checked + .slider {
-            background-color: #1a73e8;
+            background-color: #2196F3;
         }
 
         input:checked + .slider:before {
-            transform: translateX(20px);
+            transform: translateX(18px);
         }
 
-        .logout-container {
-            margin-top: 14px;
-            padding-top: 4px;
+        .user-info-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #eee;
+            width: 100%;
+        }
+
+        body.dark-mode .user-info-container {
+            border-bottom-color: #444;
+        }
+
+        .user-info-container img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+
+        .user-name-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 130px;
+        }
+
+        body.dark-mode .user-name-text {
+            color: #e0e0e0;
+        }
+
+        .user-name-text.admin-name {
+            color: #800000 !important;
+            font-weight: bold;
+        }
+
+        body.dark-mode .user-name-text.admin-name {
+            color: #ff6666 !important;
+        }
+
+        .login-top-item {
+            border-bottom: 1px solid #eee;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+        }
+
+        body.dark-mode .login-top-item {
+            border-color: #444;
+        }
+
+        .login-menu-item {
+            border-top: 1px solid #eee;
+            margin-top: 6px;
+            padding-top: 6px;
+        }
+
+        body.dark-mode .login-menu-item {
+            border-color: #444;
         }
 
         .auth-btn-logout {
-            background: #e53935;
-            color: #ffffff;
+            background: #dc3545;
+            color: #fff;
             border: none;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 5px 10px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 15px;
-            font-weight: 700;
+            font-size: 12px;
             width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.2s;
+            transition: background 0.3s;
+            text-align: center;
         }
 
         .auth-btn-logout:hover {
-            background: #d32f2f;
+            background: #c82333;
         }
 
         .login-text-btn {
-            color: #1a73e8;
-            font-weight: 700;
-            font-size: 16px;
+            color: #007bff;
+            font-weight: bold;
+            font-size: 13px;
             cursor: pointer;
             background: none;
             border: none;
-            padding: 8px 0;
+            padding: 2px 0;
             text-align: left;
             width: 100%;
         }
+
+        body.dark-mode .login-text-btn {
+            color: #66b0ff;
+        }
+
+        .login-text-btn:hover {
+            text-decoration: underline;
+        }
+
+        .quiz-color { color: #007bff !important; }
+        .add-word-color { color: #28a745 !important; }
+        .feedback-color { color: #17a2b8 !important; }
+        .admin-color { color: #007bff !important; }
+        .admin-words-color { color: #28a745 !important; }
 
         .word-of-the-day-container {
             position: relative;
@@ -1403,17 +1370,13 @@
         <span class="settings-icon material-symbols-outlined" onclick="toggleSettingsMenu()">menu</span>
 
         <div class="settings-menu" id="settingsMenu">
-            <span class="menu-close-btn material-symbols-outlined" onclick="toggleSettingsMenu()">close</span>
-
             <div class="menu-item login-top-item" id="loginTopView">
                 <button class="login-text-btn" onclick="handleAuth()">लॉग इन करें</button>
             </div>
 
-            <div class="user-profile-header" id="loggedInTopView" style="display: none;">
-                <div class="user-info-container">
-                    <img id="menuUserAvatar" src="" alt="User">
-                    <span class="user-name-text" id="menuUserName">यूज़र</span>
-                </div>
+            <div class="user-info-container" id="loggedInTopView" style="display: none;">
+                <img id="menuUserAvatar" src="" alt="User">
+                <span class="user-name-text" id="menuUserName">यूज़र</span>
             </div>
 
             <!-- डार्क मोड -->
@@ -1432,7 +1395,7 @@
             <div class="menu-item">
                 <div class="menu-item-left">
                     <span class="menu-icon-text">A A</span>
-                    <label for="textSizeToggle">टेक्स्ट साइज (A A)</label>
+                    <label for="textSizeToggle">टेक्स्ट साइज</label>
                 </div>
                 <label class="toggle-switch">
                     <input type="checkbox" id="textSizeToggle" onchange="toggleTextSize()">
@@ -1446,7 +1409,6 @@
                     <span class="material-symbols-outlined menu-icon">home</span>
                     <label>हमारे बारे में</label>
                 </div>
-                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
             <!-- मेवाती क्विज़ -->
@@ -1455,16 +1417,14 @@
                     <span class="material-symbols-outlined menu-icon quiz-color">menu_book</span>
                     <label class="quiz-color">मेवाती क्विज़</label>
                 </div>
-                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
             <!-- शब्द जोड़ें -->
             <div class="menu-item" onclick="checkAuthAndRedirect('add-word.html')">
                 <div class="menu-item-left">
-                    <span class="material-symbols-outlined menu-icon add-word-color">menu_book</span>
+                    <span class="material-symbols-outlined menu-icon add-word-color">add_box</span>
                     <label class="add-word-color">शब्द जोड़ें</label>
                 </div>
-                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
             <!-- सुझाव दें (यूज़र) -->
@@ -1473,7 +1433,6 @@
                     <span class="material-symbols-outlined menu-icon feedback-color">chat_bubble_outline</span>
                     <label class="feedback-color">सुझाव दें</label>
                 </div>
-                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
             <!-- प्राप्त सुझाव (एडमिन) -->
@@ -1482,7 +1441,6 @@
                     <span class="material-symbols-outlined menu-icon admin-color">mark_chat_unread</span>
                     <label class="admin-color">प्राप्त सुझाव <span id="feedbackCountLabel">(0)</span></label>
                 </div>
-                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
             <!-- प्राप्त शब्द (एडमिन) -->
@@ -1491,15 +1449,11 @@
                     <span class="material-symbols-outlined menu-icon admin-words-color">note_add</span>
                     <label class="admin-words-color">प्राप्त शब्द <span id="wordsCountLabel">(0)</span></label>
                 </div>
-                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
             </div>
 
             <!-- लॉग आउट बटन -->
-            <div class="logout-container" id="loggedOutViewBottom" style="display: none;">
-                <button class="auth-btn-logout" onclick="handleAuth()">
-                    <span class="material-symbols-outlined">logout</span>
-                    <span>लॉग आउट करें</span>
-                </button>
+            <div class="login-menu-item" id="loggedOutViewBottom" style="display: none;">
+                <button class="auth-btn-logout" onclick="handleAuth()">लॉग आउट करें</button>
             </div>
         </div>
     </div>
@@ -3437,7 +3391,7 @@
 
         if (user) {
           loginTopView.style.display = "none";
-          loggedInTopView.style.display = "block";
+          loggedInTopView.style.display = "flex";
           loggedOutViewBottom.style.display = "block";
 
           if (user.photoURL) {
