@@ -117,6 +117,12 @@
             color: #1a1a1a;
             transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
+input:focus {
+    border-color: #800000;
+    outline: none;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.15);
+}
         
         input:not(:focus) {
             color: #888;
@@ -230,8 +236,8 @@
         }
         .letter-btn.active { 
             background: #bfe2ff; 
-            color: #800000; 
-            border-color: #800000; 
+            color: blue; 
+            border-color: blue; 
         }
         body.dark-mode .letter-btn.active {
             background: #87ceeb;
@@ -456,7 +462,7 @@
         .settings-icon {
             font-size: 24px;
             cursor: pointer;
-            color: #80000;
+            color: #888;
         }
         body.dark-mode .settings-icon {
             color: #bbb;
