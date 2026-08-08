@@ -31,11 +31,13 @@
             flex-direction: column; 
             align-items: center; 
             transition: background-color 0.3s, color 0.3s;
-            background: #E8E4DC;
+            background: #F4F1EA;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #2D3748;
         }
         body.dark-mode {
-            background-color: #1a1a1a;
-            color: #e0e0e0;
+            background-color: #121212;
+            color: #E2E8F0;
         }
         body.large-text {
             font-size: 18px;
@@ -91,13 +93,15 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #fff;
+            background: #FFFFFF;
             z-index: 1000;
             box-sizing: border-box;
-            gap: 10px;
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         body.dark-mode .search-container {
-            background: #2a2a2a;
+            background: #1E1E1E;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
         .search-box {
             position: relative;
@@ -107,85 +111,91 @@
             align-items: center; 
         }
         input { 
-            padding: 4px 35px 4px 35px; 
+            padding: 8px 38px 8px 38px; 
             width: 100%; 
             box-sizing: border-box; 
-            border-radius: 20px; 
-            background: #f5f5f5; 
-            border: 1px solid #ccc; 
+            border-radius: 24px; 
+            background: #F7FAFC; 
+            border: 1.5px solid #E2E8F0; 
             font-size: 14px; 
-            color: #1a1a1a;
-            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+            color: #1A202C;
+            transition: all 0.3s ease;
         }
         
+        input:focus {
+            border-color: #2E5BFF;
+            outline: none;
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(46, 91, 255, 0.15);
+        }
+
         input:not(:focus) {
-            color: #888;
+            color: #718096;
         }
 
         body.dark-mode input {
-            background: #333;
-            border-color: #555;
-            color: #e0e0e0;
+            background: #2D3748;
+            border-color: #4A5568;
+            color: #F7FAFC;
+        }
+        body.dark-mode input:focus {
+            border-color: #6366F1;
+            background: #1A202C;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
         }
         body.dark-mode input:not(:focus) {
-            color: #aaa;
+            color: #A0AEC0;
         }
 
         input::placeholder { 
-            color: #888; 
+            color: #A0AEC0; 
         }
         body.dark-mode input::placeholder {
-            color: #aaa;
+            color: #718096;
         }
         #letterFilter {
             position: fixed;
-            top: 45px;
+            top: 52px;
             left: 0;
             right: 0;
             display: flex;
             justify-content: flex-start;
             flex-wrap: nowrap;
             overflow-x: auto;
-            padding: 10px 20px 5px;
-            border-bottom: 1px solid #ccc;
+            padding: 8px 16px;
+            border-bottom: 1px solid #E2E8F0;
             border-radius: 0 0 16px 16px;
             white-space: nowrap;
             -webkit-overflow-scrolling: touch;
-            background: linear-gradient(
-                to bottom,
-                #ffffff 0%,
-                #ffffff 100%
-            );
+            background: #FFFFFF;
             z-index: 999;
             transition: background-color 0.3s, border-color 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
         }
         body.dark-mode #letterFilter {
-            background: linear-gradient(
-                to bottom,
-                #2a2a2a 0%,
-                #1f1f1f 100%
-            );
-            border-color: #555;
+            background: #1A1A1A;
+            border-color: #2D3748;
         }
 
         #stickyWordStrip {
             position: fixed;
-            top: 90px;
+            top: 98px;
             left: 0;
             right: 0;
-            background: #E8E4DC;
-            padding: 6px 20px;
-            font-weight: bold;
+            background: #1A202C;
+            padding: 8px 20px;
+            font-weight: 600;
             font-size: 16px;
-            color: #1a1a1a;
+            color: #FFFFFF;
             z-index: 998;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             max-width: 600px;
             margin: 0 auto;
             box-sizing: border-box;
+            border-radius: 0 0 8px 8px;
         }
 
         #stickyWordStrip.visible {
@@ -194,52 +204,56 @@
         }
 
         body.dark-mode #stickyWordStrip {
-            background: #1a1a1a;
-            color: #ffffff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            background: #2D3748;
+            color: #38BDF8;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
 
         .letter-btn { 
-            background: #f5f5f5; 
-            border: 1px solid #ccc; 
-            border-radius: 50%; 
-            width: 30px; 
-            height: 30px; 
-            margin: 2px; 
+            background: #EDF2F7; 
+            border: 1px solid #CBD5E0; 
+            border-radius: 8px; 
+            width: 32px; 
+            height: 32px; 
+            margin: 2px 3px; 
             cursor: pointer; 
             font-size: 14px; 
-            color: #333; 
+            font-weight: 500;
+            color: #2D3748; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-shrink: 0; 
-            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+            transition: all 0.2s ease;
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
         }
         body.dark-mode .letter-btn {
-            background: #444;
-            border-color: #666;
-            color: #e0e0e0;
+            background: #2D3748;
+            border-color: #4A5568;
+            color: #E2E8F0;
         }
         .letter-btn:hover { 
-            background: #e0e0e0; 
+            background: #E2E8F0; 
+            border-color: #A0AEC0;
         }
         body.dark-mode .letter-btn:hover {
-            background: #555;
+            background: #4A5568;
         }
         .letter-btn.active { 
-            background: #bfe2ff; 
-            color: blue; 
-            border-color: blue; 
+            background: #2E5BFF; 
+            color: #FFFFFF; 
+            border-color: #2E5BFF; 
+            box-shadow: 0 2px 6px rgba(46, 91, 255, 0.3);
         }
         body.dark-mode .letter-btn.active {
-            background: #87ceeb;
-            color: #1e90ff;
-            border-color: #1e90ff;
+            background: #6366F1;
+            color: #FFFFFF;
+            border-color: #6366F1;
+            box-shadow: 0 2px 6px rgba(99, 102, 241, 0.4);
         }
         .content-container { 
-            margin-top: 100px; 
+            margin-top: 110px; 
             width: 100%; 
             max-width: 600px; 
         }
@@ -251,215 +265,259 @@
         }
         #suggestions li { 
             cursor: pointer; 
-            padding: 8px 15px; 
+            padding: 10px 16px; 
             font-size: 16px; 
-            color: #333; 
-            border: 1px solid #ccc; 
-            border-radius: 10px; 
+            color: #2D3748; 
+            border: 1px solid #E2E8F0; 
+            border-radius: 12px; 
             overflow: hidden;
-            margin: 5px 0; 
-            background: #ffffff;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            margin: 6px 0; 
+            background: #FFFFFF;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         body.dark-mode #suggestions li {
-            color: #e0e0e0;
-            border-color: #555;
-            background: #333;
+            color: #E2E8F0;
+            border-color: #2D3748;
+            background: #1E1E1E;
         }
         #suggestions li:hover { 
-            background: #f0f0f0; 
+            background: #F7FAFC; 
+            border-color: #2E5BFF;
+            transform: translateY(-1px);
         }
         body.dark-mode #suggestions li:hover {
-            background: #444;
+            background: #2D3748;
+            border-color: #6366F1;
         }
         #suggestions li span { 
             display: block; 
             font-size: 12px; 
-            color: #666; 
+            color: #718096; 
+            margin-top: 2px;
         }
         body.dark-mode #suggestions li span {
-            color: #aaa;
+            color: #A0AEC0;
         }
         #wordType, #subjectLine, #pluralLine {    
-            color: #666;
-            font-size: 10px;
-            margin: 5px 20px;
+            color: #4A5568;
+            font-size: 11px;
+            font-weight: 500;
+            margin: 6px 20px;
             display: none;
         }
         body.dark-mode #wordType,
         body.dark-mode #subjectLine,
         body.dark-mode #pluralLine {
-            color: #aaa;
+            color: #A0AEC0;
         }
         #result, #englishMeaning { 
-            font-size: 14px; 
-            color: #888; 
-            margin: 5px 20px; 
+            font-size: 15px; 
+            color: #4A5568; 
+            margin: 8px 20px; 
             display: none; 
+            line-height: 1.6;
         }
 
         body.dark-mode #result,
         body.dark-mode #englishMeaning {
-            color: #bbb !important;
+            color: #CBD5E0 !important;
         }
 
         #result .highlight-word,
         #englishMeaning .highlight-word {
-            color: #000;
-            font-weight: bold;
+            color: #2E5BFF;
+            font-weight: 700;
         }
 
         body.dark-mode #result .highlight-word,
         body.dark-mode #englishMeaning .highlight-word {
-            color: #fff;
+            color: #38BDF8;
         }
         #exampleLabel { 
             font-size: 14px; 
-            color: #555; 
-            margin: 5px 20px; 
+            font-weight: 600;
+            color: #718096; 
+            margin: 8px 20px 4px; 
             display: none; 
         }
         body.dark-mode #exampleLabel {
-            color: #999;
+            color: #A0AEC0;
         }
         #example { 
             font-size: 14px; 
-            color: #1a1a1a; 
-            margin: 0 20px 10px; 
+            color: #1A202C; 
+            margin: 0 20px 12px; 
             display: none; 
+            background: #FFFFFF;
+            padding: 10px 14px;
+            border-left: 3px solid #2E5BFF;
+            border-radius: 0 8px 8px 0;
         }
         body.dark-mode #example {
-            color: #e0e0e0;
+            color: #E2E8F0;
+            background: #1E1E1E;
+            border-left-color: #6366F1;
         }
         #synonymLabel, #oppositeLabel, #rhymeLabel, #relatedLabel, #idiomLabel, #proverbLabel {
             font-size: 14px; 
-            color: #888; 
-            margin: 5px 20px;
+            font-weight: 600;
+            color: #4A5568; 
+            margin: 8px 20px 4px;
         }
         body.dark-mode #synonymLabel, body.dark-mode #oppositeLabel, body.dark-mode #rhymeLabel, body.dark-mode #relatedLabel {
-            color: #bbb;
+            color: #CBD5E0;
         }
         #synonyms, #opposite, #rhymes, #related { 
             font-size: 14px; 
-            color: #333; 
+            color: #2D3748; 
             margin: 0;
         }
         body.dark-mode #synonyms, body.dark-mode #opposite, body.dark-mode #rhymes, body.dark-mode #related, body.dark-mode #idiomLabel {
-            color: #e0e0e0;
+            color: #E2E8F0;
         }
         .related-btn, .opposite-btn, .synonym-btn, .rhyme-word-btn { 
-            background: #e6f2ff; 
-            border: none; 
-            padding: 5px 10px; 
-            margin: 2px 2px 2px 0; 
+            background: #E8F0FE; 
+            color: #1A73E8;
+            border: 1px solid #D2E3FC; 
+            padding: 6px 12px; 
+            margin: 3px 4px 3px 0; 
             cursor: pointer; 
             text-decoration: none; 
-            border-radius: 5px; 
-            transition: background-color 0.3s, color 0.3s;
+            border-radius: 16px; 
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-block;
         }
         body.dark-mode .related-btn, body.dark-mode .opposite-btn, body.dark-mode .synonym-btn, body.dark-mode .rhyme-word-btn {
-            background: #808080;
-            color: #ffffff;
+            background: #2D3748;
+            color: #38BDF8;
+            border-color: #4A5568;
         }
         .related-btn:hover, .opposite-btn:hover, .synonym-btn:hover, .rhyme-word-btn:hover { 
-            background: #87ceeb; 
+            background: #2E5BFF; 
+            color: #FFFFFF;
+            border-color: #2E5BFF;
         }
         body.dark-mode .related-btn:hover, body.dark-mode .opposite-btn:hover, body.dark-mode .synonym-btn:hover, body.dark-mode .rhyme-word-btn:hover {
-            background: #999999;
+            background: #6366F1;
+            color: #FFFFFF;
+            border-color: #6366F1;
         }
         .subject-btn {
-            background: #e6f2ff;
-            border: none;
-            padding: 1px 6px;
+            background: #FEF3C7;
+            border: 1px solid #FDE68A;
+            padding: 2px 8px;
             margin: 0 4px 0 0;
-            color: #007bff;
+            color: #D97706;
             cursor: pointer;
-            border-radius: 3px;
-            font-size: 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
 
         .subject-btn:hover {
-            background: #bfe2ff;
+            background: #F59E0B;
+            color: #FFFFFF;
         }
         body.dark-mode .subject-btn {
-            background: #3a3a3a;
-            color: #87ceeb;
+            background: #78350F;
+            border-color: #92400E;
+            color: #FDE68A;
         }
         .unclickable-btn { 
-            background: #d1e7f0; 
+            background: #EDF2F7; 
             border: none; 
             padding: 5px 10px; 
             margin: 2px; 
-            color: #4682b4; 
+            color: #4A5568; 
             cursor: pointer; 
             text-decoration: none; 
-            border-radius: 5px; 
-            transition: background-color 0.3s, color 0.3s;
+            border-radius: 6px; 
+            transition: background-color 0.2s, color 0.2s;
         }
         body.dark-mode .unclickable-btn {
-            background: #808080; 
-            color: #ffffff;
+            background: #2D3748; 
+            color: #E2E8F0;
         }
         .unclickable-btn:hover { 
-            background: #87ceeb; 
+            background: #CBD5E0; 
         }
         body.dark-mode .unclickable-btn:hover {
-            background: #999999;
+            background: #4A5568;
         }
         .unclickable-text { 
-            color: #4682b4; 
+            color: #2E5BFF; 
             text-decoration: none; 
-            font-weight: bold; 
-            transition: color 0.3s;
+            font-weight: 600; 
+            transition: color 0.2s;
             cursor: pointer;
         }
         body.dark-mode .unclickable-text {
-            color: #87ceeb;
+            color: #38BDF8;
         }
         .meaning-link {
-            color: #007bff;
+            color: #2E5BFF;
             text-decoration: none;
+            font-weight: 500;
         }
 
         body.dark-mode .meaning-link {
-            color: #fff;
+            color: #38BDF8;
         }
         .highlight { 
             font-weight: bold; 
+            background-color: #FEF08A;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+        body.dark-mode .highlight {
+            background-color: #854D0E;
+            color: #FEF08A;
         }
         .highlight-word {
-            color: #1a1a1a;
-            font-weight: bold;
+            color: #1A202C;
+            font-weight: 700;
         }
         body.dark-mode .highlight-word {
-            color: #ffffff;
+            color: #FFFFFF;
         }
         .english-word {
-            color: #007bff !important;
+            color: #059669 !important;
             font-size: 14px; 
+            font-weight: 500;
         }
         body.dark-mode .english-word {
-            color: #66b0ff !important;
+            color: #34D399 !important;
         }
         .search-icon { 
             position: absolute; 
-            left: 10px; 
+            left: 12px; 
             top: 50%; 
             transform: translateY(-50%); 
-            color: #888; 
+            color: #A0AEC0; 
             font-size: 20px; 
             transition: color 0.3s;
         }
         body.dark-mode .search-icon {
-            color: #bbb;
+            color: #718096;
         }
         .settings-icon {
             font-size: 24px;
             cursor: pointer;
-            color: #888;
+            color: #4A5568;
+            transition: color 0.2s;
+        }
+        .settings-icon:hover {
+            color: #2E5BFF;
         }
         body.dark-mode .settings-icon {
-            color: #bbb;
+            color: #A0AEC0;
+        }
+        body.dark-mode .settings-icon:hover {
+            color: #38BDF8;
         }
         .material-symbols-outlined { 
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; 
@@ -470,30 +528,37 @@
             flex-wrap: nowrap; 
             overflow-x: auto; 
             margin: 0; 
-            padding: 10px 0; 
+            padding: 8px 0; 
             white-space: nowrap; 
             -webkit-overflow-scrolling: touch; 
         }
         .pattern-btn { 
             background: none; 
             border: none; 
-            padding: 5px 10px; 
-            margin: 2px 5px 2px 0; 
+            padding: 4px 10px; 
+            margin: 2px 6px 2px 0; 
             cursor: pointer; 
-            font-size: 16px; 
-            color: #888; 
+            font-size: 15px; 
+            font-weight: 600;
+            color: #718096; 
             position: relative; 
             flex-shrink: 0; 
-            transition: color 0.3s;
+            transition: color 0.2s;
         }
         body.dark-mode .pattern-btn {
-            color: #87ceeb;
+            color: #A0AEC0;
         }
         .pattern-btn:hover { 
-            color: #87ceeb; 
+            color: #2E5BFF; 
         }
         body.dark-mode .pattern-btn:hover {
-            color: #66b0ff;
+            color: #38BDF8;
+        }
+        .pattern-btn.active {
+            color: #2E5BFF;
+        }
+        body.dark-mode .pattern-btn.active {
+            color: #38BDF8;
         }
         .pattern-btn.active::after { 
             content: ''; 
@@ -501,11 +566,12 @@
             bottom: 0; 
             left: 0; 
             width: 100%; 
-            height: 2px; 
-            background-color: #add8e6; 
+            height: 3px; 
+            border-radius: 2px;
+            background-color: #2E5BFF; 
         }
         body.dark-mode .pattern-btn.active::after {
-            background-color: #87ceeb;
+            background-color: #38BDF8;
         }
         #rhymes { 
             display: flex; 
@@ -514,50 +580,53 @@
             margin: 0;
         }
         .synonym-block, .opposite-block, .rhyme-block, .related-block, .couplet-block, .proverb-block, .idiom-block { 
-            border: 1px solid #ccc; 
-            border-radius: 10px; 
-            margin: 0 20px 10px; 
-            padding: 10px 10px 10px 15px; 
-            background: #ffffff;
+            border: 1px solid #E2E8F0; 
+            border-radius: 12px; 
+            margin: 0 20px 12px; 
+            padding: 12px 14px; 
+            background: #FFFFFF;
             display: none; 
             transition: background-color 0.3s, border-color 0.3s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
         body.dark-mode .synonym-block, body.dark-mode .opposite-block, body.dark-mode .rhyme-block, body.dark-mode .related-block, body.dark-mode .couplet-block,  body.dark-mode .proverb-block, body.dark-mode .idiom-block {
-            background: #333;
-            border-color: #555;
+            background: #1E1E1E;
+            border-color: #2D3748;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
         .settings-menu {
             position: absolute;
-            top: 45px;
-            right: 10px;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            top: 50px;
+            right: 12px;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             z-index: 1001;
             display: none;
-            padding: 10px;
-            width: 200px;
-            transition: background-color 0.3s, border-color 0.3s;
+            padding: 12px;
+            width: 220px;
+            transition: all 0.3s;
         }
         body.dark-mode .settings-menu {
-            background: #2a2a2a;
-            border-color: #555;
+            background: #1E1E1E;
+            border-color: #2D3748;
         }
         .settings-menu .menu-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 5px 0;
+            padding: 8px 0;
         }
         .settings-menu label {
             font-size: 14px;
-            color: #333;
+            font-weight: 500;
+            color: #2D3748;
             transition: color 0.3s;
             cursor: pointer;
         }
         body.dark-mode .settings-menu label {
-            color: #e0e0e0;
+            color: #E2E8F0;
         }
         .toggle-switch {
             position: relative;
@@ -576,7 +645,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #ccc;
+            background-color: #CBD5E0;
             transition: 0.3s;
             border-radius: 20px;
         }
@@ -592,113 +661,123 @@
             border-radius: 50%;
         }
         input:checked + .slider {
-            background-color: #2196F3;
+            background-color: #2E5BFF;
         }
         input:checked + .slider:before {
             transform: translateX(20px);
         }
         .word-of-the-day-container {
             position: relative;
-            margin: 10px 20px;
+            margin: 16px 20px;
             text-align: center;
             display: none;
         }
         .word-of-the-day-container h2 {
             font-size: 12px;
-            color: #333;
+            font-weight: 700;
+            color: #2E5BFF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin: 0 0 5px 0;
             position: absolute;
-            top: -8px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            background: #e6f0fa;
-            padding: 0 10px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            transition: color 0.3s, background-color 0.3s;
+            background: #EEF2FF;
+            padding: 2px 12px;
+            border-radius: 12px;
+            border: 1px solid #C7D2FE;
+            transition: all 0.3s;
         }
         body.dark-mode .word-of-the-day-container h2 {
-            color: #e0e0e0;
-            background: #1a1a1a;
+            color: #818CF8;
+            background: #1E1B4B;
+            border-color: #3730A3;
         }
         .word-of-the-day {
-            background-color: #e6f0fa;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            transition: background-color 0.3s, border-color 0.3s;
+            background-color: #FFFFFF;
+            padding: 22px 20px 18px;
+            border-radius: 16px;
+            border: 1px solid #E2E8F0;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
         body.dark-mode .word-of-the-day {
-            background-color: #333;
-            border-color: #555;
+            background-color: #1E1E1E;
+            border-color: #2D3748;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         .word-of-the-day h3 {
-            font-size: 15px;
-            color: #007bff;
-            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #2E5BFF;
+            margin: 0 0 8px 0;
+            font-weight: 700;
         }
         body.dark-mode .word-of-the-day h3 {
-            color: #66b0ff;
+            color: #38BDF8;
         }
         .hindi-meaning-label {
-            background-color: #e6f0fa;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            color: #333;
+            background-color: #F1F5F9;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748B;
             display: inline-block;
-            margin-bottom: 5px;
-            transition: background-color 0.3s, color 0.3s;
+            margin-bottom: 6px;
+            transition: all 0.3s;
         }
         body.dark-mode .hindi-meaning-label {
-            background-color: #333;
-            color: #e0e0e0;
+            background-color: #334155;
+            color: #94A3B8;
         }
         .word-of-the-day p {
             font-size: 15px;
-            color: #555;
+            color: #334155;
             margin: 0;
+            font-weight: 500;
         }
         body.dark-mode .word-of-the-day p {
-            color: #bbb;
+            color: #CBD5E0;
         }
         .clickable-word {
             cursor: pointer;
-            transition: color 0.3s;
-            color: #007bff;
+            transition: color 0.2s;
+            color: #2E5BFF;
             text-decoration: none !important;
         }
         .clickable-word:hover {
-            color: #0056b3;
+            color: #1D4ED8;
         }
         body.dark-mode .clickable-word {
-            color: #40c4ff;
+            color: #38BDF8;
         }
         body.dark-mode .clickable-word:hover {
-            color: #99c2ff;
+            color: #7DD3FC;
         }
         #aboutSection {
             display: none;
-            position: absolute;
-            height: 400px;
-            width: 300px; 
-            top: 60%;
+            position: fixed;
+            height: auto;
+            max-height: 80vh;
+            width: 320px; 
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             z-index: 1002;
-            max-width: 300px;
             text-align: center;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: all 0.3s;
+            overflow-y: auto;
         }
         body.dark-mode #aboutSection {
-            background: #2a2a2a;
-            border-color: #555;
-            color: #e0e0e0;
+            background: #1E1E1E;
+            border-color: #2D3748;
+            color: #E2E8F0;
         }
         #loadingIndicator {
             position: fixed;
@@ -716,51 +795,58 @@
         }
 
         .loading-logo {
-            width: 120px;
+            width: 100px;
             height: auto;
-            border-radius: 16px;
-            animation: logoAnimation 3s infinite ease-in-out;
+            border-radius: 20px;
+            animation: logoAnimation 2s infinite ease-in-out;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         @keyframes logoAnimation {
-            0%   { transform: scale(1); opacity: 0.6; }
-            50%  { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.6; }
+            0%   { transform: scale(0.95); opacity: 0.7; }
+            50%  { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
         }
 
         body.dark-mode .loading-logo {
-            filter: drop-shadow(0 0 10px rgba(100, 200, 255, 0.6));
+            filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.4));
         }
         #errorMessage {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 18px;
-            color: red;
+            font-size: 16px;
+            font-weight: 600;
+            color: #EF4444;
+            background: #FEF2F2;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid #FCA5A5;
             display: none;
         }
         #coupletLabel { 
             font-size: 14px; 
-            color: #888; 
-            margin: 5px 20px;
+            font-weight: 600;
+            color: #4A5568; 
+            margin: 8px 20px 4px;
         }
         body.dark-mode #coupletLabel {
-            color: #bbb;
+            color: #CBD5E0;
         }
         #couplets {
             display: block;
             overflow-x: auto;
             white-space: nowrap;
-            padding: 0 20px;
+            padding: 4px 20px;
             margin: 0;
             font-size: 14px;
-            color: #333;
+            color: #2D3748;
             scrollbar-width: thin;
         }
 
         body.dark-mode #couplets {
-            color: #e0e0e0;
+            color: #E2E8F0;
         }
 
         .couplet-item {
@@ -770,22 +856,26 @@
             margin-right: 12px;
             margin-bottom: 12px;
             vertical-align: top;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: #fff;
+            padding: 14px;
+            border: 1px solid #E2E8F0;
+            border-left: 3px solid #2E5BFF;
+            border-radius: 12px;
+            background: #FFFFFF;
             white-space: normal;
             box-sizing: border-box;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
         body.dark-mode .couplet-item {
-            border-color: #666;
-            background: #444;
+            border-color: #2D3748;
+            border-left-color: #38BDF8;
+            background: #1E1E1E;
         }
 
         .couplet-text {
             white-space: pre-wrap;
             font-style: italic;
+            line-height: 1.6;
         }
 
         .couplet-line {
@@ -795,30 +885,32 @@
 
         .author-text {
             font-size: 12px;
-            color: #666;
-            margin-top: 5px;
+            font-weight: 600;
+            color: #718096;
+            margin-top: 8px;
+            text-align: right;
         }
 
         body.dark-mode .author-text {
-            color: #aaa;
+            color: #A0AEC0;
         }
 
         .small-font {
             font-size: 12px;
         }
         .image-block { 
-            border: 1px solid #ccc; 
-            border-radius: 10px; 
-            margin: 0 20px 10px; 
-            padding: 10px; 
-            background: #ffffff; 
+            border: 1px solid #E2E8F0; 
+            border-radius: 12px; 
+            margin: 0 20px 12px; 
+            padding: 12px; 
+            background: #FFFFFF; 
             display: none; 
             text-align: center;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: all 0.3s;
         }
         body.dark-mode .image-block {
-            background: #333;
-            border-color: #555;
+            background: #1E1E1E;
+            border-color: #2D3748;
         }
         .reference-image {
             max-width: 100%;
@@ -827,12 +919,13 @@
         }
         #imageLabel {
             font-size: 14px; 
-            color: #888; 
-            margin: 5px 20px;
+            font-weight: 600;
+            color: #4A5568; 
+            margin: 8px 20px 4px;
             display: none;
         }
         body.dark-mode #imageLabel {
-            color: #bbb;
+            color: #CBD5E0;
         }
         #englishMeaning a,
         #result a {
@@ -840,11 +933,11 @@
         }
         body.dark-mode #result a,
         body.dark-mode #englishMeaning a {
-            color: #fff;
+            color: #38BDF8;
         }
         .duplicate-section {
             position: relative;
-            margin: 10px 20px;
+            margin: 16px 20px;
             text-align: center;
             display: none;
         }
@@ -852,88 +945,99 @@
         .duplicate-slider {
             display: flex;
             overflow-x: auto;
-            gap: 15px;
+            gap: 12px;
             padding-top: 10px;
             align-items: flex-start;
         }
         .duplicate-card {
-            background-color: #e6f0fa;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            flex: 0 0 90%;
-            margin-right: 10px;
+            background-color: #FFFFFF;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid #E2E8F0;
+            flex: 0 0 85%;
+            margin-right: 8px;
             box-sizing: border-box;
             text-align: center;
             height: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: all 0.3s;
         }
 
         body.dark-mode .duplicate-card {
-            background-color: #333;
-            border-color: #555;
+            background-color: #1E1E1E;
+            border-color: #2D3748;
         }
         .duplicate-item-block {
             cursor: pointer;
-            padding: 6px;
-            border-radius: 6px;
+            padding: 8px;
+            border-radius: 8px;
             transition: background-color 0.2s;
         }
         .duplicate-item-block:hover {
-            background-color: rgba(0, 123, 255, 0.08);
+            background-color: #F1F5F9;
         }
         body.dark-mode .duplicate-item-block:hover {
-            background-color: rgba(255, 255, 255, 0.08);
+            background-color: #2D3748;
         }
         .duplicate-word {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
-            color: #007bff;
-            margin-bottom: 8px;
+            color: #2E5BFF;
+            margin-bottom: 6px;
         }
         body.dark-mode .duplicate-word {
-            color: #66b0ff;
+            color: #38BDF8;
         }
 
         .duplicate-hindi-label {
-            font-size: 12px;
-            color: #666;
-            margin-top: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748B;
+            margin-top: 6px;
             margin-bottom: 2px;
             display: block;
         }
 
         body.dark-mode .duplicate-hindi-label {
-            color: #fff;
+            color: #94A3B8;
         }
         .duplicate-hindi-text {
-            font-size: 15px;
-            color: #555;
+            font-size: 14px;
+            color: #334155;
+            font-weight: 500;
         }
 
         body.dark-mode .duplicate-hindi-text {
-            color: #bbb;
+            color: #CBD5E0;
         }
         .divider {
-            border-top: 1px solid #ddd;
-            margin: 10px 0;
+            border-top: 1px solid #E2E8F0;
+            margin: 8px 0;
+        }
+        body.dark-mode .divider {
+            border-top-color: #2D3748;
         }
         .duplicate-section h2 {
             font-size: 12px;
-            color: #333;
+            font-weight: 700;
+            color: #2E5BFF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin: 0 0 5px 0;
             position: absolute;
-            top: -1px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            background: #e6f0fa;
-            padding: 0 10px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
+            background: #EEF2FF;
+            padding: 2px 12px;
+            border-radius: 12px;
+            border: 1px solid #C7D2FE;
         }
 
         body.dark-mode .duplicate-section h2 {
-            color: #e0e0e0;
-            background: #1a1a1a;
+            color: #818CF8;
+            background: #1E1B4B;
+            border-color: #3730A3;
         }
         .logo-container {
             display: flex;
@@ -941,118 +1045,148 @@
         }
 
         .app-logo {
-            height: 32px;
-            width: 32px;
+            height: 34px;
+            width: 34px;
             border-radius: 8px;
             object-fit: cover;
             cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .clear-icon {
             position: absolute;
-            right: 5px;
+            right: 8px;
             top: 50%;
             transform: translateY(-50%);
             font-size: 18px;
             cursor: pointer;
-            color: #888;
+            color: #A0AEC0;
             display: none;
             padding: 3px;
             line-height: 1;
             -webkit-tap-highlight-color: transparent;
             outline: none;
             user-select: none;
+            border-radius: 50%;
+            transition: color 0.2s;
         }
 
         .clear-icon:hover {
-            color: #000;
+            color: #2D3748;
         }
 
         body.dark-mode .clear-icon {
-            color: #bbb;
+            color: #718096;
+        }
+        body.dark-mode .clear-icon:hover {
+            color: #E2E8F0;
         }
 
         .idiom-item {
             margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #E2E8F0;
+        }
+        .idiom-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        body.dark-mode .idiom-item {
+            border-bottom-color: #2D3748;
         }
 
         .idiom-word {
-            font-size: 14px;
-            color: #007bff; 
+            font-size: 15px;
+            font-weight: 600;
+            color: #2E5BFF; 
             cursor: pointer;
+            margin-bottom: 2px;
         }
 
         body.dark-mode .idiom-word {
-            color: #ffffff;
+            color: #38BDF8;
         }
 
         .idiom-hindi {
-            font-size: 14px;
-            color: #888;
+            font-size: 13px;
+            color: #718096;
         }
         body.dark-mode .idiom-hindi {
-            color: #bbb;
+            color: #A0AEC0;
         }
 
         .proverb-item {
             margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #E2E8F0;
+        }
+        .proverb-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        body.dark-mode .proverb-item {
+            border-bottom-color: #2D3748;
         }
 
         .proverb-word {
-            font-size: 14px;
-            color: #007bff;
+            font-size: 15px;
+            font-weight: 600;
+            color: #2E5BFF;
             cursor: pointer;
+            margin-bottom: 2px;
         }
 
         body.dark-mode .proverb-word {
-            color: #ffffff;
+            color: #38BDF8;
         }
 
         .proverb-hindi {
-            font-size: 14px;
-            color: #888;
+            font-size: 13px;
+            color: #718096;
         }
 
         body.dark-mode .proverb-hindi {
-            color: #bbb;
+            color: #A0AEC0;
         }
         body.dark-mode #pluralLine span {
-            color: #ffffff !important;
+            color: #FFFFFF !important;
         }
 
         .login-top-item {
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #E2E8F0;
             margin-bottom: 8px;
             padding-bottom: 8px;
         }
         body.dark-mode .login-top-item {
-            border-color: #444;
+            border-color: #2D3748;
         }
 
         .login-text-btn {
-            color: #007bff;
-            font-weight: bold;
+            color: #2E5BFF;
+            font-weight: 600;
             font-size: 14px;
             cursor: pointer;
             background: none;
             border: none;
-            padding: 2px 0;
+            padding: 4px 0;
             text-align: left;
             width: 100%;
         }
         body.dark-mode .login-text-btn {
-            color: #66b0ff;
+            color: #38BDF8;
         }
         .login-text-btn:hover {
             text-decoration: underline;
         }
 
         .login-menu-item {
-            border-top: 1px solid #eee;
+            border-top: 1px solid #E2E8F0;
             margin-top: 8px;
             padding-top: 8px;
         }
         body.dark-mode .login-menu-item {
-            border-color: #444;
+            border-color: #2D3748;
         }
 
         .user-info-container {
@@ -1067,43 +1201,44 @@
             height: 28px;
             border-radius: 50%;
             object-fit: cover;
-            border: 1px solid #ccc;
+            border: 1px solid #CBD5E0;
         }
         .user-name-text {
             font-size: 13px;
             font-weight: 600;
-            color: #333;
+            color: #2D3748;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 130px;
         }
         body.dark-mode .user-name-text {
-            color: #e0e0e0;
+            color: #E2E8F0;
         }
 
         .user-name-text.admin-name {
-            color: #800000 !important;
-            font-weight: bold;
+            color: #DC2626 !important;
+            font-weight: 700;
         }
         body.dark-mode .user-name-text.admin-name {
-            color: #ff6666 !important;
+            color: #F87171 !important;
         }
 
         .auth-btn-logout {
-            background: #dc3545;
-            color: #fff;
+            background: #EF4444;
+            color: #FFFFFF;
             border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
+            font-weight: 600;
             width: 100%;
-            transition: background 0.3s;
+            transition: background 0.2s;
             text-align: center;
         }
         .auth-btn-logout:hover {
-            background: #c82333;
+            background: #DC2626;
         }
 
         #feedbackModal {
@@ -1112,48 +1247,50 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             z-index: 1003;
             width: 90%;
-            max-width: 360px;
+            max-width: 380px;
             box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s;
+            transition: all 0.3s;
         }
         body.dark-mode #feedbackModal {
-            background: #2a2a2a;
-            border-color: #555;
-            color: #e0e0e0;
+            background: #1E1E1E;
+            border-color: #2D3748;
+            color: #E2E8F0;
         }
         #feedbackModal h3 {
             margin-top: 0;
             margin-bottom: 12px;
             font-size: 16px;
-            color: #007bff;
+            color: #2E5BFF;
+            font-weight: 700;
         }
         body.dark-mode #feedbackModal h3 {
-            color: #66b0ff;
+            color: #38BDF8;
         }
         #feedbackModal textarea {
             width: 100%;
-            height: 90px;
-            padding: 8px;
+            height: 100px;
+            padding: 10px;
             box-sizing: border-box;
-            border-radius: 8px;
-            border: 1px solid #ccc;
+            border-radius: 10px;
+            border: 1px solid #CBD5E0;
             font-size: 14px;
             resize: none;
-            margin-bottom: 12px;
-            background: #f9f9f9;
-            color: #333;
+            margin-bottom: 14px;
+            background: #F7FAFC;
+            color: #1A202C;
+            font-family: inherit;
         }
         body.dark-mode #feedbackModal textarea {
-            background: #333;
-            border-color: #555;
-            color: #e0e0e0;
+            background: #2D3748;
+            border-color: #4A5568;
+            color: #E2E8F0;
         }
         .feedback-btn-group {
             display: flex;
@@ -1161,62 +1298,76 @@
             gap: 10px;
         }
         .feedback-submit-btn {
-            background: #007bff;
+            background: #2E5BFF;
             color: white;
             border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .feedback-submit-btn:hover {
+            background: #1D4ED8;
         }
         .feedback-close-btn {
-            background: #ccc;
-            color: #333;
+            background: #E2E8F0;
+            color: #4A5568;
             border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .feedback-close-btn:hover {
+            background: #CBD5E0;
         }
         body.dark-mode .feedback-close-btn {
-            background: #555;
-            color: #e0e0e0;
+            background: #2D3748;
+            color: #E2E8F0;
+        }
+        body.dark-mode .feedback-close-btn:hover {
+            background: #4A5568;
         }
 
         .admin-feedback-card {
-            background: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
             text-align: left;
         }
         body.dark-mode .admin-feedback-card {
-            background: #333;
-            border-color: #555;
+            background: #1E1E1E;
+            border-color: #2D3748;
         }
         .admin-fb-header {
-            font-size: 12px;
-            color: #007bff;
-            font-weight: bold;
-            margin-bottom: 4px;
+            font-size: 13px;
+            color: #2E5BFF;
+            font-weight: 700;
+            margin-bottom: 6px;
         }
         body.dark-mode .admin-fb-header {
-            color: #66b0ff;
+            color: #38BDF8;
         }
         .admin-fb-msg {
             font-size: 14px;
-            color: #333;
-            margin-bottom: 6px;
+            color: #2D3748;
+            margin-bottom: 8px;
             white-space: pre-wrap;
+            line-height: 1.5;
         }
         body.dark-mode .admin-fb-msg {
-            color: #e0e0e0;
+            color: #E2E8F0;
         }
         .admin-fb-time {
-            font-size: 10px;
-            color: #888;
+            font-size: 11px;
+            color: #A0AEC0;
             text-align: right;
         }
 
@@ -1224,48 +1375,48 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            background: #ffffff;
-            border-radius: 8px;
+            background: #FFFFFF;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             min-width: 650px;
         }
 
         .admin-words-table th, 
         .admin-words-table td {
-            border: 1px solid #ddd;
-            padding: 8px 10px;
+            border: 1px solid #E2E8F0;
+            padding: 10px 12px;
             text-align: left;
             vertical-align: middle;
         }
 
         .admin-words-table th {
-            background-color: #28a745;
+            background-color: #059669;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
             white-space: nowrap;
         }
 
         .admin-words-table tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #F8FAFC;
         }
 
         body.dark-mode .admin-words-table {
-            background-color: #2a2a2a;
-            color: #e0e0e0;
+            background-color: #1E1E1E;
+            color: #E2E8F0;
         }
 
         body.dark-mode .admin-words-table th {
-            background-color: #1e7e34;
+            background-color: #047857;
         }
 
         body.dark-mode .admin-words-table td, 
         body.dark-mode .admin-words-table th {
-            border-color: #444;
+            border-color: #2D3748;
         }
 
         body.dark-mode .admin-words-table tr:nth-child(even) {
-            background-color: #333;
+            background-color: #2D3748;
         }
     </style>
 </head>
@@ -1325,27 +1476,27 @@
             </div>
 
             <div class="menu-item">
-                <label onclick="window.location.href='quiz.html'" style="color: #007bff; cursor:pointer;">मेवाती क्विज़</label>
+                <label onclick="window.location.href='quiz.html'" style="color: #2E5BFF; cursor:pointer; font-weight: 500;">मेवाती क्विज़</label>
             </div>
 
             <div class="menu-item">
-                <label onclick="checkAuthAndRedirect('add-word.html')" style="color: #28a745; cursor:pointer; font-weight: bold;">
+                <label onclick="checkAuthAndRedirect('add-word.html')" style="color: #059669; cursor:pointer; font-weight: bold;">
                     शब्द जोड़ें
                 </label>
             </div>
 
             <div class="menu-item" id="userFeedbackMenuItem">
-                <label onclick="openFeedbackModal()" style="color: #40ceeb; cursor: pointer; font-size: 14px;">सुझाव दें</label>
+                <label onclick="openFeedbackModal()" style="color: #0284C7; cursor: pointer; font-size: 14px;">सुझाव दें</label>
             </div>
 
             <div class="menu-item" id="adminFeedbackMenuItem" style="display: none;">
-                <label onclick="fetchAdminFeedbacks()" style="color: #007bff; cursor: pointer; font-size: 14px; font-weight: bold;">
+                <label onclick="fetchAdminFeedbacks()" style="color: #2E5BFF; cursor: pointer; font-size: 14px; font-weight: bold;">
                     प्राप्त सुझाव <span id="feedbackCountLabel">(0)</span>
                 </label>
             </div>
 
             <div class="menu-item" id="adminWordsMenuItem" style="display: none;">
-                <label onclick="fetchAdminSuggestedWords()" style="color: #28a745; cursor: pointer; font-size: 14px; font-weight: bold;">
+                <label onclick="fetchAdminSuggestedWords()" style="color: #059669; cursor: pointer; font-size: 14px; font-weight: bold;">
                     प्राप्त शब्द <span id="wordsCountLabel">(0)</span>
                 </label>
             </div>
@@ -1360,12 +1511,12 @@
 
     <div class="content-container">
         <div id="adminFeedbackBlock" style="display: none; margin: 10px 20px;">
-            <h3 style="font-size: 16px; color: #007bff; margin-bottom: 12px; text-align: left;">यूज़र्स द्वारा भेजे गए सुझाव</h3>
+            <h3 style="font-size: 16px; color: #2E5BFF; margin-bottom: 12px; text-align: left;">यूज़र्स द्वारा भेजे गए सुझाव</h3>
             <div id="adminFeedbackContainer"></div>
         </div>
 
         <div id="adminWordsBlock" style="display: none; margin: 10px 10px; overflow-x: auto;">
-            <h3 style="font-size: 16px; color: #28a745; margin-bottom: 12px; text-align: left;">यूज़र्स द्वारा सुझाए गए नए शब्द</h3>
+            <h3 style="font-size: 16px; color: #059669; margin-bottom: 12px; text-align: left;">यूज़र्स द्वारा सुझाए गए नए शब्द</h3>
             <table class="admin-words-table">
                 <thead>
                     <tr>
@@ -1449,11 +1600,11 @@
     </div>
 
     <div id="aboutSection">
-        <h3>हमारे बारे में</h3>
-        <p>यह हिंदी-मेवाती-अंग्रेज़ी शब्दकोश मेवाती भाषा के संरक्षण, संवर्धन और सुव्यवस्थित दस्तावेजीकरण का एक समर्पित प्रयास है। इसका उद्देश्य मेवाती शब्द-संपदा को संकलित कर विद्यार्थियों, शोधार्थियों और भाषा-प्रेमियों तक प्रमाणिक रूप में पहुँचाना है।
+        <h3 style="color: #2E5BFF; margin-top:0;">हमारे बारे में</h3>
+        <p style="font-size: 13px; line-height: 1.6; text-align: justify;">यह हिंदी-मेवाती-अंग्रेज़ी शब्दकोश मेवाती भाषा के संरक्षण, संवर्धन और सुव्यवस्थित दस्तावेजीकरण का एक समर्पित प्रयास है। इसका उद्देश्य मेवाती शब्द-संपदा को संकलित कर विद्यार्थियों, शोधार्थियों और भाषा-प्रेमियों तक प्रमाणिक रूप में पहुँचाना है।
 इसमें प्रत्येक हिंदी शब्द के शुद्ध मेवाती अर्थ, पर्यायवाची, विलोम, अंग्रेज़ी अनुवाद, उच्चारण, उदाहरण तथा विषय-वर्गीकरण सहित आवश्यक संदर्भ दिए गए हैं, ताकि भाषा सीखना सरल और व्यवस्थित हो सके। यह शब्दकोश निरंतर अद्यतन किया जा रहा है; यदि आपको कोई त्रुटि मिले या नया शब्द सुझाना हो तो आपका सहयोग सादर आमंत्रित है।</p>
-        <p>यूसुफ खान कैथवाड़ा</p>
-        <button onclick="hideAbout()" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">बंद करें</button>
+        <p style="font-weight: 600; color: #4A5568;">यूसुफ खान कैथवाड़ा</p>
+        <button onclick="hideAbout()" style="margin-top: 10px; padding: 6px 16px; cursor: pointer; background: #2E5BFF; color: white; border: none; border-radius: 6px; font-weight: 500;">बंद करें</button>
     </div>
 
     <script>
@@ -1887,7 +2038,6 @@
             }, 200);
         }
 
-        // देवनागरी शब्दकोशीय तुलना (Sorting) फ़ंक्शन
         function compareHindiWords(a, b) {
             const wordA = a.word || "";
             const wordB = b.word || "";
@@ -2226,7 +2376,7 @@
                     const pluralWord = plurals[meaningIndex] || plurals[0];
 
                     if (pluralWord) {
-                        pluralLine = `बहुवचन: <span style="color:black">${escapeHTML(pluralWord)}</span>`;
+                        pluralLine = `बहुवचन: <span style="color:#1A202C; font-weight:600;">${escapeHTML(pluralWord)}</span>`;
                     }
                 }
                 let mewatiType = d.mewatiGender ? d.mewatiGender.split(", ")[meaningIndex] || d.mewatiGender : "";
@@ -3096,7 +3246,7 @@
           window.closeFeedbackModal();
 
           const msg = document.createElement("div");
-          msg.style.cssText = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#28a745; color:#fff; padding:10px 20px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:3000; font-size:14px;";
+          msg.style.cssText = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#059669; color:#fff; padding:10px 20px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:3000; font-size:14px; font-weight:500;";
           msg.textContent = "धन्यवाद! आपका सुझाव सफलतापूर्वक प्राप्त हो गया है।";
           document.body.appendChild(msg);
 
@@ -3142,7 +3292,7 @@
         document.getElementById("settingsMenu").style.display = "none";
         clearResults();
         
-        container.innerHTML = "<p style='font-size:13px; color:#888;'>लोड हो रहा है...</p>";
+        container.innerHTML = "<p style='font-size:13px; color:#A0AEC0;'>लोड हो रहा है...</p>";
         adminBlock.style.display = "block";
         document.getElementById("adminWordsBlock").style.display = "none";
         document.getElementById("wordOfTheDay").style.display = "none";
@@ -3152,7 +3302,7 @@
           const querySnapshot = await getDocs(collection(db, "feedbacks"));
 
           if (querySnapshot.empty) {
-            container.innerHTML = "<p style='font-size:13px; color:#888;'>अभी तक कोई सुझाव प्राप्त नहीं हुआ है।</p>";
+            container.innerHTML = "<p style='font-size:13px; color:#A0AEC0;'>अभी तक कोई सुझाव प्राप्त नहीं हुआ है।</p>";
             document.getElementById("feedbackCountLabel").textContent = "(0)";
             return;
           }
@@ -3198,7 +3348,7 @@
 
         } catch (error) {
           console.error("Fetch Feedbacks Error:", error);
-          container.innerHTML = "<p style='font-size:13px; color:red;'>सुझाव लोड करने में समस्या आई।</p>";
+          container.innerHTML = "<p style='font-size:13px; color:#EF4444;'>सुझाव लोड करने में समस्या आई।</p>";
         }
       };
 
@@ -3214,7 +3364,7 @@
         document.getElementById("settingsMenu").style.display = "none";
         clearResults();
         
-        tableBody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:#888;'>लोड हो रहा है...</td></tr>";
+        tableBody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:#A0AEC0;'>लोड हो रहा है...</td></tr>";
         adminWordsBlock.style.display = "block";
         document.getElementById("adminFeedbackBlock").style.display = "none";
         document.getElementById("wordOfTheDay").style.display = "none";
@@ -3224,7 +3374,7 @@
             const querySnapshot = await getDocs(collection(db, "suggested_words"));
 
             if (querySnapshot.empty) {
-                tableBody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:#888;'>अभी तक कोई शब्द प्राप्त नहीं हुआ है।</td></tr>";
+                tableBody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:#A0AEC0;'>अभी तक कोई शब्द प्राप्त नहीं हुआ है।</td></tr>";
                 document.getElementById("wordsCountLabel").textContent = "(0)";
                 return;
             }
@@ -3271,7 +3421,7 @@
 
         } catch (error) {
             console.error("Fetch Words Error:", error);
-            tableBody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>";
+            tableBody.innerHTML = "<tr><td colspan='8' style='text-align:center; color:#EF4444;'>डेटा लोड करने में समस्या आई।</td></tr>";
         }
       };
 
