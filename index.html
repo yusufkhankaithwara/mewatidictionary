@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <meta name="description" content="हिंदी-मेवाती शब्दकोश। मेवाती भाषा के शब्दों के अर्थ, पर्यायवाची, विलोम, उदाहरण, मुहावरे और कहावतें।">
-<meta property="og:description" content="हिंदी-मेवाती शब्दकोश। मेवाती भाषा के शब्दों के अर्थ, पर्यायवाची, विलोम, उदाहरण, मुहावरे और कहावतें।">
+    <meta property="og:description" content="हिंदी-मेवाती शब्दकोश। मेवाती भाषा के शब्दों के अर्थ, पर्यायवाची, विलोम, उदाहरण, मुहावरे और कहावतें।">
 
     <meta property="og:site_name" content="Mewati Dictionary" />
     <meta property="og:title" content="Mewati Dictionary - हिंदी ⇄ मेवाती शब्दकोश" />
@@ -539,7 +539,7 @@
             border-color: #555;
         }
 
-        /* --- कंपैक्ट (Compact) सेटिंग्स मेनू स्टाइलिंग --- */
+        /* --- कंपैक्ट सेटिंग्स मेनू स्टाइलिंग --- */
         .settings-menu {
             position: absolute;
             top: 45px;
@@ -1190,6 +1190,33 @@
             color: #ffffff !important;
         }
 
+        /* शेयर बटन स्टाइलिंग */
+        .share-word-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #25D366;
+            color: #ffffff !important;
+            border: none;
+            padding: 4px 12px;
+            margin-top: 8px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .share-word-btn:hover {
+            background: #1eb954;
+        }
+        .share-word-btn:active {
+            transform: scale(0.97);
+        }
+        .share-word-btn .material-symbols-outlined {
+            font-size: 16px;
+        }
+
         #feedbackModal {
             display: none;
             position: fixed;
@@ -1396,20 +1423,20 @@
             </div>
 
             <!-- टेक्स्ट साइज़ -->
-<div class="menu-item">
-    <div class="menu-item-left">
-        <label for="textSizeToggle" style="display: flex; align-items: center; gap: 6px;">
-            <span>
-                <span style="font-size: 12px; font-weight: bold;">A</span><span style="font-size: 16px; font-weight: bold;">A</span>
-            </span>
-            <span>टेक्स्ट साइज</span>
-        </label>
-    </div>
-    <label class="toggle-switch">
-        <input type="checkbox" id="textSizeToggle" onchange="toggleTextSize()">
-        <span class="slider"></span>
-    </label>
-</div>
+            <div class="menu-item">
+                <div class="menu-item-left">
+                    <label for="textSizeToggle" style="display: flex; align-items: center; gap: 6px;">
+                        <span>
+                            <span style="font-size: 12px; font-weight: bold;">A</span><span style="font-size: 16px; font-weight: bold;">A</span>
+                        </span>
+                        <span>टेक्स्ट साइज</span>
+                    </label>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="textSizeToggle" onchange="toggleTextSize()">
+                    <span class="slider"></span>
+                </label>
+            </div>
 
             <!-- हमारे बारे में -->
             <div class="menu-item" onclick="window.location.href='about.html'">
@@ -1902,10 +1929,10 @@
             };
 
            if (!document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
-    wordOfTheDayDiv.style.display = "block";
-} else {
-    wordOfTheDayDiv.style.display = "none";
-}
+                wordOfTheDayDiv.style.display = "block";
+            } else {
+                wordOfTheDayDiv.style.display = "none";
+            }
          } 
 
         function initializeDuplicateMewatiWords() {
@@ -1983,12 +2010,12 @@
                 }
             });
 
-              if (slider.children.length > 0 && !document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
-    document.getElementById("duplicateSection").style.display = "block";
-} else {
-    document.getElementById("duplicateSection").style.display = "none";
-}
-      }
+            if (slider.children.length > 0 && !document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
+                document.getElementById("duplicateSection").style.display = "block";
+            } else {
+                document.getElementById("duplicateSection").style.display = "none";
+            }
+        }
 
         function debouncedSuggestions() {
             clearTimeout(debounceTimer);
@@ -2214,6 +2241,33 @@
             return result;
         }
 
+        /* --- वर्ड शेयरिंग फ़ंक्शन --- */
+        function shareWord(word) {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?word=${encodeURIComponent(word)}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: `${word} - मेवाती शब्दकोश`,
+                    text: `हिंदी ⇄ मेवाती शब्दकोश पर '${word}' का अर्थ देखें:`,
+                    url: shareUrl
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(shareUrl);
+                alert(`'${word}' का शेयर लिंक कॉपी हो गया है!`);
+            }
+        }
+
+        /* --- URL Parameter Handling (Deep Linking) --- */
+        function checkUrlAndOpenWord() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchedWord = urlParams.get('word');
+
+            if (searchedWord) {
+                document.getElementById("wordInput").value = searchedWord;
+                handleExactWordClick(searchedWord);
+            }
+        }
+
         function showResult(input) {
             clearResults();
             let searchData = {};
@@ -2276,6 +2330,12 @@
 
             currentSearchType = searchData.type;
 
+            // परिणाम दिखने पर एड्रेस बार में ?word=शब्द अपडेट करें बिना पेज रीलोड किए
+            if (cleanInput) {
+                const newUrl = `${window.location.pathname}?word=${encodeURIComponent(cleanInput)}`;
+                window.history.replaceState({ word: cleanInput }, '', newUrl);
+            }
+
             let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
                 imageLabel = "", imageHtml = "",
                 synonymLabel = "", synonymText = "", oppositeLabel = "", oppositeText = "", 
@@ -2301,6 +2361,9 @@
                 }
             });
 
+            // शेयर बटन का HTML घटक
+            const shareBtnHtml = `<br><button class="share-word-btn" onclick="shareWord('${escapeString(cleanInput)}')"><span class="material-symbols-outlined">share</span>शेयर करें</button>`;
+
             if (searchData.type === "hindi" && data) {
                 const d = data;
                 wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
@@ -2308,7 +2371,7 @@
                 result = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के मेवाती अर्थ:<br>` + meanings.map(m => {
                     const safeM = escapeString(m);
                     return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
-                }).join("<br>");
+                }).join("<br>") + shareBtnHtml;
 
                 if (d.english) {
                     const engParts = d.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
@@ -2362,7 +2425,7 @@
                     return `• ${linksForThisEntry}`;
                 }).join("<br>");
 
-                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiWordsList}`;
+                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiWordsList}` + shareBtnHtml;
 
                 document.getElementById("stickyWordStrip").textContent = cleanInput;
                 
@@ -2479,7 +2542,7 @@
                 result = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ: ${hindiLinks}<br>मेवाती अर्थ:<br>` + meanings.map(m => {
                     const safeM = escapeString(m);
                     return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
-                }).join("<br>");
+                }).join("<br>") + shareBtnHtml;
             } else if (searchData.type === "translit" && data) {
                 const d = data;
                 const meanings = d.meaning.split(/\s*,\s*/);
@@ -2501,7 +2564,7 @@
                 }).join(", ");
 
                 const otherHindiWords = relatedHindiWords.filter(hindi => hindi !== d.hindiWord).map(hindi => `<a href="#" class="unclickable-text" onclick="handleExactWordClick('${escapeString(hindi)}');return false">${escapeHTML(hindi)}</a>`).join(", ");
-                result = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के हिंदी अर्थ: ${primaryHindiLinks}${otherHindiWords ? ", " + otherHindiWords : ""}`;
+                result = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के हिंदी अर्थ: ${primaryHindiLinks}${otherHindiWords ? ", " + otherHindiWords : ""}` + shareBtnHtml;
                 
                 const uniqueHindiSet = new Set(relatedHindiWords);
                 const uniqueRelatedHindiWords = [...uniqueHindiSet];
@@ -3035,6 +3098,10 @@
             const input = document.getElementById("wordInput");
             input.value = "";
             document.getElementById("clearSearch").style.display = "none";
+
+            // होमपेज URL पर वापस आएं
+            window.history.replaceState({}, '', window.location.pathname);
+
             showSuggestions();
         }
 
@@ -3092,6 +3159,9 @@
 
             document.getElementById("suggestions").style.display = "none";
 
+            // URL रीसेट करें
+            window.history.replaceState({}, '', window.location.pathname);
+
             clearResults();
 
             document.getElementById("wordOfTheDay").style.display = "block";
@@ -3128,6 +3198,10 @@
             initializeTrie();
             initializeWordOfTheDay();
             initializeDuplicateMewatiWords();
+
+            // गूगल शीट डेटा लोड होने के बाद URL चेक करके डायरेक्ट शब्द खोलना
+            checkUrlAndOpenWord();
+
             if (localStorage.getItem("darkMode") === "true") {
                 document.body.classList.add("dark-mode");
                 document.getElementById("darkModeToggle").checked = true;
