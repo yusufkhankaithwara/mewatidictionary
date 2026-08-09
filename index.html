@@ -212,8 +212,8 @@
             background: rgba(128, 0, 0, 0.1);
             color: #800000;
             border: none;
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             display: none;
             align-items: center;
@@ -2801,7 +2801,7 @@
             const stickyStrip = document.getElementById("stickyWordStrip");
             if (mainWordEl) {
                 const rect = mainWordEl.getBoundingClientRect();
-                if (rect.top <= 95) {
+                if (rect.top <= 97) {
                     stickyStrip.classList.add("visible");
                 } else {
                     stickyStrip.classList.remove("visible");
@@ -3170,3 +3170,4 @@
     </script>
 </body>
 </html>
+
