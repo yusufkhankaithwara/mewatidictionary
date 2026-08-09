@@ -1,44 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  
-  <!-- मुख्य होमपेज -->
   <url>
-    <loc>https://mewatidictionary.in/</loc>
+    <loc>https://www.mewatidictionary.in/</loc>
     <lastmod>2026-08-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- हमारे बारे में -->
   <url>
-    <loc>https://mewatidictionary.in/about</loc>
+    <loc>https://www.mewatidictionary.in/about</loc>
     <lastmod>2026-08-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- मेवाती क्विज़ -->
   <url>
-    <loc>https://mewatidictionary.in/quiz</loc>
+    <loc>https://www.mewatidictionary.in/quiz</loc>
     <lastmod>2026-08-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- शब्द जोड़ें -->
   <url>
-    <loc>https://mewatidictionary.in/add-word</loc>
+    <loc>https://www.mewatidictionary.in/add-word</loc>
     <lastmod>2026-08-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-
-  <!-- लॉगिन पेज -->
   <url>
-    <loc>https://mewatidictionary.in/login</loc>
+    <loc>https://www.mewatidictionary.in/login</loc>
     <lastmod>2026-08-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-
 </urlset>
