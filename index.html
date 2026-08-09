@@ -2240,22 +2240,30 @@
             });
             return result;
         }
+function shareWord(word) {
+    const baseUrl = "https://mewatidictionary.in/";
+    
+    // इनक्रिप्शन/एनकोडिंग के बिना साफ लिंक
+    const shareUrl = `${baseUrl}?word=${word}`;
+    
+    // 'मित्र के अर्थ' स्वरूप और अगली लाइन में लिंक
+    const shareText = `${word} के अर्थ\n${shareUrl}`;
 
-        /* --- वर्ड शेयरिंग फ़ंक्शन --- */
-        function shareWord(word) {
-            const shareUrl = `${window.location.origin}${window.location.pathname}?word=${encodeURIComponent(word)}`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: `${word} - मेवाती शब्दकोश`,
-                    text: `हिंदी ⇄ मेवाती शब्दकोश पर '${word}' का अर्थ देखें:`,
-                    url: shareUrl
-                }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(shareUrl);
-                alert(`'${word}' का शेयर लिंक कॉपी हो गया है!`);
-            }
-        }
+    if (navigator.share) {
+        navigator.share({
+            text: shareText
+        }).catch(() => {
+            fallbackWhatsAppShare(shareText);
+        });
+    } else {
+        fallbackWhatsAppShare(shareText);
+    }
+}
+
+function fallbackWhatsAppShare(text) {
+    const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, '_blank');
+}
 
         /* --- URL Parameter Handling (Deep Linking) --- */
         function checkUrlAndOpenWord() {
@@ -2332,7 +2340,8 @@
 
             // परिणाम दिखने पर एड्रेस बार में ?word=शब्द अपडेट करें बिना पेज रीलोड किए
             if (cleanInput) {
-                const newUrl = `${window.location.pathname}?word=${encodeURIComponent(cleanInput)}`;
+                const newUrl = `${window.location.pathname}?word=${cleanInput}`;
+window.history.replaceState({ word: cleanInput }, '', newUrl);
                 window.history.replaceState({ word: cleanInput }, '', newUrl);
             }
 
