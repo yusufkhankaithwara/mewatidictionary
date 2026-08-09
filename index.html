@@ -2257,7 +2257,7 @@
 function shareWord(word) {
     const baseUrl = "https://mewatidictionary.in/";
     
-    // स्पेस की जगह - (हाइफन) लगाएं ताकि लिंक सुंदर दिखे और टूटे नहीं
+    // स्पेस को हाइफ़न (-) से बदलें ताकि लिंक ब्रेक न हो
     const formattedWord = word.trim().replace(/\s+/g, '-');
     const shareUrl = `${baseUrl}?word=${formattedWord}`;
     
@@ -2274,29 +2274,18 @@ function shareWord(word) {
     }
 }
 
-/* URL चेक करने वाला फ़ंक्शन (अपडेटेड) */
+/* URL Parameter Handling (Deep Linking) */
 function checkUrlAndOpenWord() {
     const urlParams = new URLSearchParams(window.location.search);
     let searchedWord = urlParams.get('word');
 
     if (searchedWord) {
-        // - (हाइफन) को वापस स्पेस में बदलें ताकि शब्द सही से सर्च हो सके
-        searchedWord = searchedWord.replace(/-/g, ' ');
+        // हाइफ़न (-) को वापस स्पेस में बदलें
+        searchedWord = decodeURIComponent(searchedWord).replace(/-/g, ' ');
         document.getElementById("wordInput").value = searchedWord;
         handleExactWordClick(searchedWord);
     }
 }
-
-        /* --- URL Parameter Handling (Deep Linking) --- */
-        function checkUrlAndOpenWord() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const searchedWord = urlParams.get('word');
-
-            if (searchedWord) {
-                document.getElementById("wordInput").value = searchedWord;
-                handleExactWordClick(searchedWord);
-            }
-        }
 
         function showResult(input) {
             clearResults();
@@ -2360,11 +2349,12 @@ function checkUrlAndOpenWord() {
 
             currentSearchType = searchData.type;
 
-            // परिणाम दिखने पर एड्रेस बार में ?word=शब्द अपडेट करें बिना पेज रीलोड किए
-            if (cleanInput) {
-               const newUrl = `${window.location.pathname}?word=${cleanInput}`;
-               window.history.replaceState({ word: cleanInput }, '', newUrl);
-             }
+            // परिणाम दिखने पर एड्रेस बार में ?word=शब्द अपडेट करें बिना पेज रीलोड किए (हाइफन फॉर्मेट)
+if (cleanInput) {
+   const formattedWord = cleanInput.trim().replace(/\s+/g, '-');
+   const newUrl = `${window.location.pathname}?word=${formattedWord}`;
+   window.history.replaceState({ word: cleanInput }, '', newUrl);
+}
 
             let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
                 imageLabel = "", imageHtml = "",
