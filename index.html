@@ -1588,6 +1588,7 @@
     <div id="aboutSection">
         <h3>हमारे बारे में</h3>
         <p>यह हिंदी-मेवाती-अंग्रेज़ी शब्दकोश मेवाती भाषा के संरक्षण, संवर्धन और सुव्यवस्थित दस्तावेजीकरण का एक समर्पित प्रयास है। इसका उद्देश्य मेवाती शब्द-संपदा को संकलित कर विद्यार्थियों, शोधार्थियों और भाषा-प्रेमियों तक प्रमाणिक रूप में पहुँचाना है।
+
 इसमें प्रत्येक हिंदी शब्द के शुद्ध मेवाती अर्थ, पर्यायवाची, विलोम, अंग्रेज़ी अनुवाद, उच्चारण, उदाहरण तथा विषय-वर्गीकरण सहित आवश्यक संदर्भ दिए गए हैं, ताकि भाषा सीखना सरल और व्यवस्थित हो सके। यह शब्दकोश निरंतर अद्यतन किया जा रहा है; यदि आपको कोई त्रुटि मिले या नया शब्द सुझाना हो तो आपका सहयोग सादर आमंत्रित है।</p>
         <p>यूसुफ खान कैथवाड़ा</p>
         <button onclick="hideAbout()" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">बंद करें</button>
@@ -1625,7 +1626,7 @@
         class TrieNode {
             constructor() {
                 this.children = {};
-                this.words = new Set();
+                this.words = new Map();
             }
         }
 
@@ -1634,15 +1635,18 @@
                 this.root = new TrieNode();
             }
 
-            insert(word, type, data, index) {
+            insert(word, type, index) {
                 let node = this.root;
                 const key = word.toLowerCase();
+                const itemKey = `${word}_${type}_${index}`;
                 for (let char of key) {
                     if (!node.children[char]) {
                         node.children[char] = new TrieNode();
                     }
                     node = node.children[char];
-                    node.words.add(JSON.stringify({ word, type, data, index }));
+                    if (!node.words.has(itemKey)) {
+                        node.words.set(itemKey, { word, type, index });
+                    }
                 }
             }
 
@@ -1653,14 +1657,20 @@
                     if (!node.children[char]) return [];
                     node = node.children[char];
                 }
-                return [...node.words].map(item => JSON.parse(item));
+                return Array.from(node.words.values()).map(item => ({
+                    ...item,
+                    data: dictionary[item.index]
+                }));
             }
 
             searchByLetter(letter) {
                 let node = this.root;
                 const char = letter.toLowerCase();
                 if (!node.children[char]) return [];
-                return [...node.children[char].words].map(item => JSON.parse(item));
+                return Array.from(node.children[char].words.values()).map(item => ({
+                    ...item,
+                    data: dictionary[item.index]
+                }));
             }
         }
 
@@ -1741,7 +1751,7 @@
                 return [];
             }
         }
- 
+
         function processRows(rows) {
             if (!Array.isArray(rows)) return;
             dictionary = [];
@@ -1792,31 +1802,28 @@
                     .filter(w => w);
 
                 hindiWords.forEach(part => {
-                    trie.insert(part, "hindi", entry, index);
+                    trie.insert(part, "hindi", index);
                 });
                 const meanings = entry.meaning.split(/,\s*/).map(m => m.trim());
                 meanings.forEach(meaning => {
                     if (meaning) {
-                        trie.insert(meaning, "mewati", { ...entry, hindiWord: word }, index);
+                        trie.insert(meaning, "mewati", index);
                     }
                 });
                 entry.subject.forEach(tag => {
                     if(tag){
-                        trie.insert(tag, "tag", entry, index);
+                        trie.insert(tag, "tag", index);
                     }
                 });
                 if (entry.english) {
                     const engParts = entry.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                     engParts.forEach(eng => {
-                        trie.insert(eng, "english", { ...entry, hindiWord: word }, index);
+                        trie.insert(eng, "english", index);
                     });
                 }
                 entry.mewatiTranslit.forEach((translit) => {
                     if (translit) {
-                        trie.insert(translit, "translit", {
-                            ...entry,
-                            hindiWord: word
-                        }, index);
+                        trie.insert(translit, "translit", index);
                     }
                 });
             }); 
@@ -1824,7 +1831,12 @@
 
         function escapeString(str) {
             if (!str || typeof str !== 'string') return "";
-            return str.replace(/'/g, "\\ me");
+            return str.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        }
+
+        function escapeRegExp(string) {
+            if (!string || typeof string !== 'string') return "";
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
         function initializeLetterFilter() {
@@ -2112,6 +2124,7 @@
                     suggestionsList.appendChild(li);
                 }
             });
+
             const otherSuggestions = matches.filter(match => match.type !== "hindi");
             otherSuggestions.forEach(match => {
                 let suggestionKey = `${match.word}-${match.type}-${match.index}`;
@@ -2240,6 +2253,7 @@
             });
             return result;
         }
+
 function shareWord(word) {
     const baseUrl = "https://mewatidictionary.in/";
     
@@ -2341,7 +2355,7 @@ function fallbackWhatsAppShare(text) {
             // परिणाम दिखने पर एड्रेस बार में ?word=शब्द अपडेट करें बिना पेज रीलोड किए
             if (cleanInput) {
                const newUrl = `${window.location.pathname}?word=${cleanInput}`;
-window.history.replaceState({ word: cleanInput }, '', newUrl);
+               window.history.replaceState({ word: cleanInput }, '', newUrl);
              }
 
             let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
@@ -2467,9 +2481,11 @@ window.history.replaceState({ word: cleanInput }, '', newUrl);
                     exampleText = escapeHTML(d.example.split(", ")[meaningIndex]?.trim() || d.example.split(", ")[0]?.trim() || "");
                     const wordsToHighlight = cleanInput.split(" ");
                     wordsToHighlight.forEach(word => {
+                        if (!word) return;
                         const safeW = escapeHTML(word);
                         if (exampleText && exampleText.includes(safeW)) {
-                            exampleText = exampleText.replace(new RegExp(safeW, 'g'), `<span class="highlight">${safeW}</span>`);
+                            const escapedWord = escapeRegExp(safeW);
+                            exampleText = exampleText.replace(new RegExp(escapedWord, 'g'), `<span class="highlight">${safeW}</span>`);
                         }
                     });
                 }
@@ -2606,9 +2622,11 @@ window.history.replaceState({ word: cleanInput }, '', newUrl);
                     exampleText = escapeHTML(d.example.split(", ")[translitIndex]?.trim() || d.example.split(", ")[0]?.trim() || "");
                     const wordsToHighlight = mewatiMeaning.split(" ");
                     wordsToHighlight.forEach(word => {
+                        if (!word) return;
                         const safeW = escapeHTML(word);
                         if (exampleText && exampleText.includes(safeW)) {
-                            exampleText = exampleText.replace(new RegExp(safeW, 'g'), `<span class="highlight">${safeW}</span>`);
+                            const escapedWord = escapeRegExp(safeW);
+                            exampleText = exampleText.replace(new RegExp(escapedWord, 'g'), `<span class="highlight">${safeW}</span>`);
                         }
                     });
                 }
@@ -3521,4 +3539,3 @@ window.history.replaceState({ word: cleanInput }, '', newUrl);
     </script>
 </body>
 </html>
-
