@@ -2257,10 +2257,10 @@
 function shareWord(word) {
     const baseUrl = "https://mewatidictionary.in/";
     
-    // इनक्रिप्शन/एनकोडिंग के बिना साफ लिंक
-    const shareUrl = `${baseUrl}?word=${word}`;
+    // स्पेस की जगह - (हाइफन) लगाएं ताकि लिंक सुंदर दिखे और टूटे नहीं
+    const formattedWord = word.trim().replace(/\s+/g, '-');
+    const shareUrl = `${baseUrl}?word=${formattedWord}`;
     
-    // 'मित्र के अर्थ' स्वरूप और अगली लाइन में लिंक
     const shareText = `${word} के अर्थ\n${shareUrl}`;
 
     if (navigator.share) {
@@ -2274,9 +2274,17 @@ function shareWord(word) {
     }
 }
 
-function fallbackWhatsAppShare(text) {
-    const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-    window.open(waUrl, '_blank');
+/* URL चेक करने वाला फ़ंक्शन (अपडेटेड) */
+function checkUrlAndOpenWord() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let searchedWord = urlParams.get('word');
+
+    if (searchedWord) {
+        // - (हाइफन) को वापस स्पेस में बदलें ताकि शब्द सही से सर्च हो सके
+        searchedWord = searchedWord.replace(/-/g, ' ');
+        document.getElementById("wordInput").value = searchedWord;
+        handleExactWordClick(searchedWord);
+    }
 }
 
         /* --- URL Parameter Handling (Deep Linking) --- */
@@ -3539,3 +3547,4 @@ function fallbackWhatsAppShare(text) {
     </script>
 </body>
 </html>
+
