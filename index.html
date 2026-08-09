@@ -2240,14 +2240,19 @@
             });
             return result;
         }
+  /* --- अपडेटेड शेयर फ़ंक्शन (स्पेस फिक्स और क्लीन लिंक) --- */
 function shareWord(word) {
+    if (!word) return;
+
+    let cleanWord = word.trim();
     const baseUrl = "https://mewatidictionary.in/";
-    
-    // इनक्रिप्शन/एनकोडिंग के बिना साफ लिंक
-    const shareUrl = `${baseUrl}?word=${word}`;
-    
-    // 'मित्र के अर्थ' स्वरूप और अगली लाइन में लिंक
-    const shareText = `${word} के अर्थ\n${shareUrl}`;
+
+    // स्पेस को %20 से बदला गया है ताकि व्हाट्सऐप पर लिंक टूटे नहीं
+    const urlWord = cleanWord.replace(/\s+/g, "%20");
+    const shareUrl = `${baseUrl}?word=${urlWord}`;
+
+    // व्हाट्सऐप मैसेज फ़ॉर्मेट
+    const shareText = `${cleanWord} के अर्थ\n${shareUrl}`;
 
     if (navigator.share) {
         navigator.share({
@@ -2265,7 +2270,7 @@ function fallbackWhatsAppShare(text) {
     window.open(waUrl, '_blank');
 }
 
-        /* --- URL Parameter Handling (Deep Linking) --- */
+      /* --- URL Parameter Handling (Deep Linking) --- */
         function checkUrlAndOpenWord() {
             const urlParams = new URLSearchParams(window.location.search);
             const searchedWord = urlParams.get('word');
@@ -2370,8 +2375,15 @@ window.history.replaceState({ word: cleanInput }, '', newUrl);
                 }
             });
 
-            // शेयर बटन का HTML घटक
-            const shareBtnHtml = `<br><button class="share-word-btn" onclick="shareWord('${escapeString(cleanInput)}')"><span class="material-symbols-outlined">share</span>शेयर करें</button>`;
+            // यदि खोजा गया इनपुट बहुत लंबा वाक्य है, तो शेयर के लिए उसका मुख्य शब्द लें
+let displayWord = cleanInput;
+if (cleanInput.length > 30 && data && data.hindiWord) {
+    displayWord = data.hindiWord.split(/[,;]/)[0].trim();
+}
+
+// शेयर बटन का HTML
+const shareBtnHtml = `<br><button class="share-word-btn" onclick="shareWord('${escapeString(displayWord)}')"><span class="material-symbols-outlined">share</span>शेयर करें</button>`;
+
 
             if (searchData.type === "hindi" && data) {
                 const d = data;
