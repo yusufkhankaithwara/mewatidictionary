@@ -2240,28 +2240,26 @@
             });
             return result;
         }
-  /* --- अपडेटेड शेयर फ़ंक्शन (स्पेस फिक्स और क्लीन लिंक) --- */
+/* --- पूरे वाक्य/शब्द को शेयर करने का फ़ंक्शन --- */
 function shareWord(word) {
     if (!word) return;
-
-    let cleanWord = word.trim();
+    const cleanWord = word.trim();
     const baseUrl = "https://mewatidictionary.in/";
 
-    // स्पेस को %20 से बदला गया है ताकि व्हाट्सऐप पर लिंक टूटे नहीं
-    const urlWord = cleanWord.replace(/\s+/g, "%20");
-    const shareUrl = `${baseUrl}?word=${urlWord}`;
-
-    // व्हाट्सऐप मैसेज फ़ॉर्मेट
-    const shareText = `${cleanWord} के अर्थ\n${shareUrl}`;
+    // पूरे वाक्य का एनकोडेड URL (ताकि लिंक बीच में न टूटे)
+    const shareUrl = `${baseUrl}?word=${encodeURIComponent(cleanWord)}`;
 
     if (navigator.share) {
+        // नेटिव शेयर सिस्टम (टेक्स्ट और लिंक को अलग-अलग साफ तरीके से भेजता है)
         navigator.share({
-            text: shareText
+            title: `${cleanWord} - मेवाती शब्दकोश`,
+            text: `${cleanWord} के अर्थ`,
+            url: shareUrl
         }).catch(() => {
-            fallbackWhatsAppShare(shareText);
+            fallbackWhatsAppShare(`${cleanWord} के अर्थ\n${shareUrl}`);
         });
     } else {
-        fallbackWhatsAppShare(shareText);
+        fallbackWhatsAppShare(`${cleanWord} के अर्थ\n${shareUrl}`);
     }
 }
 
@@ -2270,7 +2268,7 @@ function fallbackWhatsAppShare(text) {
     window.open(waUrl, '_blank');
 }
 
-      /* --- URL Parameter Handling (Deep Linking) --- */
+        /* --- URL Parameter Handling (Deep Linking) --- */
         function checkUrlAndOpenWord() {
             const urlParams = new URLSearchParams(window.location.search);
             const searchedWord = urlParams.get('word');
@@ -2375,15 +2373,8 @@ window.history.replaceState({ word: cleanInput }, '', newUrl);
                 }
             });
 
-            // यदि खोजा गया इनपुट बहुत लंबा वाक्य है, तो शेयर के लिए उसका मुख्य शब्द लें
-let displayWord = cleanInput;
-if (cleanInput.length > 30 && data && data.hindiWord) {
-    displayWord = data.hindiWord.split(/[,;]/)[0].trim();
-}
-
-// शेयर बटन का HTML
-const shareBtnHtml = `<br><button class="share-word-btn" onclick="shareWord('${escapeString(displayWord)}')"><span class="material-symbols-outlined">share</span>शेयर करें</button>`;
-
+            // पूरे वाक्य/शब्द का ही शेयर बटन
+const shareBtnHtml = `<br><button class="share-word-btn" onclick="shareWord('${escapeString(cleanInput)}')"><span class="material-symbols-outlined">share</span>शेयर करें</button>`;
 
             if (searchData.type === "hindi" && data) {
                 const d = data;
