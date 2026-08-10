@@ -170,32 +170,33 @@
             border-color: #555;
         }
         #stickyWordContainer {
-            position: fixed;
-            top: 90px;
-            left: 0;
-            right: 0;
-            max-width: 600px;
-            margin: 0 auto;
-            z-index: 998;
-            pointer-events: none;
-        }
+    position: fixed;
+    top: 90px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    z-index: 998;
+    pointer-events: none;
+}
         #stickyWordStrip {
-            background: #E8E4DC;
-            padding: 6px 20px;
-            font-weight: bold;
-            font-size: 16px;
-            color: #800000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            pointer-events: auto;
-            position: relative;
-        }
+    background: #E8E4DC;
+    padding: 6px 20px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #800000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: auto;
+    position: relative;
+    width: 100%;
+}
         #stickyWordStrip.visible {
             opacity: 1;
             visibility: visible;
@@ -206,26 +207,26 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
         .sticky-share-btn {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(128, 0, 0, 0.1);
-            color: #800000;
-            border: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            padding: 0;
-            flex-shrink: 0;
-            pointer-events: auto;
-            z-index: 999;
-        }
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(128, 0, 0, 0.1);
+    color: #800000;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    padding: 0;
+    flex-shrink: 0;
+    pointer-events: auto;
+    z-index: 999;
+}
         .sticky-share-btn:hover {
             background: rgba(128, 0, 0, 0.2);
         }
