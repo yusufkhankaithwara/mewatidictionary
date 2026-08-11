@@ -1691,8 +1691,11 @@
                     .map(w => w.trim())
                     .filter(w => w);
                 hindiWords.forEach(part => {
-                    trie.insert(part, "hindi", index);
-                });
+    // केवल वही हिंदी शब्द सजेशन इंडेक्स में जाएंगे जो 5 शब्द या उससे कम के हैं
+    if (part.split(/\s+/).length <= 5) {
+        trie.insert(part, "hindi", index);
+    }
+});
                 const meanings = entry.meaning.split(/,\s*/).map(m => m.trim());
                 meanings.forEach(meaning => {
                     if (meaning) {
@@ -2224,15 +2227,23 @@
                 }
                 const uniqueHindiSet = new Set(relatedHindiWords);
                 const uniqueRelatedHindiWords = [...uniqueHindiSet];
-                const hindiWordsList = uniqueRelatedHindiWords.map(hindi => {
-                    const parts = hindi.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
-                    const linksForThisEntry = parts.map(part => {
-                        const safePart = escapeString(part);
-                        return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
-                    }).join(", ");
-                    return `• ${linksForThisEntry}`;
-                }).join("<br>");
-                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiWordsList}`;
+                 const hindiWordsList = uniqueRelatedHindiWords.map(hindi => {
+    const parts = hindi.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
+    const linksForThisEntry = parts.map(part => {
+        const wordCount = part.split(/\s+/).length;
+        
+        // अगर 5 शब्द से ज्यादा का वाक्य है तो अनक्लिकेबल (साधारण टेक्स्ट) बनाएं
+        if (wordCount > 5) {
+            return `<span class="highlight-word" style="font-weight: normal;">${escapeHTML(part)}</span>`;
+        } else {
+            // 5 या उससे कम शब्दों के लिए क्लिक योग्य लिंक
+            const safePart = escapeString(part);
+            return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
+        }
+    }).join(", ");
+    return `• ${linksForThisEntry}`;
+}).join("<br>");
+               result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiWordsList}`;
                 const uniqueEnglishSet = new Set();
                 uniqueRelatedHindiWords.forEach(hindi => {
                     const entry = dictionary.find(e => e.hindiWord === hindi);
@@ -2481,15 +2492,23 @@
                     document.getElementById("rhymeBlock").style.display = "block";
                 }
             }
-            const relatedWords = findRelatedWords(cleanInput).filter(w => w !== cleanInput);
-            if (relatedWords.length) {
-                relatedLabel = "खोजे गए शब्द से संबंधित परिणाम:";
-                relatedText = relatedWords.filter(w => w && w.trim()).map(w => {
-                    const safeW = escapeString(w);
-                    return `<button class="related-btn" onclick="handleExactWordClick('${safeW}'); return false;">${escapeHTML(w)}</button>`;
-                }).join(" ");
-                document.getElementById("relatedBlock").style.display = "block";
-            }
+            const relatedWords = findRelatedWords(cleanInput).filter(w => {
+    if (!w || w === cleanInput) return false;
+    // केवल वही शब्द/वाक्य रहेंगे जिनमें 5 या 5 से कम शब्द हैं
+    return w.trim().split(/\s+/).length <= 5;
+});
+
+if (relatedWords.length) {
+    relatedLabel = "खोजे गए शब्द से संबंधित परिणाम:";
+    relatedText = relatedWords.map(w => {
+        const safeW = escapeString(w);
+        return `<button class="related-btn" onclick="handleExactWordClick('${safeW}'); return false;">${escapeHTML(w)}</button>`;
+    }).join(" ");
+    document.getElementById("relatedBlock").style.display = "block";
+} else {
+    document.getElementById("relatedBlock").style.display = "none";
+}
+
             let coupletLabelText = "";
             let coupletText = "";
             if (searchData.type === "mewati" && data) {
