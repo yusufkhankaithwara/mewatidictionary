@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>हमारे बारे में - मेवाती शब्दकोश</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -28,7 +28,10 @@
             margin: 0;
             min-height: 100vh;
             background: var(--bg);
-            font-family: 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Noto Sans Devanagari',
+                -apple-system,
+                BlinkMacSystemFont,
+                sans-serif;
             color: var(--text);
             display: flex;
             flex-direction: column;
@@ -36,6 +39,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* TOP BAR */
         .topbar {
             width: 100%;
             background: #ffffff;
@@ -68,6 +72,7 @@
             color: #1a1a1a;
         }
 
+        /* MAIN */
         .container {
             width: 100%;
             max-width: 680px;
@@ -100,15 +105,23 @@
             margin: 0 0 16px 0;
         }
 
-        .intro-text:last-of-type {
-            margin-bottom: 24px;
-        }
-
+        /* AUTHOR */
         .author-section {
             margin-top: 28px;
             padding-top: 20px;
             border-top: 1px solid #e8e4dc;
             text-align: center;
+        }
+
+        .author-photo {
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 14px auto;
+            border: 2px solid #e0dcd3;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .author-label {
@@ -118,13 +131,23 @@
             font-weight: 500;
         }
 
+        /* CLICKABLE NAME */
         .author-name {
             margin: 0;
             color: var(--accent-dark);
             font-size: 1.25rem;
             font-weight: 700;
+            cursor: pointer;
+            display: inline-block;
+            transition: all 0.2s ease;
         }
 
+        .author-name:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        /* BACK BUTTON */
         .back-btn-wrapper {
             margin-top: 24px;
             padding-top: 20px;
@@ -152,60 +175,513 @@
             transform: translateY(-1px);
         }
 
-        .back-btn:active {
-            transform: translateY(0);
+        /* =========================================
+           ABOUT MODAL
+        ========================================= */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.48);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .profile-card {
+            width: 100%;
+            max-width: 560px;
+            max-height: 92vh;
+            overflow-y: auto;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+            position: relative;
+            animation: profileIn 0.22s ease-out;
+        }
+
+        @keyframes profileIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* PROFILE HEADER */
+
+        .profile-header {
+            text-align: center;
+            padding: 30px 24px 22px;
+            background: #f8f5ee;
+            border-bottom: 1px solid #e8e4dc;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .profile-photo {
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ffffff;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.13);
+            margin-bottom: 12px;
+        }
+
+        .profile-name {
+            margin: 0;
+            color: var(--accent-dark);
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .profile-role {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* CLOSE */
+
+        .close-btn {
+            position: absolute;
+            top: 13px;
+            right: 15px;
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.06);
+            color: #555;
+            font-size: 22px;
+            line-height: 34px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        /* PROFILE CONTENT */
+
+        .profile-content {
+            padding: 24px;
+        }
+
+        .profile-intro {
+            margin: 0 0 22px;
+            font-size: 15px;
+            line-height: 1.8;
+            text-align: justify;
+            color: var(--text);
+        }
+
+        .section-title {
+            font-size: 16px;
+            color: var(--accent-dark);
+            font-weight: 800;
+            margin: 22px 0 12px;
+            padding-bottom: 7px;
+            border-bottom: 1px solid #eee9df;
+        }
+
+        /* INFO */
+
+        .info-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 12px;
+            padding: 9px 0;
+            border-bottom: 1px solid #f1eee8;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            min-width: 95px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        /* EDUCATION */
+
+        .education-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .education-list li {
+            position: relative;
+            padding: 8px 0 8px 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            border-bottom: 1px solid #f1eee8;
+        }
+
+        .education-list li:last-child {
+            border-bottom: none;
+        }
+
+        .education-list li::before {
+            content: "•";
+            position: absolute;
+            left: 3px;
+            color: var(--accent);
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .profile-footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #eee9df;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 480px) {
+
+            .single-card {
+                padding: 28px 18px;
+            }
+
+            .profile-card {
+                max-height: 94vh;
+                border-radius: 18px;
+            }
+
+            .profile-header {
+                padding: 26px 18px 20px;
+            }
+
+            .profile-content {
+                padding: 20px 18px;
+            }
+
+            .profile-name {
+                font-size: 21px;
+            }
+
+            .info-item {
+                display: block;
+            }
+
+            .info-label {
+                display: block;
+                margin-bottom: 2px;
+            }
         }
     </style>
 </head>
 
 <body>
 
+    <!-- TOP BAR -->
+
     <header class="topbar">
         <div class="brand">
-            <!-- अपडेटेड इमेज टैग - डायरेक्ट लिंक और नो-रिफ़रर पॉलिसी के साथ -->
-            <img src="https://drive.google.com/thumbnail?id=16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37&sz=w500" 
-                 alt="मेवाती शब्दकोश लोगो" 
-                 referrerpolicy="no-referrer">
+
+            <img
+                src="https://lh3.googleusercontent.com/d/1TWBGpFaHrimnuTfESRaFnF2F4_1mpKOP"
+                alt="मेवाती शब्दकोश लोगो">
+
             <h1>हमारे बारे में</h1>
+
         </div>
     </header>
 
+
+    <!-- MAIN CONTENT -->
+
     <main class="container">
+
         <article class="single-card">
-            
-            <h2 class="main-heading">मेवाती शब्दकोश : परिचय</h2>
+
+            <h2 class="main-heading">
+                मेवाती शब्दकोश : परिचय
+            </h2>
+
 
             <p class="intro-text">
                 मेवाती भाषा मेव समाज की सांस्कृतिक पहचान, लोकजीवन और ऐतिहासिक चेतना की जीवंत अभिव्यक्ति है। समय के साथ इसके अनेक मौलिक और शुद्ध शब्द लुप्त होते जा रहे हैं या अन्य भाषाओं में मिलते जा रहे हैं। इसी भाषाई संकट को ध्यान में रखते हुए यह मेवाती शब्दकोश तैयार किया गया है।
             </p>
 
+
             <p class="intro-text">
-                यह एक त्रिभाषीय शब्दकोश है, जिसमें शब्दों को <b>हिंदी ⇄ मेवाती ⇄ अंग्रेज़ी</b> के रूप में प्रस्तुत किया गया है। प्रत्येक शब्द के लिए शुद्ध मेवाती अर्थ को प्राथमिकता दी गई है, ताकि मेवाती भाषा को अन्य भाषाओं से अलग, उसकी स्वतंत्र पहचान के साथ दर्ज किया जा सके।
+                यह एक त्रिभाषीय शब्दकोश है, जिसमें शब्दों को
+                <b>हिंदी ⇄ मेवाती ⇄ अंग्रेज़ी</b>
+                के रूप में प्रस्तुत किया गया है। प्रत्येक शब्द के लिए शुद्ध मेवाती अर्थ को प्राथमिकता दी गई है, ताकि मेवाती भाषा को अन्य भाषाओं से अलग, उसकी स्वतंत्र पहचान के साथ दर्ज किया जा सके।
             </p>
+
 
             <p class="intro-text">
                 इस शब्दकोश में केवल अर्थ ही नहीं, बल्कि शब्द से जुड़े आवश्यक भाषाई विवरण भी दिए गए हैं, जैसे— लिंग, शब्दप्रकार, पर्यायवाची, उदाहरण, अन्त्यानुप्रास आदि। इससे यह शब्दकोश केवल संदर्भ सामग्री न रहकर मेवाती भाषा का एक व्यवस्थित और उपयोगी भाषिक संग्रह बन जाता है।
             </p>
 
+
             <p class="intro-text">
                 शब्दकोश को इस तरह डिज़ाइन किया गया है कि इसे चलाना आसान हो। उपयोगकर्ता सीधे सर्च बॉक्स के माध्यम से शब्द खोज सकते हैं और तुरंत सही व संक्षिप्त जानकारी प्राप्त कर सकते हैं।
             </p>
+
 
             <p class="intro-text">
                 यह प्रयास विद्यार्थियों, शोधकर्ताओं, लेखकों और मेवाती भाषा से प्रेम रखने वाले सभी लोगों को समर्पित है, जो मेवाती को उसकी शुद्धता, मौलिकता और गरिमा के साथ सुरक्षित रखना और आगे बढ़ाना चाहते हैं।
             </p>
 
+
+            <!-- AUTHOR -->
+
             <div class="author-section">
-                <p class="author-label">संकलन एवं तकनीकी विकास</p>
-                <h3 class="author-name">यूसुफ खान कैथवाड़ा</h3>
+
+                <img
+                    class="author-photo"
+                    src="https://lh3.googleusercontent.com/d/1TWBGpFaHrimnuTfESRaFnF2F4_1mpKOP"
+                    alt="यूसुफ खान कैथवाड़ा">
+
+                <p class="author-label">
+                    निर्माता एवं संकलक
+                </p>
+
+                <!-- इस नाम पर क्लिक करने से परिचय खुलेगा -->
+
+                <h3
+                    class="author-name"
+                    onclick="openProfile()"
+                    title="मेरे बारे में जानें">
+
+                    यूसुफ खान कैथवाड़ा
+
+                </h3>
+
             </div>
 
+
+            <!-- BACK BUTTON -->
+
             <div class="back-btn-wrapper">
-                <a href="index.html" class="back-btn">शब्दकोश पर जाएँ</a>
+
+                <a href="index.html" class="back-btn">
+                    शब्दकोश पर जाएँ
+                </a>
+
             </div>
 
         </article>
+
     </main>
+
+
+    <!-- =========================================
+         PROFILE MODAL
+    ========================================= -->
+
+    <div
+        id="profileModal"
+        class="modal"
+        onclick="closeProfileOutside(event)">
+
+        <div class="profile-card">
+
+            <button
+                class="close-btn"
+                onclick="closeProfile()"
+                aria-label="बंद करें">
+
+                ×
+
+            </button>
+
+
+            <!-- PROFILE HEADER -->
+
+            <div class="profile-header">
+
+                <img
+                    class="profile-photo"
+                    src="https://lh3.googleusercontent.com/d/1TWBGpFaHrimnuTfESRaFnF2F4_1mpKOP"
+                    alt="यूसुफ खान कैथवाड़ा">
+
+                <h2 class="profile-name">
+                    यूसुफ खान कैथवाड़ा
+                </h2>
+
+                <p class="profile-role">
+                    सरकारी अध्यापक एवं मेवाती शब्दकोश के निर्माता
+                </p>
+
+            </div>
+
+
+            <!-- PROFILE CONTENT -->
+
+            <div class="profile-content">
+
+                <p class="profile-intro">
+                    <b>यूसुफ खान कैथवाड़ा</b> राजस्थान के डीग जिले के कैथवाड़ा गाँव से हैं। वे वर्ष
+                    <b>2017 से शिक्षा विभाग में सरकारी अध्यापक</b>
+                    के पद पर कार्यरत हैं। शिक्षण के साथ-साथ भाषा, साहित्य और ज्ञान-संरक्षण के क्षेत्र में उनकी विशेष रुचि है।
+                </p>
+
+
+                <p class="profile-intro">
+                    मेवाती भाषा के प्रति विशेष रुचि और उसके मौलिक शब्दों को संरक्षित करने के उद्देश्य से उन्होंने
+                    <b>“मेवाती शब्दकोश”</b>
+                    का निर्माण किया है। यह प्रयास मेवाती भाषा के शब्दों, अर्थों और उनसे संबंधित भाषाई जानकारी को व्यवस्थित रूप से संकलित एवं प्रस्तुत करने की दिशा में एक प्रयास है।
+                </p>
+
+
+                <!-- PERSONAL INFORMATION -->
+
+                <h3 class="section-title">
+                    व्यक्तिगत परिचय
+                </h3>
+
+                <ul class="info-list">
+
+                    <li class="info-item">
+                        <span class="info-label">नाम</span>
+                        <span class="info-value">यूसुफ खान कैथवाड़ा</span>
+                    </li>
+
+                    <li class="info-item">
+                        <span class="info-label">निवास</span>
+                        <span class="info-value">
+                            कैथवाड़ा, तहसील पहाड़ी, जिला डीग, राजस्थान
+                        </span>
+                    </li>
+
+                    <li class="info-item">
+                        <span class="info-label">जन्म</span>
+                        <span class="info-value">05 जुलाई 1997</span>
+                    </li>
+
+                    <li class="info-item">
+                        <span class="info-label">व्यवसाय</span>
+                        <span class="info-value">सरकारी अध्यापक</span>
+                    </li>
+
+                    <li class="info-item">
+                        <span class="info-label">सेवा</span>
+                        <span class="info-value">
+                            शिक्षा विभाग, राजस्थान — 2017 से वर्तमान तक
+                        </span>
+                    </li>
+
+                </ul>
+
+
+                <!-- EDUCATION -->
+
+                <h3 class="section-title">
+                    शैक्षिक योग्यता
+                </h3>
+
+                <ul class="education-list">
+
+                    <li>स्नातक (B.A.)</li>
+
+                    <li>एम.ए. (उर्दू)</li>
+
+                    <li>एम.ए. (राजनीति विज्ञान)</li>
+
+                    <li>एम.ए. (भूगोल)</li>
+
+                    <li>बी.एड. (B.Ed.)</li>
+
+                </ul>
+
+
+                <div class="profile-footer">
+
+                    मेवाती भाषा के संरक्षण, संवर्धन और व्यवस्थित दस्तावेजीकरण के प्रति समर्पित।
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        function openProfile() {
+
+            document
+                .getElementById("profileModal")
+                .classList.add("show");
+
+            document.body.style.overflow = "hidden";
+        }
+
+
+        function closeProfile() {
+
+            document
+                .getElementById("profileModal")
+                .classList.remove("show");
+
+            document.body.style.overflow = "";
+        }
+
+
+        function closeProfileOutside(event) {
+
+            if (event.target === document.getElementById("profileModal")) {
+
+                closeProfile();
+
+            }
+
+        }
+
+
+        /* मोबाइल/डेस्कटॉप पर ESC दबाने से बंद */
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Escape") {
+
+                closeProfile();
+
+            }
+
+        });
+
+    </script>
 
 </body>
 </html>
