@@ -18,6 +18,10 @@
             --border: #e0dcd3;
             --text: #2c2c2c;
             --muted: #666666;
+
+            /* लिंक का सामान्य नीला रंग */
+            --link-blue: #06c;
+            --link-blue-hover: #004c99;
         }
 
         * {
@@ -39,7 +43,10 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* TOP BAR */
+        /* =========================
+           TOP BAR
+        ========================= */
+
         .topbar {
             width: 100%;
             background: #ffffff;
@@ -58,6 +65,7 @@
             gap: 12px;
         }
 
+        /* मेवाती शब्दकोश का लोगो */
         .brand img {
             height: 34px;
             width: 34px;
@@ -72,7 +80,10 @@
             color: #1a1a1a;
         }
 
-        /* MAIN */
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+
         .container {
             width: 100%;
             max-width: 680px;
@@ -105,7 +116,10 @@
             margin: 0 0 16px 0;
         }
 
-        /* AUTHOR */
+        /* =========================
+           AUTHOR SECTION
+        ========================= */
+
         .author-section {
             margin-top: 28px;
             padding-top: 20px;
@@ -113,6 +127,7 @@
             text-align: center;
         }
 
+        /* आपका फोटो */
         .author-photo {
             width: 82px;
             height: 82px;
@@ -131,23 +146,37 @@
             font-weight: 500;
         }
 
-        /* CLICKABLE NAME */
+        /* =========================
+           CLICKABLE NAME
+        ========================= */
+
         .author-name {
             margin: 0;
-            color: var(--accent-dark);
             font-size: 1.25rem;
             font-weight: 700;
-            cursor: pointer;
-            display: inline-block;
-            transition: all 0.2s ease;
         }
 
-        .author-name:hover {
-            color: var(--accent);
+        .author-name a {
+            color: var(--link-blue);
             text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            transition: color 0.15s ease;
         }
 
-        /* BACK BUTTON */
+        .author-name a:hover {
+            color: var(--link-blue-hover);
+        }
+
+        .author-name a:active {
+            color: #003d7a;
+        }
+
+        /* =========================
+           BACK BUTTON
+        ========================= */
+
         .back-btn-wrapper {
             margin-top: 24px;
             padding-top: 20px;
@@ -175,9 +204,13 @@
             transform: translateY(-1px);
         }
 
-        /* =========================================
-           ABOUT MODAL
-        ========================================= */
+        .back-btn:active {
+            transform: translateY(0);
+        }
+
+        /* =========================
+           PROFILE MODAL
+        ========================= */
 
         .modal {
             position: fixed;
@@ -219,7 +252,9 @@
             }
         }
 
-        /* PROFILE HEADER */
+        /* =========================
+           PROFILE HEADER
+        ========================= */
 
         .profile-header {
             text-align: center;
@@ -252,7 +287,9 @@
             font-size: 14px;
         }
 
-        /* CLOSE */
+        /* =========================
+           CLOSE BUTTON
+        ========================= */
 
         .close-btn {
             position: absolute;
@@ -273,7 +310,9 @@
             background: rgba(0, 0, 0, 0.12);
         }
 
-        /* PROFILE CONTENT */
+        /* =========================
+           PROFILE CONTENT
+        ========================= */
 
         .profile-content {
             padding: 24px;
@@ -296,7 +335,9 @@
             border-bottom: 1px solid #eee9df;
         }
 
-        /* INFO */
+        /* =========================
+           PERSONAL INFORMATION
+        ========================= */
 
         .info-list {
             margin: 0;
@@ -328,7 +369,9 @@
             font-weight: 500;
         }
 
-        /* EDUCATION */
+        /* =========================
+           EDUCATION
+        ========================= */
 
         .education-list {
             margin: 0;
@@ -357,6 +400,10 @@
             font-weight: 800;
         }
 
+        /* =========================
+           PROFILE FOOTER
+        ========================= */
+
         .profile-footer {
             margin-top: 24px;
             padding-top: 16px;
@@ -367,7 +414,9 @@
             line-height: 1.7;
         }
 
-        /* MOBILE */
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 480px) {
 
@@ -406,22 +455,30 @@
 
 <body>
 
-    <!-- TOP BAR -->
+    <!-- =========================
+         TOP BAR
+    ========================= -->
 
     <header class="topbar">
+
         <div class="brand">
 
+            <!-- मेवाती शब्दकोश का लोगो -->
             <img
-                src="https://lh3.googleusercontent.com/d/1TWBGpFaHrimnuTfESRaFnF2F4_1mpKOP"
-                alt="मेवाती शब्दकोश लोगो">
+                src="https://drive.google.com/thumbnail?id=16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37&sz=w500"
+                alt="मेवाती शब्दकोश लोगो"
+                referrerpolicy="no-referrer">
 
             <h1>हमारे बारे में</h1>
 
         </div>
+
     </header>
 
 
-    <!-- MAIN CONTENT -->
+    <!-- =========================
+         MAIN CONTENT
+    ========================= -->
 
     <main class="container">
 
@@ -459,10 +516,13 @@
             </p>
 
 
-            <!-- AUTHOR -->
+            <!-- =========================
+                 AUTHOR
+            ========================= -->
 
             <div class="author-section">
 
+                <!-- आपका फोटो -->
                 <img
                     class="author-photo"
                     src="https://lh3.googleusercontent.com/d/1TWBGpFaHrimnuTfESRaFnF2F4_1mpKOP"
@@ -472,21 +532,26 @@
                     निर्माता एवं संकलक
                 </p>
 
-                <!-- इस नाम पर क्लिक करने से परिचय खुलेगा -->
+                <!-- हल्का लिंक जैसा नाम -->
+                <h3 class="author-name">
 
-                <h3
-                    class="author-name"
-                    onclick="openProfile()"
-                    title="मेरे बारे में जानें">
+                    <a
+                        href="#"
+                        onclick="openProfile(); return false;"
+                        title="यूसुफ खान कैथवाड़ा का परिचय देखें">
 
-                    यूसुफ खान कैथवाड़ा
+                        यूसुफ खान कैथवाड़ा
+
+                    </a>
 
                 </h3>
 
             </div>
 
 
-            <!-- BACK BUTTON -->
+            <!-- =========================
+                 BACK BUTTON
+            ========================= -->
 
             <div class="back-btn-wrapper">
 
@@ -501,9 +566,9 @@
     </main>
 
 
-    <!-- =========================================
+    <!-- =========================
          PROFILE MODAL
-    ========================================= -->
+    ========================= -->
 
     <div
         id="profileModal"
@@ -512,6 +577,7 @@
 
         <div class="profile-card">
 
+            <!-- CLOSE -->
             <button
                 class="close-btn"
                 onclick="closeProfile()"
@@ -536,7 +602,7 @@
                 </h2>
 
                 <p class="profile-role">
-                    मेवाती शब्दकोश के निर्माता
+                    सरकारी अध्यापक एवं मेवाती शब्दकोश के निर्माता
                 </p>
 
             </div>
@@ -560,7 +626,7 @@
                 </p>
 
 
-                <!-- PERSONAL INFORMATION -->
+                <!-- व्यक्तिगत परिचय -->
 
                 <h3 class="section-title">
                     व्यक्तिगत परिचय
@@ -570,7 +636,9 @@
 
                     <li class="info-item">
                         <span class="info-label">नाम</span>
-                        <span class="info-value">यूसुफ खान कैथवाड़ा</span>
+                        <span class="info-value">
+                            यूसुफ खान कैथवाड़ा
+                        </span>
                     </li>
 
                     <li class="info-item">
@@ -582,12 +650,16 @@
 
                     <li class="info-item">
                         <span class="info-label">जन्म</span>
-                        <span class="info-value">05 जुलाई 1997</span>
+                        <span class="info-value">
+                            05 जुलाई 1997
+                        </span>
                     </li>
 
                     <li class="info-item">
                         <span class="info-label">व्यवसाय</span>
-                        <span class="info-value">सरकारी अध्यापक</span>
+                        <span class="info-value">
+                            सरकारी अध्यापक
+                        </span>
                     </li>
 
                     <li class="info-item">
@@ -600,7 +672,7 @@
                 </ul>
 
 
-                <!-- EDUCATION -->
+                <!-- शैक्षिक योग्यता -->
 
                 <h3 class="section-title">
                     शैक्षिक योग्यता
@@ -608,23 +680,31 @@
 
                 <ul class="education-list">
 
-                    <li>स्नातक (B.A.)</li>
+                    <li>
+                        स्नातक (B.A.)
+                    </li>
 
-                    <li>एम.ए. (उर्दू)</li>
+                    <li>
+                        एम.ए. (उर्दू)
+                    </li>
 
-                    <li>एम.ए. (राजनीति विज्ञान)</li>
+                    <li>
+                        एम.ए. (राजनीति विज्ञान)
+                    </li>
 
-                    <li>एम.ए. (भूगोल)</li>
+                    <li>
+                        एम.ए. (भूगोल)
+                    </li>
 
-                    <li>बी.एड. (B.Ed.)</li>
+                    <li>
+                        बी.एड. (B.Ed.)
+                    </li>
 
                 </ul>
 
 
                 <div class="profile-footer">
-
                     मेवाती भाषा के संरक्षण, संवर्धन और व्यवस्थित दस्तावेजीकरण के प्रति समर्पित।
-
                 </div>
 
             </div>
@@ -634,7 +714,9 @@
     </div>
 
 
-    <!-- JAVASCRIPT -->
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
 
     <script>
 
@@ -645,6 +727,7 @@
                 .classList.add("show");
 
             document.body.style.overflow = "hidden";
+
         }
 
 
@@ -655,12 +738,16 @@
                 .classList.remove("show");
 
             document.body.style.overflow = "";
+
         }
 
 
         function closeProfileOutside(event) {
 
-            if (event.target === document.getElementById("profileModal")) {
+            if (
+                event.target ===
+                document.getElementById("profileModal")
+            ) {
 
                 closeProfile();
 
@@ -669,7 +756,7 @@
         }
 
 
-        /* मोबाइल/डेस्कटॉप पर ESC दबाने से बंद */
+        /* ESC दबाने पर परिचय बंद होगा */
 
         document.addEventListener("keydown", function(event) {
 
