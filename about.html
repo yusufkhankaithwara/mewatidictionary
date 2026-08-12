@@ -1,159 +1,211 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>हमारे बारे में - मेवाती शब्दकोश</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --accent: #8b6b38; /* इमेज के अनुसार क्लासिक ब्राउन/गोल्डन टोन */
-        --accent-dark: #6e5228;
-        --bg: #E8E4DC;
-        --card-bg: #ffffff;
-        --border: #e0dcd3;
-        --text: #2c2c2c;
-        --muted: #555555;
-    }
-    * { box-sizing: border-box; }
-    body {
-        margin: 0;
-        min-height: 100vh;
-        background: var(--bg);
-        font-family: 'Noto Sans Devanagari', sans-serif;
-        color: var(--text);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    /* ऊपर बाएं साइड सिर्फ लोगो और 'हमारे बारे में' */
-    .topbar {
-        width: 100%;
-        background: #fff;
-        display: flex;
-        align-items: center;
-        padding: 12px 20px;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    .brand img {
-        height: 34px;
-        width: 34px;
-        border-radius: 8px;
-        object-fit: cover;
-    }
-    .brand h1 {
-        font-size: 18px;
-        margin: 0;
-        font-weight: 700;
-        color: #1a1a1a;
-    }
-    .container {
-        width: 100%;
-        max-width: 680px;
-        padding: 24px 16px;
-    }
-    /* एक ही बड़ा क्लीन कार्ड */
-    .single-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 32px 24px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-        text-align: center;
-    }
-    .main-heading {
-        font-size: 22px;
-        font-weight: 800;
-        color: var(--accent);
-        margin: 0 0 24px 0;
-        letter-spacing: 0.2px;
-    }
-    .intro-text {
-        text-align: justify;
-        text-justify: inter-word;
-        font-size: 15px;
-        line-height: 1.8;
-        color: var(--text);
-        margin-bottom: 16px;
-    }
-    .intro-text:last-of-type {
-        margin-bottom: 28px;
-    }
-    .back-btn-wrapper {
-        margin-top: 10px;
-        padding-top: 20px;
-        border-top: 1px solid #f0ece1;
-    }
-    .back-btn {
-        background: #f4f0e6;
-        color: var(--accent-dark);
-        border: 1px solid #dcd5c5;
-        border-radius: 10px;
-        padding: 12px 28px;
-        font-size: 15px;
-        font-weight: 700;
-        cursor: pointer;
-        font-family: inherit;
-        transition: all 0.2s ease;
-    }
-    .back-btn:hover {
-        background: var(--accent);
-        color: #ffffff;
-        border-color: var(--accent);
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>हमारे बारे में - मेवाती शब्दकोश</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --accent: #8b6b38;
+            --accent-dark: #6e5228;
+            --bg: #E8E4DC;
+            --card-bg: #ffffff;
+            --border: #e0dcd3;
+            --text: #2c2c2c;
+            --muted: #666666;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            font-family: 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .topbar {
+            width: 100%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand img {
+            height: 34px;
+            width: 34px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            padding: 24px 16px;
+        }
+
+        .single-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            text-align: center;
+        }
+
+        .main-heading {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 0 0 24px 0;
+            letter-spacing: 0.2px;
+        }
+
+        .intro-text {
+            text-align: justify;
+            text-justify: inter-word;
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text);
+            margin: 0 0 16px 0;
+        }
+
+        .intro-text:last-of-type {
+            margin-bottom: 24px;
+        }
+
+        .author-section {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #e8e4dc;
+            text-align: center;
+        }
+
+        .author-label {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin: 0 0 4px 0;
+            font-weight: 500;
+        }
+
+        .author-name {
+            margin: 0;
+            color: var(--accent-dark);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .back-btn-wrapper {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #f0ece1;
+        }
+
+        .back-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #f4f0e6;
+            color: var(--accent-dark);
+            border: 1px solid #dcd5c5;
+            border-radius: 10px;
+            padding: 12px 28px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .back-btn:hover {
+            background: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .back-btn:active {
+            transform: translateY(0);
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- टॉपबार: केवल बाएं साइड में लोगो और 'हमारे बारे में' -->
-<div class="topbar">
-    <div class="brand">
-        <img src="https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37" alt="Logo">
-        <h1>हमारे बारे में</h1>
-    </div>
-</div>
-
-<!-- मुख्य सिंगल कार्ड -->
-<div class="container">
-    <div class="single-card">
-        
-        <h2 class="main-heading">मेवाती शब्दकोश : परिचय</h2>
-
-        <p class="intro-text">
-            मेवाती भाषा मेव समाज की सांस्कृतिक पहचान, लोकजीवन और ऐतिहासिक चेतना की जीवंत अभिव्यक्ति है। समय के साथ इसके अनेक मौलिक और शुद्ध शब्द लुप्त होते जा रहे हैं या अन्य भाषाओं में मिलते जा रहे हैं। इसी भाषाई संकट को ध्यान में रखते हुए यह मेवाती शब्दकोश तैयार किया गया है।
-        </p>
-
-        <p class="intro-text">
-            यह एक त्रिभाषीय शब्दकोश है, जिसमें शब्दों को <b>हिंदी ⇄ मेवाती ⇄ अंग्रेज़ी</b> के रूप में प्रस्तुत किया गया है। प्रत्येक शब्द के लिए शुद्ध मेवाती अर्थ को प्राथमिकता दी गई है, ताकि मेवाती भाषा को अन्य भाषाओं से अलग, उसकी स्वतंत्र पहचान के साथ दर्ज किया जा सके।
-        </p>
-
-        <p class="intro-text">
-            इस शब्दकोश में केवल अर्थ ही नहीं, बल्कि शब्द से जुड़े आवश्यक भाषाई विवरण भी दिए गए हैं, जैसे— लिंग, शब्दप्रकार, पर्यायवाची, उदाहरण, अन्त्यानुप्रास आदि। इससे यह शब्दकोश केवल संदर्भ सामग्री न रहकर मेवाती भाषा का एक व्यवस्थित और उपयोगी भाषिक संग्रह बन जाता है।
-        </p>
-
-        <p class="intro-text">
-            शब्दकोश को इस तरह डिज़ाइन किया गया है कि इसे चलाना आसान हो। उपयोगकर्ता सीधे सर्च बॉक्स के माध्यम से शब्द खोज सकते हैं और तुरंत सही व संक्षिप्त जानकारी प्राप्त कर सकते हैं।
-        </p>
-
-        <p class="intro-text">
-            यह प्रयास विद्यार्थियों, शोधकर्ताओं, लेखकों और मेवाती भाषा से प्रेम रखने वाले सभी लोगों को समर्पित है, जो मेवाती को उसकी शुद्धता, मौलिकता और गरिमा के साथ सुरक्षित रखना और आगे बढ़ाना चाहते हैं।
-        </p>
-
-        <div class="back-btn-wrapper">
-            <button class="back-btn" onclick="window.location.href='index.html'">शब्दकोश पर जाएँ</button>
+    <header class="topbar">
+        <div class="brand">
+            <!-- अपडेटेड इमेज टैग - डायरेक्ट लिंक और नो-रिफ़रर पॉलिसी के साथ -->
+            <img src="https://drive.google.com/thumbnail?id=16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37&sz=w500" 
+                 alt="मेवाती शब्दकोश लोगो" 
+                 referrerpolicy="no-referrer">
+            <h1>हमारे बारे में</h1>
         </div>
+    </header>
 
-    </div>
-</div>
+    <main class="container">
+        <article class="single-card">
+            
+            <h2 class="main-heading">मेवाती शब्दकोश : परिचय</h2>
+
+            <p class="intro-text">
+                मेवाती भाषा मेव समाज की सांस्कृतिक पहचान, लोकजीवन और ऐतिहासिक चेतना की जीवंत अभिव्यक्ति है। समय के साथ इसके अनेक मौलिक और शुद्ध शब्द लुप्त होते जा रहे हैं या अन्य भाषाओं में मिलते जा रहे हैं। इसी भाषाई संकट को ध्यान में रखते हुए यह मेवाती शब्दकोश तैयार किया गया है।
+            </p>
+
+            <p class="intro-text">
+                यह एक त्रिभाषीय शब्दकोश है, जिसमें शब्दों को <b>हिंदी ⇄ मेवाती ⇄ अंग्रेज़ी</b> के रूप में प्रस्तुत किया गया है। प्रत्येक शब्द के लिए शुद्ध मेवाती अर्थ को प्राथमिकता दी गई है, ताकि मेवाती भाषा को अन्य भाषाओं से अलग, उसकी स्वतंत्र पहचान के साथ दर्ज किया जा सके।
+            </p>
+
+            <p class="intro-text">
+                इस शब्दकोश में केवल अर्थ ही नहीं, बल्कि शब्द से जुड़े आवश्यक भाषाई विवरण भी दिए गए हैं, जैसे— लिंग, शब्दप्रकार, पर्यायवाची, उदाहरण, अन्त्यानुप्रास आदि। इससे यह शब्दकोश केवल संदर्भ सामग्री न रहकर मेवाती भाषा का एक व्यवस्थित और उपयोगी भाषिक संग्रह बन जाता है।
+            </p>
+
+            <p class="intro-text">
+                शब्दकोश को इस तरह डिज़ाइन किया गया है कि इसे चलाना आसान हो। उपयोगकर्ता सीधे सर्च बॉक्स के माध्यम से शब्द खोज सकते हैं और तुरंत सही व संक्षिप्त जानकारी प्राप्त कर सकते हैं।
+            </p>
+
+            <p class="intro-text">
+                यह प्रयास विद्यार्थियों, शोधकर्ताओं, लेखकों और मेवाती भाषा से प्रेम रखने वाले सभी लोगों को समर्पित है, जो मेवाती को उसकी शुद्धता, मौलिकता और गरिमा के साथ सुरक्षित रखना और आगे बढ़ाना चाहते हैं।
+            </p>
+
+            <div class="author-section">
+                <p class="author-label">संकलन एवं तकनीकी विकास</p>
+                <h3 class="author-name">यूसुफ खान कैथवाड़ा</h3>
+            </div>
+
+            <div class="back-btn-wrapper">
+                <a href="index.html" class="back-btn">शब्दकोश पर जाएँ</a>
+            </div>
+
+        </article>
+    </main>
 
 </body>
 </html>
