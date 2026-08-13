@@ -2202,16 +2202,21 @@
                     const safeM = escapeString(m);
                     return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
                 }).join("<br>");
-                if (d.english) {
-                    const engParts = d.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
-                    const engLinks = engParts.map(eng => {
-                        const safeEng = escapeString(eng);
-                        const safeEngDisplay = escapeHTML(eng);
-                        return `<a href="#" class="english-word" onclick="showResult('${safeEng}'); return false;">• ${safeEngDisplay}</a>`;
-                    }).join("<br>");
-                    englishMeaning = `English meaning:<br>${engLinks}`;
-                }
-            } else if (searchData.type === "mewati" && data) {
+              if (d.english) {
+    const engParts = d.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
+    const engLinks = engParts.map(eng => {
+        const wordCount = eng.split(/\s+/).length;
+        if (wordCount > 5) {
+            return `<span class="english-word" style="color: inherit; font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+        } else {
+            const safeEng = escapeString(eng);
+            const safeEngDisplay = escapeHTML(eng);
+            return `<a href="#" class="english-word" onclick="showResult('${safeEng}'); return false;">• ${safeEngDisplay}</a>`;
+        }
+    }).join("<br>");
+    englishMeaning = `English meaning:<br>${engLinks}`;
+}
+             } else if (searchData.type === "mewati" && data) {
                 const d = data;
                 const meanings = d.meaning.split(/\s*,\s*/);
                 const meaningIndex = meanings.indexOf(cleanInput);
@@ -2270,9 +2275,14 @@
                     }
                 });
                 const englishMeanings = [...uniqueEnglishSet].map(eng => {
-                    const safeDisplayEng = escapeString(eng);
-                    return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
-                }).join("<br>");
+    const wordCount = eng.split(/\s+/).length;
+    if (wordCount > 5) {
+        return `<span class="english-word" style="color: inherit; font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+    } else {
+        const safeDisplayEng = escapeString(eng);
+        return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
+    }
+}).join("<br>");
                 const translitFromW =
                     (d.mewatiTranslit2 && d.mewatiTranslit2[meaningIndex])
                     ? d.mewatiTranslit2[meaningIndex]
