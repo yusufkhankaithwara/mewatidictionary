@@ -2352,18 +2352,23 @@
                     }
                 }
             } else if (searchData.type === "english" && data) {
-                const d = data;
-                wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
-                const hindiParts = d.hindiWord ? d.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h) : [];
-                const hindiLinks = hindiParts.map(part => {
-                    const safePart = escapeString(part);
-                    return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
-                }).join(", ");
-                const meanings = d.meaning.split(/\s*,\s*/);
-                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ: ${hindiLinks}<br>मेवाती अर्थ:<br>` + meanings.map(m => {
-                    const safeM = escapeString(m);
-                    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
-                }).join("<br>");
+    const d = data;
+    wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
+    const hindiParts = d.hindiWord ? d.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h) : [];
+    const hindiLinks = hindiParts.map(part => {
+        const wordCount = part.split(/\s+/).length;
+        if (wordCount > 5) {
+            return `<span class="highlight-word" style="font-weight: normal;">${escapeHTML(part)}</span>`;
+        } else {
+            const safePart = escapeString(part);
+            return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
+        }
+    }).join(", ");
+    const meanings = d.meaning.split(/\s*,\s*/);
+    result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ: ${hindiLinks}<br>मेवाती अर्थ:<br>` + meanings.map(m => {
+        const safeM = escapeString(m);
+        return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
+    }).join("<br>");
             } else if (searchData.type === "translit" && data) {
                 const d = data;
                 const meanings = d.meaning.split(/\s*,\s*/);
