@@ -1723,11 +1723,14 @@
                     }
                 });
                 if (entry.english) {
-                    const engParts = entry.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
-                    engParts.forEach(eng => {
-                        trie.insert(eng, "english", index);
-                    });
-                }
+    const engParts = entry.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
+    engParts.forEach(eng => {
+        // केवल वही अंग्रेज़ी शब्द इंडेक्स होंगे जो 5 शब्द या उससे कम के हैं
+        if (eng.split(/\s+/).length <= 5) {
+            trie.insert(eng, "english", index);
+        }
+    });
+}
                 entry.mewatiTranslit.forEach((translit) => {
                     if (translit) {
                         trie.insert(translit, "translit", index);
@@ -2277,7 +2280,8 @@
                 const englishMeanings = [...uniqueEnglishSet].map(eng => {
     const wordCount = eng.split(/\s+/).length;
     if (wordCount > 5) {
-        return `<span class="english-word" style="color: inherit; font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+        // 5 से ज्यादा शब्दों वाले वाक्यों का रंग काला (साधारण टेक्स्ट) रहेगा
+        return `<span style="color: #1a1a1a; font-weight: normal;">• ${escapeHTML(eng)}</span>`;
     } else {
         const safeDisplayEng = escapeString(eng);
         return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
