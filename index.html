@@ -90,7 +90,7 @@
             left: 0;
             right: 0;
             width: 100%;
-            padding: 10px 20px;   
+            padding: 8px 20px;   
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -143,36 +143,94 @@
         body.dark-mode input::placeholder {
             color: #aaa;
         }
+        
+        /* लेटर बार कंटेनर - ऊपर और नीचे से समान दूरी */
         #letterFilter {
             position: fixed;
-            top: 45px;
+            top: 48px;
             left: 0;
             right: 0;
+            display: flex;
+            align-items: center;
+            padding: 5px 20px;
+            border-bottom: 1px solid #ccc;
+            border-radius: 0 0 16px 16px;
+            background: #ffffff;
+            z-index: 999;
+            transition: background-color 0.3s, border-color 0.3s;
+            box-sizing: border-box;
+            min-height: 40px;
+        }
+        body.dark-mode #letterFilter {
+            background: #2a2a2a;
+            border-color: #555;
+        }
+        #lettersWrapper {
             display: flex;
             justify-content: flex-start;
             flex-wrap: nowrap;
             overflow-x: auto;
-            padding: 10px 20px 5px;
-            border-bottom: 1px solid #ccc;
-            border-radius: 0 0 16px 16px;
             white-space: nowrap;
             -webkit-overflow-scrolling: touch;
-            background: linear-gradient(
-                to bottom,
-                #ffffff 0%,
-                #ffffff 100%
-            );
-            z-index: 999;
-            transition: background-color 0.3s, border-color 0.3s;
+            width: 100%;
+            align-items: center;
         }
-        body.dark-mode #letterFilter {
-            background: linear-gradient(
-                to bottom,
-                #2a2a2a 0%,
-                #1f1f1f 100%
-            );
-            border-color: #555;
+        #filterActionButtons {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            justify-content: flex-end;
         }
+        .action-bar-btn {
+            background: rgba(128, 0, 0, 0.1);
+            color: #800000;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        .action-bar-btn:hover {
+            background: rgba(128, 0, 0, 0.2);
+        }
+        .action-bar-btn:active {
+            transform: scale(0.92);
+        }
+        .action-bar-btn .material-symbols-outlined {
+            font-size: 17px;
+            color: #800000;
+            transition: font-variation-settings 0.2s, color 0.2s;
+        }
+        body.dark-mode .action-bar-btn {
+            background: rgba(255, 102, 102, 0.15);
+            color: #ff6666;
+        }
+        body.dark-mode .action-bar-btn .material-symbols-outlined {
+            color: #ff6666;
+        }
+        
+        /* लाइक्ड (Liked) बटन स्टाइल - भरा हुआ मरून */
+        .action-bar-btn.liked {
+            background: rgba(128, 0, 0, 0.18);
+        }
+        .action-bar-btn.liked .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
+            color: #800000 !important;
+        }
+        body.dark-mode .action-bar-btn.liked {
+            background: rgba(255, 102, 102, 0.25);
+        }
+        body.dark-mode .action-bar-btn.liked .material-symbols-outlined {
+            color: #ff6666 !important;
+        }
+
         #stickyWordContainer {
             position: fixed;
             top: 90px;
@@ -210,89 +268,13 @@
             color: #ffffff;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
-        .sticky-share-btn {
-            position: absolute;
-            right: 20px;
-            top: 55%;
-            transform: translateY(-50%);
-            background: rgba(128, 0, 0, 0.1);
-            color: #800000;
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            padding: 0;
-            flex-shrink: 0;
-            pointer-events: auto;
-            z-index: 999;
-        }
-        .sticky-share-btn:hover {
-            background: rgba(128, 0, 0, 0.2);
-        }
-        .sticky-share-btn:active {
-            transform: translateY(-50%) scale(0.92);
-        }
-        .sticky-share-btn .material-symbols-outlined {
-            font-size: 15px;
-            color: #800000;
-        }
-        body.dark-mode .sticky-share-btn {
-            background: rgba(255, 102, 102, 0.15);
-            color: #ff6666;
-        }
-        body.dark-mode .sticky-share-btn .material-symbols-outlined {
-            color: #ff6666;
-        }
-        .sticky-audio-btn {
-            position: absolute;
-            right: 56px;
-            top: 55%;
-            transform: translateY(-50%);
-            background: rgba(128, 0, 0, 0.1);
-            color: #800000;
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            padding: 0;
-            flex-shrink: 0;
-            pointer-events: auto;
-            z-index: 999;
-        }
-        .sticky-audio-btn:hover {
-            background: rgba(128, 0, 0, 0.2);
-        }
-        .sticky-audio-btn:active {
-            transform: translateY(-50%) scale(0.92);
-        }
-        .sticky-audio-btn .material-symbols-outlined {
-            font-size: 15px;
-            color: #800000;
-        }
-        body.dark-mode .sticky-audio-btn {
-            background: rgba(255, 102, 102, 0.15);
-            color: #ff6666;
-        }
-        body.dark-mode .sticky-audio-btn .material-symbols-outlined {
-            color: #ff6666;
-        }
         .letter-btn { 
             background: #f5f5f5; 
             border: 1px solid #ccc; 
             border-radius: 50%; 
             width: 30px; 
             height: 30px; 
-            margin: 2px; 
+            margin: 0 2px; 
             cursor: pointer; 
             font-size: 14px; 
             color: #333; 
@@ -326,7 +308,7 @@
             border-color: #1e90ff;
         }
         .content-container { 
-            margin-top: 100px; 
+            margin-top: 95px; 
             width: 100%; 
             max-width: 100%;
             box-sizing: border-box; 
@@ -389,17 +371,23 @@
             margin: 5px 20px; 
             display: none; 
         }
-        body.dark-mode #result,
-        body.dark-mode #englishMeaning {
+        body.dark-mode #result {
             color: #bbb !important;
         }
-        #result .highlight-word,
-        #englishMeaning .highlight-word {
+        
+        /* डार्क मोड में अंग्रेजी अर्थ हिंदी जैसा शुद्ध सफेद */
+        body.dark-mode #englishMeaning,
+        body.dark-mode #englishMeaning .english-word,
+        body.dark-mode #englishMeaning a,
+        body.dark-mode #englishMeaning .highlight-word {
+            color: #ffffff !important;
+        }
+
+        #result .highlight-word {
             color: #000;
             font-weight: bold;
         }
-        body.dark-mode #result .highlight-word,
-        body.dark-mode #englishMeaning .highlight-word {
+        body.dark-mode #result .highlight-word {
             color: #fff;
         }
         #exampleLabel { 
@@ -524,9 +512,6 @@
         .english-word {
             color: #007bff !important;
             font-size: 14px; 
-        }
-        body.dark-mode .english-word {
-            color: #66b0ff !important;
         }
         .search-icon { 
             position: absolute; 
@@ -1040,8 +1025,7 @@
         #result a {
             text-decoration: none;
         }
-        body.dark-mode #result a,
-        body.dark-mode #englishMeaning a {
+        body.dark-mode #result a {
             color: #fff;
         }
         .duplicate-section {
@@ -1455,18 +1439,32 @@
             </div>
         </div>
     </div>
-    <div id="letterFilter"></div>
+    
+    <!-- लेटर बार और एक्शन बटन कंटेनर -->
+    <div id="letterFilter">
+        <div id="lettersWrapper"></div>
+        <div id="filterActionButtons">
+            <!-- लाइक बटन -->
+            <button class="action-bar-btn" id="filterLikeBtn" title="पसंद करें" onclick="handleLikeButtonClick()">
+                <span class="material-symbols-outlined" id="filterLikeIcon">favorite</span>
+            </button>
+            <!-- ऑडियो बटन -->
+            <button class="action-bar-btn" id="filterAudioBtn" title="उच्चारण सुनें">
+                <span class="material-symbols-outlined">volume_up</span>
+            </button>
+            <!-- शेयर बटन -->
+            <button class="action-bar-btn" id="filterShareBtn" title="शेयर करें">
+                <span class="material-symbols-outlined">share</span>
+            </button>
+        </div>
+    </div>
+
     <div id="stickyWordContainer">
         <div id="stickyWordStrip">
             <span id="stickyWordText"></span>
         </div>
-        <button class="sticky-audio-btn" id="stickyAudioBtn" title="उच्चारण सुनें">
-            <span class="material-symbols-outlined">volume_up</span>
-        </button>
-        <button class="sticky-share-btn" id="stickyShareBtn" title="शेयर करें">
-            <span class="material-symbols-outlined">share</span>
-        </button>
     </div>
+
     <div class="content-container">
         <div id="adminFeedbackBlock" style="display: none; margin: 10px 20px;">
             <h3 style="font-size: 16px; color: #007bff; margin-bottom: 12px; text-align: left;">यूज़र्स द्वारा भेजे गए सुझाव</h3>
@@ -1565,6 +1563,7 @@
         let dictionary = [];
         let currentSearchType = "";
         let debounceTimer = null;
+        let currentActiveWord = "";
         const CURRENT_DATA_VERSION = "v3.0";
         function escapeHTML(str) {
             if (!str || typeof str !== 'string') return "";
@@ -1785,14 +1784,14 @@
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
         function initializeLetterFilter() {
-            const letterFilter = document.getElementById("letterFilter");
-            letterFilter.innerHTML = "";
+            const lettersWrapper = document.getElementById("lettersWrapper");
+            lettersWrapper.innerHTML = "";
             letters.forEach(letter => {
                 const button = document.createElement("button");
                 button.className = "letter-btn";
                 button.textContent = letter;
                 button.onclick = () => filterByLetter(letter);
-                letterFilter.appendChild(button);
+                lettersWrapper.appendChild(button);
             });
         }
         let activeLetter = null;
@@ -2174,6 +2173,11 @@
                 }
             });
         }
+        function handleLikeButtonClick() {
+            if (window.toggleWordLike) {
+                window.toggleWordLike(currentActiveWord);
+            }
+        }
         function checkUrlAndOpenWord() {
             const urlParams = new URLSearchParams(window.location.search);
             let searchedWord = urlParams.get('word');
@@ -2237,6 +2241,8 @@
             const cleanInput = searchData.word;
             const data = searchData.data;
             currentSearchType = searchData.type;
+            currentActiveWord = cleanInput;
+
             if (cleanInput) {
                const formattedWord = cleanInput.trim().replace(/\s+/g, '-');
                const newUrl = `${window.location.pathname}?word=${formattedWord}`;
@@ -2275,7 +2281,7 @@
                     const engLinks = engParts.map(eng => {
                         const wordCount = eng.split(/\s+/).length;
                         if (wordCount > 5) {
-                            return `<span class="english-word" style="color: inherit; font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+                            return `<span class="english-word" style="font-weight: normal;">• ${escapeHTML(eng)}</span>`;
                         } else {
                             const safeEng = escapeString(eng);
                             const safeEngDisplay = escapeHTML(eng);
@@ -2342,7 +2348,7 @@
                 const englishMeanings = [...uniqueEnglishSet].map(eng => {
                     const wordCount = eng.split(/\s+/).length;
                     if (wordCount > 5) {
-                        return `<span style="color: #1a1a1a; font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+                        return `<span style="color: inherit; font-weight: normal;">• ${escapeHTML(eng)}</span>`;
                     } else {
                         const safeDisplayEng = escapeString(eng);
                         return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
@@ -2524,17 +2530,26 @@
             }
             if (cleanInput) {
                 document.getElementById("stickyWordText").textContent = cleanInput;
-                const stickyShareBtn = document.getElementById("stickyShareBtn");
-                if (stickyShareBtn) {
-                    stickyShareBtn.style.display = "flex";
-                    stickyShareBtn.onclick = function() {
+                
+                // लेटर बटन छिपाएं और एक्शन बटन दिखाएं
+                document.getElementById("lettersWrapper").style.display = "none";
+                const actionButtons = document.getElementById("filterActionButtons");
+                actionButtons.style.display = "flex";
+
+                // लाइक स्टेटस चेक करें
+                if (window.checkWordLikeStatus) {
+                    window.checkWordLikeStatus(cleanInput);
+                }
+
+                const filterShareBtn = document.getElementById("filterShareBtn");
+                if (filterShareBtn) {
+                    filterShareBtn.onclick = function() {
                         shareWord(cleanInput);
                     };
                 }
-                const stickyAudioBtn = document.getElementById("stickyAudioBtn");
-                if (stickyAudioBtn) {
-                    stickyAudioBtn.style.display = "flex";
-                    stickyAudioBtn.onclick = function() {
+                const filterAudioBtn = document.getElementById("filterAudioBtn");
+                if (filterAudioBtn) {
+                    filterAudioBtn.onclick = function() {
                         let mIndex = 0;
                         if (data && data.meaning) {
                             const meanings = data.meaning.split(/\s*,\s*/);
@@ -2905,15 +2920,20 @@
         }
         function clearResults() {
             currentSearchType = "";
+            currentActiveWord = "";
             document.getElementById("pluralLine").style.display = "none";
             const stickyStrip = document.getElementById("stickyWordStrip");
             stickyStrip.classList.remove("visible");
             const stickyWordText = document.getElementById("stickyWordText");
             if (stickyWordText) stickyWordText.textContent = "";
-            const stickyShareBtn = document.getElementById("stickyShareBtn");
-            if (stickyShareBtn) stickyShareBtn.style.display = "none";
-            const stickyAudioBtn = document.getElementById("stickyAudioBtn");
-            if (stickyAudioBtn) stickyAudioBtn.style.display = "none";
+
+            // परिणाम हटते ही अक्षर बटन दिखाएं और एक्शन बटन छिपाएं
+            document.getElementById("lettersWrapper").style.display = "flex";
+            document.getElementById("filterActionButtons").style.display = "none";
+
+            const likeBtn = document.getElementById("filterLikeBtn");
+            if (likeBtn) likeBtn.classList.remove("liked");
+
             document.querySelectorAll("#wordType, #subjectLine, #result, #englishMeaning, #plural, #exampleLabel, #example, #imageLabel, #imageContainer, #synonymLabel, #synonyms, #oppositeLabel, #opposite, #rhymeLabel, #rhymePatterns, #rhymes, #relatedLabel, #related, #coupletLabel, #couplets, #idiomLabel, #idioms, #proverbLabel, #proverbs")
             .forEach(el => el.innerHTML = "");
             document.querySelectorAll(".synonym-block, .opposite-block, .rhyme-block, .related-block, .couplet-block, .image-block, .idiom-block, .proverb-block").forEach(block => block.style.display = "none");
@@ -3060,11 +3080,11 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getFirestore, collection, addDoc, getDocs, getDoc, setDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
       const firebaseConfig = {
         apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
-        authDomain: "mewati-dictionary.firebaseapp.com",
-        projectId: "mewati-dictionary",
+        authDomain: "mewatidictionary.firebaseapp.com",
+        projectId: "mewatidictionary",
         storageBucket: "mewati-dictionary.firebasestorage.app",
         messagingSenderId: "258178654948",
         appId: "1:258178654948:web:e726a480fac76b3dce42f1",
@@ -3076,6 +3096,68 @@
       const provider = new GoogleAuthProvider();
       let currentUser = null;
       const ADMIN_EMAIL = "mewatidictionary@gmail.com";
+      
+      function getLikeDocId(word) {
+        if (!currentUser || !word) return null;
+        return `${currentUser.uid}_${encodeURIComponent(word.trim().toLowerCase())}`;
+      }
+
+      window.checkWordLikeStatus = async function(word) {
+        const likeBtn = document.getElementById("filterLikeBtn");
+        if (!likeBtn || !word) return;
+        likeBtn.classList.remove("liked");
+        if (!currentUser) return;
+        
+        try {
+          const docId = getLikeDocId(word);
+          const docRef = doc(db, "user_likes", docId);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            likeBtn.classList.add("liked");
+          }
+        } catch (error) {
+          console.error("Like Status Check Error:", error);
+        }
+      };
+
+      window.toggleWordLike = async function(word) {
+        if (!currentUser) {
+          window.location.href = `login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+          return;
+        }
+        if (!word) return;
+
+        const likeBtn = document.getElementById("filterLikeBtn");
+        const docId = getLikeDocId(word);
+        const docRef = doc(db, "user_likes", docId);
+
+        if (likeBtn.classList.contains("liked")) {
+          // अनलाइक करें
+          likeBtn.classList.remove("liked");
+          try {
+            await deleteDoc(docRef);
+          } catch (error) {
+            console.error("Unlike Error:", error);
+            likeBtn.classList.add("liked");
+          }
+        } else {
+          // लाइक करें
+          likeBtn.classList.add("liked");
+          try {
+            await setDoc(docRef, {
+              userId: currentUser.uid,
+              userEmail: currentUser.email || "",
+              userName: currentUser.displayName || "यूज़र",
+              word: word.trim(),
+              timestamp: serverTimestamp()
+            });
+          } catch (error) {
+            console.error("Like Save Error:", error);
+            likeBtn.classList.remove("liked");
+          }
+        }
+      };
+
       window.checkAuthAndRedirect = function(url) {
         if (!currentUser) {
             window.location.href = `login.html?redirect=${encodeURIComponent(url)}`;
@@ -3288,6 +3370,9 @@
             adminMenuItem.style.display = "none";
             if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
           }
+          if (currentActiveWord) {
+            window.checkWordLikeStatus(currentActiveWord);
+          }
         } else {
           loginTopView.style.display = "block";
           loggedInTopView.style.display = "none";
@@ -3296,6 +3381,8 @@
           adminMenuItem.style.display = "none";
           if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
           menuUserName.classList.remove("admin-name");
+          const likeBtn = document.getElementById("filterLikeBtn");
+          if (likeBtn) likeBtn.classList.remove("liked");
         }
       });
     </script>
