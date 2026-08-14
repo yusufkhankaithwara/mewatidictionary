@@ -3096,14 +3096,16 @@
       let currentUser = null;
       const ADMIN_EMAIL = "mewatidictionary@gmail.com";
       
-      // सेफ लोकल + डॉक्युमेंट की
+      // UTF-8 सेफ हैश-की (किसी भी भाषा/मात्रा के लिए 100% सुरक्षित Doc ID)
       function getSafeWordKey(word) {
         if (!word) return "";
-        try {
-            return btoa(unescape(encodeURIComponent(word.trim().toLowerCase()))).replace(/[/+=]/g, '_');
-        } catch(e) {
-            return encodeURIComponent(word.trim().toLowerCase()).replace(/%/g, '_');
+        let str = word.trim().toLowerCase();
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = ((hash << 5) - hash) + str.charCodeAt(i);
+            hash |= 0;
         }
+        return 'w_' + Math.abs(hash);
       }
 
       function getDocId(userId, word) {
@@ -3118,7 +3120,7 @@
         const cleanWord = word.trim();
         const safeKey = getSafeWordKey(cleanWord);
 
-        // 1. रिफ्रेश पर तुरंत लोकल स्टोरेज से स्टेट लगाएं ताकि कोई देरी न हो
+        // 1. रिफ्रेश पर तुरंत लोकल स्टोरेज से स्टेट लगाएं
         const localKey = (currentUser ? currentUser.uid : 'guest') + '_' + safeKey;
         if (localStorage.getItem(localKey) === "true") {
             likeBtn.classList.add("liked");
@@ -3126,7 +3128,7 @@
             likeBtn.classList.remove("liked");
         }
 
-        // 2. लॉग-इन यूज़र होने पर Firestore से वेरीफाई और सिंक करें
+        // 2. लॉग-इन यूज़र होने पर Firestore से लाइव वेरीफाई और सिंक करें
         if (currentUser) {
             try {
                 const docId = getDocId(currentUser.uid, cleanWord);
@@ -3161,7 +3163,7 @@
         const docRef = doc(db, "user_likes", docId);
 
         if (isCurrentlyLiked) {
-          // अनलाइक करें (तुरंत UI अपडेट)
+          // अनलाइक करें
           likeBtn.classList.remove("liked");
           localStorage.removeItem(localKey);
           try {
@@ -3172,7 +3174,7 @@
             localStorage.setItem(localKey, "true");
           }
         } else {
-          // लाइक करें (तुरंत सॉलिड मरून UI)
+          // लाइक करें
           likeBtn.classList.add("liked");
           localStorage.setItem(localKey, "true");
           try {
@@ -3403,6 +3405,8 @@
             adminMenuItem.style.display = "none";
             if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
           }
+          
+          // लॉगिन कन्फर्म होते ही तुरंत एक्टिव शब्द के लाइक का स्टेटस री-चेक करें
           if (window.currentActiveWord) {
             window.checkWordLikeStatus(window.currentActiveWord);
           }
@@ -3414,6 +3418,8 @@
           adminMenuItem.style.display = "none";
           if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
           menuUserName.classList.remove("admin-name");
+          const likeBtn = document.getElementById("filterLikeBtn");
+          if (likeBtn) likeBtn.classList.remove("liked");
         }
       });
     </script>
