@@ -2239,6 +2239,7 @@
             const data = searchData.data;
             currentSearchType = searchData.type;
             currentActiveWord = cleanInput;
+            window.currentActiveWord = cleanInput; // <-- Fix 1
 
             if (cleanInput) {
                const formattedWord = cleanInput.trim().replace(/\s+/g, '-');
@@ -2918,6 +2919,7 @@
         function clearResults() {
             currentSearchType = "";
             currentActiveWord = "";
+            window.currentActiveWord = ""; // <-- Fix 2
             document.getElementById("pluralLine").style.display = "none";
             const stickyStrip = document.getElementById("stickyWordStrip");
             stickyStrip.classList.remove("visible");
@@ -3383,8 +3385,11 @@
             adminMenuItem.style.display = "none";
             if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
           }
-          if (currentActiveWord) {
-            window.checkWordLikeStatus(currentActiveWord);
+          
+          // फिक्स: करंट वर्ड को सुरक्षित तरीके से फेच करें और लाइक स्टेटस अपडेट करें
+          const activeW = window.currentActiveWord || (document.getElementById("stickyWordText") ? document.getElementById("stickyWordText").textContent.trim() : "");
+          if (activeW) {
+            window.checkWordLikeStatus(activeW);
           }
         } else {
           loginTopView.style.display = "block";
