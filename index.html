@@ -215,13 +215,13 @@
             color: #ff6666;
         }
         
-        /* लाइक्ड स्टाइल */
+        /* लाइक्ड स्टाइल - सॉलिड मरून फिल */
         .action-bar-btn.liked {
             background: rgba(128, 0, 0, 0.2) !important;
         }
         .action-bar-btn.liked .material-symbols-outlined {
             color: #800000 !important;
-            font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24 !important;
+            font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24 !important;
         }
         body.dark-mode .action-bar-btn.liked {
             background: rgba(255, 102, 102, 0.3) !important;
@@ -1560,7 +1560,7 @@
         let dictionary = [];
         let currentSearchType = "";
         let debounceTimer = null;
-        let currentActiveWord = "";
+        window.currentActiveWord = "";
         const CURRENT_DATA_VERSION = "v3.0";
         function escapeHTML(str) {
             if (!str || typeof str !== 'string') return "";
@@ -2172,7 +2172,7 @@
         }
         function handleLikeButtonClick() {
             if (window.toggleWordLike) {
-                window.toggleWordLike(currentActiveWord);
+                window.toggleWordLike(window.currentActiveWord);
             }
         }
         function checkUrlAndOpenWord() {
@@ -2238,7 +2238,7 @@
             const cleanInput = searchData.word;
             const data = searchData.data;
             currentSearchType = searchData.type;
-            currentActiveWord = cleanInput;
+            window.currentActiveWord = cleanInput;
 
             if (cleanInput) {
                const formattedWord = cleanInput.trim().replace(/\s+/g, '-');
@@ -2533,7 +2533,7 @@
                 const actionButtons = document.getElementById("filterActionButtons");
                 actionButtons.style.display = "flex";
 
-                // लाइक स्टेटस चेक करें
+                // लाइक स्टेटस चेक करें (लोकल + फायरबेस)
                 if (window.checkWordLikeStatus) {
                     window.checkWordLikeStatus(cleanInput);
                 }
@@ -2917,7 +2917,7 @@
         }
         function clearResults() {
             currentSearchType = "";
-            currentActiveWord = "";
+            window.currentActiveWord = "";
             document.getElementById("pluralLine").style.display = "none";
             const stickyStrip = document.getElementById("stickyWordStrip");
             stickyStrip.classList.remove("visible");
@@ -2931,8 +2931,6 @@
             const likeBtn = document.getElementById("filterLikeBtn");
             if (likeBtn) {
                 likeBtn.classList.remove("liked");
-                const icon = document.getElementById("filterLikeIcon");
-                if (icon) icon.textContent = "favorite";
             }
 
             document.querySelectorAll("#wordType, #subjectLine, #result, #englishMeaning, #plural, #exampleLabel, #example, #imageLabel, #imageContainer, #synonymLabel, #synonyms, #oppositeLabel, #opposite, #rhymeLabel, #rhymePatterns, #rhymes, #relatedLabel, #related, #coupletLabel, #couplets, #idiomLabel, #idioms, #proverbLabel, #proverbs")
@@ -3098,36 +3096,52 @@
       let currentUser = null;
       const ADMIN_EMAIL = "mewatidictionary@gmail.com";
       
-      // सेफ डॉक्युमेंट आईडी जेनरेटर
-      function getLikeDocId(word) {
-        if (!currentUser || !word) return null;
-        let safeWord = "";
+      // सेफ लोकल + डॉक्युमेंट की
+      function getSafeWordKey(word) {
+        if (!word) return "";
         try {
-            safeWord = btoa(unescape(encodeURIComponent(word.trim()))).replace(/[/+=]/g, '_');
+            return btoa(unescape(encodeURIComponent(word.trim().toLowerCase()))).replace(/[/+=]/g, '_');
         } catch(e) {
-            safeWord = word.trim().replace(/[^a-zA-Z0-9\u0900-\u097F]/g, '_');
+            return encodeURIComponent(word.trim().toLowerCase()).replace(/%/g, '_');
         }
-        return `${currentUser.uid}_${safeWord}`;
+      }
+
+      function getDocId(userId, word) {
+        if (!userId || !word) return null;
+        return `${userId}_${getSafeWordKey(word)}`;
       }
 
       window.checkWordLikeStatus = async function(word) {
         const likeBtn = document.getElementById("filterLikeBtn");
         if (!likeBtn || !word) return;
-        likeBtn.classList.remove("liked");
-        if (!currentUser) return;
         
-        try {
-          const docId = getLikeDocId(word);
-          if (!docId) return;
-          const docRef = doc(db, "user_likes", docId);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
+        const cleanWord = word.trim();
+        const safeKey = getSafeWordKey(cleanWord);
+
+        // 1. रिफ्रेश पर तुरंत लोकल स्टोरेज से स्टेट लगाएं ताकि कोई देरी न हो
+        const localKey = (currentUser ? currentUser.uid : 'guest') + '_' + safeKey;
+        if (localStorage.getItem(localKey) === "true") {
             likeBtn.classList.add("liked");
-          } else {
+        } else {
             likeBtn.classList.remove("liked");
-          }
-        } catch (error) {
-          console.error("Like Status Check Error:", error);
+        }
+
+        // 2. लॉग-इन यूज़र होने पर Firestore से वेरीफाई और सिंक करें
+        if (currentUser) {
+            try {
+                const docId = getDocId(currentUser.uid, cleanWord);
+                const docRef = doc(db, "user_likes", docId);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    likeBtn.classList.add("liked");
+                    localStorage.setItem(localKey, "true");
+                } else {
+                    likeBtn.classList.remove("liked");
+                    localStorage.removeItem(localKey);
+                }
+            } catch (error) {
+                console.error("Like Status Verify Error:", error);
+            }
         }
       };
 
@@ -3140,33 +3154,39 @@
 
         const likeBtn = document.getElementById("filterLikeBtn");
         const isCurrentlyLiked = likeBtn.classList.contains("liked");
-        const docId = getLikeDocId(word);
-        if (!docId) return;
+        const cleanWord = word.trim();
+        const safeKey = getSafeWordKey(cleanWord);
+        const localKey = currentUser.uid + '_' + safeKey;
+        const docId = getDocId(currentUser.uid, cleanWord);
         const docRef = doc(db, "user_likes", docId);
 
         if (isCurrentlyLiked) {
-          // अनलाइक करें
+          // अनलाइक करें (तुरंत UI अपडेट)
           likeBtn.classList.remove("liked");
+          localStorage.removeItem(localKey);
           try {
             await deleteDoc(docRef);
           } catch (error) {
             console.error("Unlike Error:", error);
             likeBtn.classList.add("liked");
+            localStorage.setItem(localKey, "true");
           }
         } else {
-          // लाइक करें
+          // लाइक करें (तुरंत सॉलिड मरून UI)
           likeBtn.classList.add("liked");
+          localStorage.setItem(localKey, "true");
           try {
             await setDoc(docRef, {
               userId: currentUser.uid,
               userEmail: currentUser.email || "",
               userName: currentUser.displayName || "यूज़र",
-              word: word.trim(),
+              word: cleanWord,
               timestamp: serverTimestamp()
             });
           } catch (error) {
             console.error("Like Save Error:", error);
             likeBtn.classList.remove("liked");
+            localStorage.removeItem(localKey);
           }
         }
       };
@@ -3383,8 +3403,8 @@
             adminMenuItem.style.display = "none";
             if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
           }
-          if (currentActiveWord) {
-            window.checkWordLikeStatus(currentActiveWord);
+          if (window.currentActiveWord) {
+            window.checkWordLikeStatus(window.currentActiveWord);
           }
         } else {
           loginTopView.style.display = "block";
@@ -3394,8 +3414,6 @@
           adminMenuItem.style.display = "none";
           if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
           menuUserName.classList.remove("admin-name");
-          const likeBtn = document.getElementById("filterLikeBtn");
-          if (likeBtn) likeBtn.classList.remove("liked");
         }
       });
     </script>
