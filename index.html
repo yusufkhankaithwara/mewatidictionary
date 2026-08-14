@@ -21,7 +21,7 @@
     }
     </script>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
     <style>
         body { 
             margin: 0; 
@@ -144,7 +144,6 @@
             color: #aaa;
         }
         
-        /* लेटर बार कंटेनर - ऊपर और नीचे से समान दूरी */
         #letterFilter {
             position: fixed;
             top: 48px;
@@ -193,7 +192,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: background-color 0.2s, transform 0.1s, color 0.2s;
             padding: 0;
             flex-shrink: 0;
         }
@@ -204,9 +203,9 @@
             transform: scale(0.92);
         }
         .action-bar-btn .material-symbols-outlined {
-            font-size: 17px;
+            font-size: 18px;
             color: #800000;
-            transition: font-variation-settings 0.2s, color 0.2s;
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         body.dark-mode .action-bar-btn {
             background: rgba(255, 102, 102, 0.15);
@@ -216,16 +215,16 @@
             color: #ff6666;
         }
         
-        /* लाइक्ड (Liked) बटन स्टाइल - भरा हुआ मरून */
+        /* लाइक्ड स्टाइल */
         .action-bar-btn.liked {
-            background: rgba(128, 0, 0, 0.18);
+            background: rgba(128, 0, 0, 0.2) !important;
         }
         .action-bar-btn.liked .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
             color: #800000 !important;
+            font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24 !important;
         }
         body.dark-mode .action-bar-btn.liked {
-            background: rgba(255, 102, 102, 0.25);
+            background: rgba(255, 102, 102, 0.3) !important;
         }
         body.dark-mode .action-bar-btn.liked .material-symbols-outlined {
             color: #ff6666 !important;
@@ -374,8 +373,6 @@
         body.dark-mode #result {
             color: #bbb !important;
         }
-        
-        /* डार्क मोड में अंग्रेजी अर्थ हिंदी जैसा शुद्ध सफेद */
         body.dark-mode #englishMeaning,
         body.dark-mode #englishMeaning .english-word,
         body.dark-mode #englishMeaning a,
@@ -2403,7 +2400,7 @@
                 if (d.opposite && d.opposite !== '"""""') {
                     const opposites = d.opposite.split(", ").map(o => o.trim());
                     if (opposites.length) {
-                        oppositeLabel = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के विलोम शब्द:`;
+                        oppositeLabel = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के विलोम शब्द:`;
                         oppositeText = opposites.map(o => {
                             const safeO = escapeString(o);
                             return `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>`;
@@ -2932,7 +2929,11 @@
             document.getElementById("filterActionButtons").style.display = "none";
 
             const likeBtn = document.getElementById("filterLikeBtn");
-            if (likeBtn) likeBtn.classList.remove("liked");
+            if (likeBtn) {
+                likeBtn.classList.remove("liked");
+                const icon = document.getElementById("filterLikeIcon");
+                if (icon) icon.textContent = "favorite";
+            }
 
             document.querySelectorAll("#wordType, #subjectLine, #result, #englishMeaning, #plural, #exampleLabel, #example, #imageLabel, #imageContainer, #synonymLabel, #synonyms, #oppositeLabel, #opposite, #rhymeLabel, #rhymePatterns, #rhymes, #relatedLabel, #related, #coupletLabel, #couplets, #idiomLabel, #idioms, #proverbLabel, #proverbs")
             .forEach(el => el.innerHTML = "");
@@ -3097,9 +3098,16 @@
       let currentUser = null;
       const ADMIN_EMAIL = "mewatidictionary@gmail.com";
       
+      // सेफ डॉक्युमेंट आईडी जेनरेटर
       function getLikeDocId(word) {
         if (!currentUser || !word) return null;
-        return `${currentUser.uid}_${encodeURIComponent(word.trim().toLowerCase())}`;
+        let safeWord = "";
+        try {
+            safeWord = btoa(unescape(encodeURIComponent(word.trim()))).replace(/[/+=]/g, '_');
+        } catch(e) {
+            safeWord = word.trim().replace(/[^a-zA-Z0-9\u0900-\u097F]/g, '_');
+        }
+        return `${currentUser.uid}_${safeWord}`;
       }
 
       window.checkWordLikeStatus = async function(word) {
@@ -3110,10 +3118,13 @@
         
         try {
           const docId = getLikeDocId(word);
+          if (!docId) return;
           const docRef = doc(db, "user_likes", docId);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             likeBtn.classList.add("liked");
+          } else {
+            likeBtn.classList.remove("liked");
           }
         } catch (error) {
           console.error("Like Status Check Error:", error);
@@ -3128,10 +3139,12 @@
         if (!word) return;
 
         const likeBtn = document.getElementById("filterLikeBtn");
+        const isCurrentlyLiked = likeBtn.classList.contains("liked");
         const docId = getLikeDocId(word);
+        if (!docId) return;
         const docRef = doc(db, "user_likes", docId);
 
-        if (likeBtn.classList.contains("liked")) {
+        if (isCurrentlyLiked) {
           // अनलाइक करें
           likeBtn.classList.remove("liked");
           try {
