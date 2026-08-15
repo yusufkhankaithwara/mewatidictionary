@@ -1780,71 +1780,75 @@
             document.getElementById("wordInput").value = "";
             showSuggestions();
         }
-        function initializeWordOfTheDay() {
-            const wordOfTheDayDiv = document.getElementById("wordOfTheDay");
-            const wotdMewati = document.getElementById("wotdMewati");
-            const wotdHindiMeaning = document.getElementById("wotdHindiMeaning");
-            const mewatiWords = [];
-            const seen = new Set();
-            dictionary.forEach(entry => {
-                const isFlagged = entry.subject && entry.subject.some(
-                    tag => tag.replace("#", "").trim() === "अश्लील"
-                );
-                if (isFlagged) return;
-                const meanings = entry.meaning.split(", ").map(m => m.trim());
-                meanings.forEach(meaning => {
-                    if (meaning && !seen.has(meaning)) {
-                        seen.add(meaning);
-                        mewatiWords.push({ mewati: meaning, hindi: entry.hindiWord });
-                    }
-                });
-            });
-            if (mewatiWords.length === 0) return;
-            const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-            const startDate = new Date('2025-01-01');
-            const todayDate = new Date(today);
-            const diffTime = todayDate - startDate;
-            const dayNumber = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            const totalWords = mewatiWords.length;
-            const index = dayNumber % totalWords;
-            const selected = mewatiWords[index];
-            const selectedWord = selected.mewati;
-            const selectedHindi = selected.hindi;
-            wotdMewati.textContent = selectedWord;
-            wotdHindiMeaning.textContent = selectedHindi;
-            document.getElementById("wordOfTheDay").onclick = () => {
-                const cleanWord = selectedWord.trim();
-                const cleanHindi = selectedHindi.trim();
-                const exactIndex = dictionary.findIndex(entry => {
-                    const meanings = entry.meaning
-                        ? entry.meaning.split(",").map(m => m.trim())
-                        : [];
-                    return (
-                        entry.hindiWord === cleanHindi &&
-                        meanings.includes(cleanWord)
-                    );
-                });
-                if (exactIndex !== -1) {
-                    showResult(JSON.stringify({
-                        word: cleanWord,
-                        type: "mewati",
-                        data: dictionary[exactIndex],
-                        index: exactIndex
-                    }));
-                } else {
-                    showResult(cleanWord);
-                }
-                toggleClearIcon();
-                document.getElementById("duplicateSection").style.display = "none";
-                document.getElementById("wordOfTheDay").style.display = "none";
-            };
-            if (!document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
-                wordOfTheDayDiv.style.display = "block";
-            } else {
-                wordOfTheDayDiv.style.display = "none";
+       function initializeWordOfTheDay() {
+    const wordOfTheDayDiv = document.getElementById("wordOfTheDay");
+    const wotdMewati = document.getElementById("wotdMewati");
+    const wotdHindiMeaning = document.getElementById("wotdHindiMeaning");
+    
+    // 1. सभी यूनीक मेवाती शब्दों की सूची बनाएं
+    const mewatiWords = [];
+    const seen = new Set();
+    
+    dictionary.forEach(entry => {
+        const isFlagged = entry.subject && entry.subject.some(
+            tag => tag.replace("#", "").trim() === "अश्लील"
+        );
+        if (isFlagged) return;
+        
+        const meanings = entry.meaning.split(/[,;]\s*/).map(m => m.trim());
+        meanings.forEach(meaning => {
+            if (meaning && !seen.has(meaning)) {
+                seen.add(meaning);
+                mewatiWords.push(meaning);
             }
-        } 
-        function initializeDuplicateMewatiWords() {
+        });
+    });
+
+    if (mewatiWords.length === 0) return;
+
+    // 2. तारीख के अनुसार आज का मेवाती शब्द चुनें
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const startDate = new Date('2025-01-01');
+    const todayDate = new Date(today);
+    const diffTime = todayDate - startDate;
+    const dayNumber = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const index = dayNumber % mewatiWords.length;
+    const selectedWord = mewatiWords[index];
+
+    // 3. पूरी डिक्शनरी से इस मेवाती शब्द के सभी हिन्दी अर्थ इकट्ठा करें
+    const hindiMeaningsSet = new Set();
+    dictionary.forEach(entry => {
+        const meanings = entry.meaning ? entry.meaning.split(/[,;]\s*/).map(m => m.trim()) : [];
+        const synonyms = entry.synonyms ? entry.synonyms.split(/[,;]\s*/).map(s => s.trim()) : [];
+        
+        if (meanings.includes(selectedWord) || synonyms.includes(selectedWord)) {
+            // हिन्दी शब्द को अलग-अलग करके जोड़ें
+            const hindiParts = entry.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
+            hindiParts.forEach(h => hindiMeaningsSet.add(h));
+        }
+    });
+
+    const allHindiText = Array.from(hindiMeaningsSet).join(", ");
+
+    // 4. कार्ड में मेवाती शब्द और सभी हिन्दी अर्थ सेट करें
+    wotdMewati.textContent = selectedWord;
+    wotdHindiMeaning.textContent = allHindiText;
+
+    // 5. कार्ड पर क्लिक करने पर पूरा परिणाम खुलना
+    document.getElementById("wordOfTheDay").onclick = () => {
+        showResult(selectedWord);
+        toggleClearIcon();
+        document.getElementById("duplicateSection").style.display = "none";
+        document.getElementById("wordOfTheDay").style.display = "none";
+    };
+
+    if (!document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
+        wordOfTheDayDiv.style.display = "block";
+    } else {
+        wordOfTheDayDiv.style.display = "none";
+    }
+}
+         function initializeDuplicateMewatiWords() {
             const wordMap = {};
             dictionary.forEach((entry, index) => {
                 const meanings = entry.meaning.split(",").map(m => m.trim());
