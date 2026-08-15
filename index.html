@@ -2401,25 +2401,58 @@
                         document.getElementById("oppositeBlock").style.display = "block";
                     }
                 }
-            } else if (searchData.type === "english" && data) {
-                const d = data;
-                wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
-                const hindiParts = d.hindiWord ? d.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h) : [];
-                const hindiLinks = hindiParts.map(part => {
-                    const wordCount = part.split(/\s+/).length;
-                    if (wordCount > 5) {
-                        return `<span class="highlight-word" style="font-weight: normal;">${escapeHTML(part)}</span>`;
-                    } else {
-                        const safePart = escapeString(part);
-                        return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
-                    }
-                }).join(", ");
-                const meanings = d.meaning.split(/\s*,\s*/);
-                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ: ${hindiLinks}<br>मेवाती अर्थ:<br>` + meanings.map(m => {
-                    const safeM = escapeString(m);
-                    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
-                }).join("<br>");
-            } else if (searchData.type === "translit" && data) {
+          } else if (searchData.type === "english" && data) {
+    const d = data;
+    wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
+    
+    // 1. संबंधित पंक्तियाँ इकट्ठा करें
+    const searchLower = cleanInput.trim().toLowerCase();
+    const relatedEntries = dictionary.filter(entry => {
+        if (!entry.english) return false;
+        const engParts = entry.english.split(/[;]\s*/).map(e => e.trim().toLowerCase());
+        return engParts.includes(searchLower);
+    });
+
+    const entriesToUse = relatedEntries.length > 0 ? relatedEntries : [d];
+
+    // 2. हर रो के हिन्दी शब्द (कॉमा से जुड़े हुए, खाली पंक्तियाँ हटाकर)
+    const seenHindiRows = new Set();
+    const validHindiBullets = [];
+
+    entriesToUse.forEach(entry => {
+        if (!entry.hindiWord) return;
+        const rawHindi = entry.hindiWord.trim();
+        if (!rawHindi || seenHindiRows.has(rawHindi)) return;
+        seenHindiRows.add(rawHindi);
+
+        const parts = rawHindi.split(/[,;]\s*/).map(h => h.trim()).filter(h => h.length > 0);
+        if (parts.length === 0) return;
+
+        const linksInSameRow = parts.map(part => {
+            const wordCount = part.split(/\s+/).length;
+            if (wordCount > 5) {
+                return `<span class="highlight-word" style="font-weight: normal;">${escapeHTML(part)}</span>`;
+            } else {
+                const safePart = escapeString(part);
+                return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
+            }
+        }).join(", ");
+
+        validHindiBullets.push(`• ${linksInSameRow}`);
+    });
+
+    const hindiBullets = validHindiBullets.join("<br>");
+
+    // 3. मेवाती अर्थ (मूल कोड की तरह)
+    const meanings = d.meaning ? d.meaning.split(/\s*,\s*/).map(m => m.trim()).filter(m => m.length > 0) : [];
+    const mewatiBullets = meanings.map(m => {
+        const safeM = escapeString(m);
+        return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
+    }).join("<br>");
+
+    // 4. मूल कोड जैसा सीधा स्ट्रक्चर (कोई एक्स्ट्रा div या एक्स्ट्रा <br> नहीं)
+    result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiBullets}<br>मेवाती अर्थ:<br>${mewatiBullets}`;
+              } else if (searchData.type === "translit" && data) {
                 const d = data;
                 const meanings = d.meaning.split(/\s*,\s*/);
                 const translitIndex = d.mewatiTranslit.indexOf(cleanInput);
