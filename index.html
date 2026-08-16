@@ -22,6 +22,7 @@
     </script>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body { 
             margin: 0; 
@@ -772,15 +773,16 @@
         .word-of-the-day-container {
             position: relative;
             margin: 10px 20px;
+            padding-top: 12px;
             text-align: center;
             display: none;
         }
         .word-of-the-day-container h2 {
             font-size: 12px;
             color: #333;
-            margin: 0 0 5px 0;
+            margin: 0;
             position: absolute;
-            top: -8px;
+            top: 2px;
             left: 50%;
             transform: translateX(-50%);
             background: #e6f0fa;
@@ -788,12 +790,15 @@
             border-radius: 10px;
             border: 1px solid #ccc;
             transition: color 0.3s, background-color 0.3s;
+            z-index: 3;
+            line-height: 18px;
         }
         body.dark-mode .word-of-the-day-container h2 {
             color: #e0e0e0;
             background: #1a1a1a;
         }
         .word-of-the-day {
+            position: relative;
             background-color: #e6f0fa;
             padding: 20px;
             border-radius: 10px;
@@ -803,6 +808,47 @@
         body.dark-mode .word-of-the-day {
             background-color: #333;
             border-color: #555;
+        }
+        .wotd-card-logo {
+            display: none;
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            object-fit: cover;
+            z-index: 2;
+        }
+        .wotd-share-btn {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #800000;
+            transition: background 0.2s, color 0.2s;
+            z-index: 2;
+            width: 22px;
+            height: 22px;
+        }
+        .wotd-share-btn:hover {
+            background: rgba(128, 0, 0, 0.1);
+        }
+        .wotd-share-btn .material-symbols-outlined {
+            font-size: 16px;
+        }
+        body.dark-mode .wotd-share-btn {
+            color: #66b0ff;
+        }
+        body.dark-mode .wotd-share-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         .word-of-the-day h3 {
             font-size: 15px;
@@ -1463,8 +1509,12 @@
             </table>
         </div>
         <div class="word-of-the-day-container" id="wordOfTheDay">
-            <h2>आज का शब्द</h2>
+            <h2 id="wotdHeading">आज का शब्द</h2>
             <div class="word-of-the-day">
+                <img id="wotdCardLogo" src="https://lh3.googleusercontent.com/d/16mLIcWGIF9xeAYhMUfwy_rPe-pTzEK37" class="wotd-card-logo" alt="Logo" crossorigin="anonymous">
+                <button class="wotd-share-btn" id="wotdShareBtn" title="कार्ड शेयर करें" onclick="shareWotdCard(event)">
+                    <span class="material-symbols-outlined">share</span>
+                </button>
                 <h3 id="wotdMewati" class="clickable-word"></h3>
                 <div class="hindi-meaning-label">हिंदी अर्थ</div>
                 <p id="wotdHindi"><span id="wotdHindiMeaning"></span></p>
@@ -1780,75 +1830,139 @@
             document.getElementById("wordInput").value = "";
             showSuggestions();
         }
-       function initializeWordOfTheDay() {
-    const wordOfTheDayDiv = document.getElementById("wordOfTheDay");
-    const wotdMewati = document.getElementById("wotdMewati");
-    const wotdHindiMeaning = document.getElementById("wotdHindiMeaning");
-    
-    // 1. सभी यूनीक मेवाती शब्दों की सूची बनाएं
-    const mewatiWords = [];
-    const seen = new Set();
-    
-    dictionary.forEach(entry => {
-        const isFlagged = entry.subject && entry.subject.some(
-            tag => tag.replace("#", "").trim() === "अश्लील"
-        );
-        if (isFlagged) return;
-        
-        const meanings = entry.meaning.split(/[,;]\s*/).map(m => m.trim());
-        meanings.forEach(meaning => {
-            if (meaning && !seen.has(meaning)) {
-                seen.add(meaning);
-                mewatiWords.push(meaning);
+        function initializeWordOfTheDay() {
+            const wordOfTheDayDiv = document.getElementById("wordOfTheDay");
+            const wotdMewati = document.getElementById("wotdMewati");
+            const wotdHindiMeaning = document.getElementById("wotdHindiMeaning");
+            
+            // 1. सभी यूनीक मेवाती शब्दों की सूची बनाएं
+            const mewatiWords = [];
+            const seen = new Set();
+            
+            dictionary.forEach(entry => {
+                const isFlagged = entry.subject && entry.subject.some(
+                    tag => tag.replace("#", "").trim() === "अश्लील"
+                );
+                if (isFlagged) return;
+                
+                const meanings = entry.meaning.split(/[,;]\s*/).map(m => m.trim());
+                meanings.forEach(meaning => {
+                    if (meaning && !seen.has(meaning)) {
+                        seen.add(meaning);
+                        mewatiWords.push(meaning);
+                    }
+                });
+            });
+
+            if (mewatiWords.length === 0) return;
+
+            // 2. तारीख के अनुसार आज का मेवाती शब्द चुनें
+            const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+            const startDate = new Date('2025-01-01');
+            const todayDate = new Date(today);
+            const diffTime = todayDate - startDate;
+            const dayNumber = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const index = dayNumber % mewatiWords.length;
+            const selectedWord = mewatiWords[index];
+
+            // 3. पूरी डिक्शनरी से इस मेवाती शब्द के सभी हिन्दी अर्थ इकट्ठा करें
+            const hindiMeaningsSet = new Set();
+            dictionary.forEach(entry => {
+                const meanings = entry.meaning ? entry.meaning.split(/[,;]\s*/).map(m => m.trim()) : [];
+                const synonyms = entry.synonyms ? entry.synonyms.split(/[,;]\s*/).map(s => s.trim()) : [];
+                
+                if (meanings.includes(selectedWord) || synonyms.includes(selectedWord)) {
+                    // हिन्दी शब्द को अलग-अलग करके जोड़ें
+                    const hindiParts = entry.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
+                    hindiParts.forEach(h => hindiMeaningsSet.add(h));
+                }
+            });
+
+            const allHindiText = Array.from(hindiMeaningsSet).join(", ");
+
+            // 4. कार्ड में मेवाती शब्द और सभी हिन्दी अर्थ सेट करें
+            wotdMewati.textContent = selectedWord;
+            wotdHindiMeaning.textContent = allHindiText;
+
+            // 5. कार्ड पर क्लिक करने पर पूरा परिणाम खुलना
+            document.getElementById("wordOfTheDay").onclick = () => {
+                showResult(selectedWord);
+                toggleClearIcon();
+                document.getElementById("duplicateSection").style.display = "none";
+                document.getElementById("wordOfTheDay").style.display = "none";
+            };
+
+            if (!document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
+                wordOfTheDayDiv.style.display = "block";
+            } else {
+                wordOfTheDayDiv.style.display = "none";
             }
-        });
-    });
-
-    if (mewatiWords.length === 0) return;
-
-    // 2. तारीख के अनुसार आज का मेवाती शब्द चुनें
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-    const startDate = new Date('2025-01-01');
-    const todayDate = new Date(today);
-    const diffTime = todayDate - startDate;
-    const dayNumber = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    const index = dayNumber % mewatiWords.length;
-    const selectedWord = mewatiWords[index];
-
-    // 3. पूरी डिक्शनरी से इस मेवाती शब्द के सभी हिन्दी अर्थ इकट्ठा करें
-    const hindiMeaningsSet = new Set();
-    dictionary.forEach(entry => {
-        const meanings = entry.meaning ? entry.meaning.split(/[,;]\s*/).map(m => m.trim()) : [];
-        const synonyms = entry.synonyms ? entry.synonyms.split(/[,;]\s*/).map(s => s.trim()) : [];
-        
-        if (meanings.includes(selectedWord) || synonyms.includes(selectedWord)) {
-            // हिन्दी शब्द को अलग-अलग करके जोड़ें
-            const hindiParts = entry.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
-            hindiParts.forEach(h => hindiMeaningsSet.add(h));
         }
-    });
 
-    const allHindiText = Array.from(hindiMeaningsSet).join(", ");
+        async function shareWotdCard(e) {
+            if (e) e.stopPropagation();
+            const wotdCard = document.getElementById("wordOfTheDay");
+            const wotdHeading = document.getElementById("wotdHeading");
+            const wotdShareBtn = document.getElementById("wotdShareBtn");
+            const wotdCardLogo = document.getElementById("wotdCardLogo");
+            if (!wotdCard) return;
 
-    // 4. कार्ड में मेवाती शब्द और सभी हिन्दी अर्थ सेट करें
-    wotdMewati.textContent = selectedWord;
-    wotdHindiMeaning.textContent = allHindiText;
+            const originalHeading = wotdHeading.textContent;
+            wotdHeading.textContent = "मेवाती शब्दकोश";
+            if (wotdShareBtn) wotdShareBtn.style.visibility = "hidden";
+            if (wotdCardLogo) wotdCardLogo.style.display = "block";
 
-    // 5. कार्ड पर क्लिक करने पर पूरा परिणाम खुलना
-    document.getElementById("wordOfTheDay").onclick = () => {
-        showResult(selectedWord);
-        toggleClearIcon();
-        document.getElementById("duplicateSection").style.display = "none";
-        document.getElementById("wordOfTheDay").style.display = "none";
-    };
+            try {
+                const canvas = await html2canvas(wotdCard, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: null
+                });
 
-    if (!document.getElementById("wordInput").value.trim() && !activeLetter && !currentSearchType) {
-        wordOfTheDayDiv.style.display = "block";
-    } else {
-        wordOfTheDayDiv.style.display = "none";
-    }
-}
-         function initializeDuplicateMewatiWords() {
+                wotdHeading.textContent = originalHeading;
+                if (wotdShareBtn) wotdShareBtn.style.visibility = "visible";
+                if (wotdCardLogo) wotdCardLogo.style.display = "none";
+
+                canvas.toBlob(async (blob) => {
+                    if (!blob) return;
+                    const file = new File([blob], "mewati-shabd-of-the-day.png", { type: "image/png" });
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: "मेवाती शब्दकोश",
+                                text: "मेवाती शब्दकोश: https://mewatidictionary.in/"
+                            });
+                        } catch (err) {
+                            if (err.name !== "AbortError") {
+                                downloadCardBlob(blob, "mewati-shabd-of-the-day.png");
+                            }
+                        }
+                    } else {
+                        downloadCardBlob(blob, "mewati-shabd-of-the-day.png");
+                    }
+                }, "image/png");
+            } catch (err) {
+                console.error("Card Share Error:", err);
+                wotdHeading.textContent = originalHeading;
+                if (wotdShareBtn) wotdShareBtn.style.visibility = "visible";
+                if (wotdCardLogo) wotdCardLogo.style.display = "none";
+            }
+        }
+
+        function downloadCardBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function initializeDuplicateMewatiWords() {
             const wordMap = {};
             dictionary.forEach((entry, index) => {
                 const meanings = entry.meaning.split(",").map(m => m.trim());
@@ -2401,58 +2515,58 @@
                         document.getElementById("oppositeBlock").style.display = "block";
                     }
                 }
-          } else if (searchData.type === "english" && data) {
-    const d = data;
-    wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
-    
-    // 1. संबंधित पंक्तियाँ इकट्ठा करें
-    const searchLower = cleanInput.trim().toLowerCase();
-    const relatedEntries = dictionary.filter(entry => {
-        if (!entry.english) return false;
-        const engParts = entry.english.split(/[;]\s*/).map(e => e.trim().toLowerCase());
-        return engParts.includes(searchLower);
-    });
+            } else if (searchData.type === "english" && data) {
+                const d = data;
+                wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
+                
+                // 1. संबंधित पंक्तियाँ इकट्ठा करें
+                const searchLower = cleanInput.trim().toLowerCase();
+                const relatedEntries = dictionary.filter(entry => {
+                    if (!entry.english) return false;
+                    const engParts = entry.english.split(/[;]\s*/).map(e => e.trim().toLowerCase());
+                    return engParts.includes(searchLower);
+                });
 
-    const entriesToUse = relatedEntries.length > 0 ? relatedEntries : [d];
+                const entriesToUse = relatedEntries.length > 0 ? relatedEntries : [d];
 
-    // 2. हर रो के हिन्दी शब्द (कॉमा से जुड़े हुए, खाली पंक्तियाँ हटाकर)
-    const seenHindiRows = new Set();
-    const validHindiBullets = [];
+                // 2. हर रो के हिन्दी शब्द (कॉमा से जुड़े हुए, खाली पंक्तियाँ हटाकर)
+                const seenHindiRows = new Set();
+                const validHindiBullets = [];
 
-    entriesToUse.forEach(entry => {
-        if (!entry.hindiWord) return;
-        const rawHindi = entry.hindiWord.trim();
-        if (!rawHindi || seenHindiRows.has(rawHindi)) return;
-        seenHindiRows.add(rawHindi);
+                entriesToUse.forEach(entry => {
+                    if (!entry.hindiWord) return;
+                    const rawHindi = entry.hindiWord.trim();
+                    if (!rawHindi || seenHindiRows.has(rawHindi)) return;
+                    seenHindiRows.add(rawHindi);
 
-        const parts = rawHindi.split(/[,;]\s*/).map(h => h.trim()).filter(h => h.length > 0);
-        if (parts.length === 0) return;
+                    const parts = rawHindi.split(/[,;]\s*/).map(h => h.trim()).filter(h => h.length > 0);
+                    if (parts.length === 0) return;
 
-        const linksInSameRow = parts.map(part => {
-            const wordCount = part.split(/\s+/).length;
-            if (wordCount > 5) {
-                return `<span class="highlight-word" style="font-weight: normal;">${escapeHTML(part)}</span>`;
-            } else {
-                const safePart = escapeString(part);
-                return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
-            }
-        }).join(", ");
+                    const linksInSameRow = parts.map(part => {
+                        const wordCount = part.split(/\s+/).length;
+                        if (wordCount > 5) {
+                            return `<span class="highlight-word" style="font-weight: normal;">${escapeHTML(part)}</span>`;
+                        } else {
+                            const safePart = escapeString(part);
+                            return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
+                        }
+                    }).join(", ");
 
-        validHindiBullets.push(`• ${linksInSameRow}`);
-    });
+                    validHindiBullets.push(`• ${linksInSameRow}`);
+                });
 
-    const hindiBullets = validHindiBullets.join("<br>");
+                const hindiBullets = validHindiBullets.join("<br>");
 
-    // 3. मेवाती अर्थ (मूल कोड की तरह)
-    const meanings = d.meaning ? d.meaning.split(/\s*,\s*/).map(m => m.trim()).filter(m => m.length > 0) : [];
-    const mewatiBullets = meanings.map(m => {
-        const safeM = escapeString(m);
-        return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
-    }).join("<br>");
+                // 3. मेवाती अर्थ (मूल कोड की तरह)
+                const meanings = d.meaning ? d.meaning.split(/\s*,\s*/).map(m => m.trim()).filter(m => m.length > 0) : [];
+                const mewatiBullets = meanings.map(m => {
+                    const safeM = escapeString(m);
+                    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
+                }).join("<br>");
 
-    // 4. मूल कोड जैसा सीधा स्ट्रक्चर (कोई एक्स्ट्रा div या एक्स्ट्रा <br> नहीं)
-    result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiBullets}<br>मेवाती अर्थ:<br>${mewatiBullets}`;
-              } else if (searchData.type === "translit" && data) {
+                // 4. मूल कोड जैसा सीधा स्ट्रक्चर (कोई एक्स्ट्रा div या एक्स्ट्रा <br> नहीं)
+                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiBullets}<br>मेवाती अर्थ:<br>${mewatiBullets}`;
+            } else if (searchData.type === "translit" && data) {
                 const d = data;
                 const meanings = d.meaning.split(/\s*,\s*/);
                 const translitIndex = d.mewatiTranslit.indexOf(cleanInput);
@@ -3315,4 +3429,3 @@
     </script>
 </body>
 </html>
-
