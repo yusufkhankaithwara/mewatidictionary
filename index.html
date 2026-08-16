@@ -3075,14 +3075,15 @@
       import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
       import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
       const firebaseConfig = {
-        apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
-        authDomain: "mewatidictionary.firebaseapp.com",
-        projectId: "mewatidictionary",
-        storageBucket: "mewati-dictionary.firebasestorage.app",
-        messagingSenderId: "258178654948",
-        appId: "1:258178654948:web:e726a480fac76b3dce42f1",
-        measurementId: "G-Q0QCH4E3HM"
-      };
+  apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
+  authDomain: "mewati-dictionary.firebaseapp.com",
+  projectId: "mewati-dictionary",
+  storageBucket: "mewati-dictionary.firebasestorage.app",
+  messagingSenderId: "258178654948",
+  appId: "1:258178654948:web:e726a480fac76b3dce42f1",
+  measurementId: "G-V4XXJ072VK"
+};
+
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getFirestore(app);
