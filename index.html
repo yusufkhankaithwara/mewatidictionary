@@ -1763,7 +1763,7 @@
             dictionary.forEach((entry, index) => {
                 const word = entry.hindiWord;
                 const hindiWords = word
-                    .split(/[,;]\s*/)
+                    .split(/;\s*/)
                     .map(w => w.trim())
                     .filter(w => w);
                 hindiWords.forEach(part => {
@@ -1873,7 +1873,7 @@
                 
                 if (meanings.includes(selectedWord) || synonyms.includes(selectedWord)) {
                     // हिन्दी शब्द को अलग-अलग करके जोड़ें
-                    const hindiParts = entry.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
+                    const hindiParts = entry.hindiWord.split(/;\s*/).map(h => h.trim()).filter(h => h);
                     hindiParts.forEach(h => hindiMeaningsSet.add(h));
                 }
             });
@@ -2290,7 +2290,7 @@
                 const searchWord = searchData.word || input;
                 for (let idx = 0; idx < dictionary.length; idx++) {
                     const entry = dictionary[idx];
-                    const hindiParts = entry.hindiWord ? entry.hindiWord.split(/[,;]\s*/).map(w => w.trim()) : [];
+                    const hindiParts = entry.hindiWord ? entry.hindiWord.split(/;\s*/).map(w => w.trim()) : [];
                     if (hindiParts.includes(searchWord)) {
                         searchData = { word: searchWord, type: "hindi", data: entry, index: idx };
                         break;
@@ -2405,7 +2405,7 @@
                 const uniqueHindiSet = new Set(relatedHindiWords);
                 const uniqueRelatedHindiWords = [...uniqueHindiSet];
                 const hindiWordsList = uniqueRelatedHindiWords.map(hindi => {
-                    const parts = hindi.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
+                    const parts = hindi.split(/;\s*/).map(h => h.trim()).filter(h => h);
                     const linksForThisEntry = parts.map(part => {
                         const wordCount = part.split(/\s+/).length;
                         if (wordCount > 5) {
@@ -2539,7 +2539,7 @@
                     if (!rawHindi || seenHindiRows.has(rawHindi)) return;
                     seenHindiRows.add(rawHindi);
 
-                    const parts = rawHindi.split(/[,;]\s*/).map(h => h.trim()).filter(h => h.length > 0);
+                    const parts = rawHindi.split(/;\s*/).map(h => h.trim()).filter(h => h.length > 0);
                     if (parts.length === 0) return;
 
                     const linksInSameRow = parts.map(part => {
@@ -2578,7 +2578,7 @@
                     ).join(" ");
                 }
                 wordType = d.type ? (d.mewatiGender ? `${d.type}, ${d.mewatiGender.split(", ")[translitIndex] || d.mewatiGender}` : d.type) : (d.mewatiGender ? d.mewatiGender.split(", ")[translitIndex] : "");
-                const primaryHindiParts = d.hindiWord.split(/[,;]\s*/).map(h => h.trim()).filter(h => h);
+                const primaryHindiParts = d.hindiWord.split(/;\s*/).map(h => h.trim()).filter(h => h);
                 const primaryHindiLinks = primaryHindiParts.map(part => {
                     const safePart = escapeString(part);
                     return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
@@ -2934,7 +2934,7 @@
             const cleanLowerInput = input.toLowerCase();
             dictionary.forEach(entry => {
                 const hindiWords = entry.hindiWord
-                    .split(/[,;]\s*/)
+                    .split(/;\s*/)
                     .map(w => w.trim())
                     .filter(w => w);
                 hindiWords.forEach(word => {
@@ -2967,7 +2967,7 @@
             const exactMatches = [];
             dictionary.forEach((entry, idx) => {
                 const meanings = entry.meaning.split(",").map(m => m.trim());
-                const hindiWords = entry.hindiWord.split(/[,;]/).map(h => h.trim());
+                const hindiWords = entry.hindiWord.split(/;/).map(h => h.trim());
                 const engParts = entry.english ? entry.english.split(/[;]\s*/).map(e => e.trim()) : [];
                 if (hindiWords.includes(word)) {
                     exactMatches.push({
