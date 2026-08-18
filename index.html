@@ -2341,12 +2341,13 @@
             const data = searchData.data;
             currentSearchType = searchData.type;
             if (cleanInput) {
-               const formattedWord = cleanInput.trim().replace(/\s+/g, '-');
-               const newUrl = `${window.location.pathname}?word=${formattedWord}`;
-               if (window.location.search !== `?word=${formattedWord}`) {
-                   window.history.pushState({ word: cleanInput }, '', newUrl);
-               }
-            }
+   const formattedWord = cleanInput.trim().replace(/\s+/g, '-');
+   const newUrl = `${window.location.pathname}?word=${formattedWord}`;
+   // अगर बैक बटन से नहीं आए हैं और नया शब्द है, तभी हिस्ट्री में जोड़ें
+   if (!window.isNavigatingBack && window.location.search !== `?word=${formattedWord}`) {
+       window.history.pushState({ word: cleanInput }, '', newUrl);
+   }
+}
             let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
                 imageLabel = "", imageHtml = "",
                 synonymLabel = "", synonymText = "", oppositeLabel = "", oppositeText = "", 
@@ -2974,8 +2975,9 @@
             });
             return [...relatedWords].filter(word => word && word.trim()).sort((a, b) => a.localeCompare(b, 'hi'));
         }
-        function handleExactWordClick(word) {
-            clearResults();
+        function handleExactWordClick(word, fromPopState = false) {
+    if (fromPopState) window.isNavigatingBack = true;
+               clearResults();
             const input = document.getElementById("wordInput");
             input.value = word;
             document.getElementById("wordOfTheDay").style.display = "none";
@@ -3151,13 +3153,17 @@
             document.getElementById("feedbackModal").style.display = "none";
             document.getElementById("feedbackInput").value = "";
         }
-        document.querySelector(".app-logo").onclick = function () {
+                document.querySelector(".app-logo").onclick = function () {
             document.getElementById("wordInput").value = "";
             activeLetter = null;
-            document.querySelectorAll(".letter-btn")
-                .forEach(btn => btn.classList.remove("active"));
+            document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
             document.getElementById("suggestions").style.display = "none";
-            window.history.replaceState({}, '', window.location.pathname);
+            
+            // होम पर आने पर यूआरएल को साफ करें
+            if (window.location.search !== "") {
+                window.history.pushState({}, '', window.location.pathname);
+            }
+            
             clearResults();
             document.getElementById("wordOfTheDay").style.display = "block";
             document.getElementById("duplicateSection").style.display = "block";
@@ -3198,14 +3204,17 @@
                 document.getElementById("textSizeToggle").checked = true;
             }
         };
-       window.addEventListener('popstate', function(event) {
+              window.isNavigatingBack = false;
+
+        window.addEventListener('popstate', function(event) {
+            window.isNavigatingBack = true; // लूप को रोकने के लिए फ्लैग चालू
             const urlParams = new URLSearchParams(window.location.search);
             const word = urlParams.get('word');
 
             if (word) {
                 const decodedWord = decodeURIComponent(word).replace(/-/g, ' ');
                 document.getElementById("wordInput").value = decodedWord;
-                handleExactWordClick(decodedWord);
+                handleExactWordClick(decodedWord, true);
             } else {
                 document.getElementById("wordInput").value = "";
                 activeLetter = null;
@@ -3216,6 +3225,11 @@
                 document.getElementById("duplicateSection").style.display = "block";
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }
+            
+            // नेविगेशन पूरा होने के बाद फ्लैग बंद करें
+            setTimeout(() => {
+                window.isNavigatingBack = false;
+            }, 100);
         });
 
     </script>
