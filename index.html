@@ -2406,11 +2406,11 @@ function compareHindiWords(a, b) {
                 const d = data;
                 wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
                 const meanings = d.meaning.split(/\s*,\s*/);
-                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के मेवाती अर्थ:<br>` + meanings.map(m => {
-                    const safeM = escapeString(m);
-                    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
-                }).join("<br>");
-                if (d.english) {
+                 result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के मेवाती अर्थ:<br>` + meanings.map(m => {
+    const safeM = escapeString(m);
+    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}', 'mewati');return false">• ${escapeHTML(m)}</a>`;
+}).join("<br>");
+               if (d.english) {
                     const engParts = d.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                     const engLinks = engParts.map(eng => {
                         const wordCount = eng.split(/\s+/).length;
@@ -2929,49 +2929,57 @@ function compareHindiWords(a, b) {
             document.getElementById("adminFeedbackBlock").style.display = "none";
             document.getElementById("adminWordsBlock").style.display = "none";
         }
-        function showDuplicateSuggestions(word) {
-            document.getElementById("wordInput").value = word;
-            const hindiEntry = dictionary.find(e => e.hindiWord === word);
-            if (hindiEntry) {
-                handleExactWordClick(word);
-                return;
-            }
-            let matched = [];
-            dictionary.forEach((entry, idx) => {
-                const meanings = entry.meaning
-                    ? entry.meaning.split(",").map(m => m.trim())
-                    : [];
-                if (meanings.includes(word)) {
-                    matched.push({
-                        word: word,
-                        type: "mewati",
-                        data: entry,
-                        index: idx
-                    });
-                }
-            });
-            if (matched.length === 1) {
-                showResult(JSON.stringify(matched[0]));
-                document.getElementById("suggestions").style.display = "none";
-                return;
-            }
-            if (matched.length > 1) {
-                const suggestionsList = document.getElementById("suggestions");
-                suggestionsList.innerHTML = "";
-                suggestionsList.style.display = "block";
-                matched.forEach(match => {
-                    const li = document.createElement("li");
-                    li.innerHTML = `${escapeHTML(word)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
-                    li.onclick = () => {
-                        showResult(JSON.stringify(match));
-                        suggestionsList.innerHTML = "";
-                        suggestionsList.style.display = "none";
-                    };
-                    suggestionsList.appendChild(li);
-                });
-                clearResults();
-            }
+        
+function showDuplicateSuggestions(word, forceType = null) {
+    document.getElementById("wordInput").value = word;
+    
+    // अगर जबरन मेवाती (forceType === 'mewati') नहीं मांगा गया है और शब्द हिंदी में है
+    if (forceType !== 'mewati') {
+        const hindiEntry = dictionary.find(e => e.hindiWord === word);
+        if (hindiEntry) {
+            handleExactWordClick(word, false, 'hindi');
+            return;
         }
+    }
+
+    let matched = [];
+    dictionary.forEach((entry, idx) => {
+        const meanings = entry.meaning
+            ? entry.meaning.split(",").map(m => m.trim())
+            : [];
+        if (meanings.includes(word)) {
+            matched.push({
+                word: word,
+                type: "mewati",
+                data: entry,
+                index: idx
+            });
+        }
+    });
+
+    if (matched.length === 1) {
+        showResult(matched[0]);
+        document.getElementById("suggestions").style.display = "none";
+        return;
+    }
+
+    if (matched.length > 1) {
+        const suggestionsList = document.getElementById("suggestions");
+        suggestionsList.innerHTML = "";
+        suggestionsList.style.display = "block";
+        matched.forEach(match => {
+            const li = document.createElement("li");
+            li.innerHTML = `${escapeHTML(word)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
+            li.onclick = () => {
+                showResult(match);
+                suggestionsList.innerHTML = "";
+                suggestionsList.style.display = "none";
+            };
+            suggestionsList.appendChild(li);
+        });
+        clearResults();
+    }
+}
         function searchByTag(tag){
             const searchValue = "#" + tag;
             document.getElementById("wordInput").value = searchValue;
@@ -3009,63 +3017,67 @@ function compareHindiWords(a, b) {
             });
             return [...relatedWords].filter(word => word && word.trim()).sort((a, b) => a.localeCompare(b, 'hi'));
         }
-        function handleExactWordClick(word, fromPopState = false) {
+        
+function handleExactWordClick(word, fromPopState = false, forceType = null) {
     if (fromPopState) window.isNavigatingBack = true;
-               clearResults();
-            const input = document.getElementById("wordInput");
-            input.value = word;
-            document.getElementById("wordOfTheDay").style.display = "none";
-            document.getElementById("duplicateSection").style.display = "none";
-            const exactMatches = [];
-            dictionary.forEach((entry, idx) => {
-                const meanings = entry.meaning.split(",").map(m => m.trim());
-                const hindiWords = entry.hindiWord.split(/;/).map(h => h.trim());
-                const engParts = entry.english ? entry.english.split(/[;]\s*/).map(e => e.trim()) : [];
-                if (hindiWords.includes(word)) {
-                    exactMatches.push({
-                        word: word,
-                        type: "hindi",
-                        data: entry,
-                        index: idx
-                    });
-                }
-                else if (meanings.includes(word)) {
-                    exactMatches.push({
-                        word: word,
-                        type: "mewati",
-                        data: entry,
-                        index: idx
-                    });
-                }
-                else if (engParts.includes(word)) {
-                    exactMatches.push({
-                        word: word,
-                        type: "english",
-                        data: entry,
-                        index: idx
-                    });
-                }
+    clearResults();
+    const input = document.getElementById("wordInput");
+    input.value = word;
+    document.getElementById("wordOfTheDay").style.display = "none";
+    document.getElementById("duplicateSection").style.display = "none";
+
+    const exactMatches = [];
+    dictionary.forEach((entry, idx) => {
+        const meanings = entry.meaning.split(",").map(m => m.trim());
+        const hindiWords = entry.hindiWord.split(/;/).map(h => h.trim());
+        const engParts = entry.english ? entry.english.split(/[;]\s*/).map(e => e.trim()) : [];
+
+        if ((!forceType || forceType === "hindi") && hindiWords.includes(word)) {
+            exactMatches.push({
+                word: word,
+                type: "hindi",
+                data: entry,
+                index: idx
             });
-            if (exactMatches.length === 1) {
-                showResult(JSON.stringify(exactMatches[0]));
-            }
-            else if (exactMatches.length > 1) {
-                const suggestionsList = document.getElementById("suggestions");
-                suggestionsList.innerHTML = "";
-                suggestionsList.style.display = "block";
-                exactMatches.forEach(match => {
-                    const li = document.createElement("li");
-                    li.innerHTML = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning)}</span>`;
-                    li.onclick = () => {
-                        showResult(JSON.stringify(match));
-                        suggestionsList.style.display = "none";
-                    };
-                    suggestionsList.appendChild(li);
-                });
-            } else {
-                showResult(word);
-            }
         }
+        else if ((!forceType || forceType === "mewati") && meanings.includes(word)) {
+            exactMatches.push({
+                word: word,
+                type: "mewati",
+                data: entry,
+                index: idx
+            });
+        }
+        else if ((!forceType || forceType === "english") && engParts.includes(word)) {
+            exactMatches.push({
+                word: word,
+                type: "english",
+                data: entry,
+                index: idx
+            });
+        }
+    });
+
+    if (exactMatches.length === 1) {
+        showResult(exactMatches[0]);
+    } else if (exactMatches.length > 1) {
+        const suggestionsList = document.getElementById("suggestions");
+        suggestionsList.innerHTML = "";
+        suggestionsList.style.display = "block";
+        exactMatches.forEach(match => {
+            const li = document.createElement("li");
+            const subLabel = match.type === "hindi" ? match.data.meaning : match.data.hindiWord;
+            li.innerHTML = `${escapeHTML(match.word)}<span>${escapeHTML(subLabel)}</span>`;
+            li.onclick = () => {
+                showResult(match);
+                suggestionsList.style.display = "none";
+            };
+            suggestionsList.appendChild(li);
+        });
+    } else {
+        showResult(word);
+    }
+}
         function makeMewatiWordsClickable(text) {
             const lines = text.split('।').map(line => line.trim()).filter(line => line);
             return lines.map(line => {
