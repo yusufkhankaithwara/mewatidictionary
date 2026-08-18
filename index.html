@@ -2132,17 +2132,31 @@
                     };
                 } else if (match.type === "english") {
                     displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning.split(", ")[0])}</span>`;
-                } else if (match.type === "tag") {
-                    displayText = `${escapeHTML(match.data.hindiWord)}<span>${escapeHTML(match.data.meaning)}</span>`;
-                    selectedWord = match.data.hindiWord;
-                    match = {
-                        word: match.data.hindiWord,
-                        type: "hindi",
-                        data: match.data,
-                        index: match.index
-                    };
-                }
-                if (!seenSuggestions.has(suggestionKey)) {
+                 } else if (match.type === "tag") {
+    const hindiParts = match.data.hindiWord.split(/;\s*/).map(h => h.trim()).filter(h => h);
+    hindiParts.forEach(part => {
+        const tagKey = `${part}-tag-${match.index}`;
+        if (!seenSuggestions.has(tagKey)) {
+            seenSuggestions.add(tagKey);
+            const li = document.createElement("li");
+            li.innerHTML = `${escapeHTML(part)}<span>${escapeHTML(match.data.meaning)}</span>`;
+            li.onclick = () => {
+                document.getElementById("wordInput").value = part;
+                showResult(JSON.stringify({
+                    word: part,
+                    type: "hindi",
+                    data: match.data,
+                    index: match.index
+                }));
+                suggestionsList.innerHTML = "";
+                suggestionsList.style.display = "none";
+            };
+            suggestionsList.appendChild(li);
+        }
+    });
+    return; // यह नीचे वाले डिफ़ॉल्ट li को बनने से रोकेगा
+}
+               if (!seenSuggestions.has(suggestionKey)) {
                     seenSuggestions.add(suggestionKey);
                     const li = document.createElement("li");
                     li.innerHTML = displayText;
