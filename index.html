@@ -2343,7 +2343,9 @@
             if (cleanInput) {
                const formattedWord = cleanInput.trim().replace(/\s+/g, '-');
                const newUrl = `${window.location.pathname}?word=${formattedWord}`;
-               window.history.replaceState({ word: cleanInput }, '', newUrl);
+               if (window.location.search !== `?word=${formattedWord}`) {
+                   window.history.pushState({ word: cleanInput }, '', newUrl);
+               }
             }
             let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
                 imageLabel = "", imageHtml = "",
@@ -3196,6 +3198,26 @@
                 document.getElementById("textSizeToggle").checked = true;
             }
         };
+       window.addEventListener('popstate', function(event) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const word = urlParams.get('word');
+
+            if (word) {
+                const decodedWord = decodeURIComponent(word).replace(/-/g, ' ');
+                document.getElementById("wordInput").value = decodedWord;
+                handleExactWordClick(decodedWord);
+            } else {
+                document.getElementById("wordInput").value = "";
+                activeLetter = null;
+                document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
+                document.getElementById("suggestions").style.display = "none";
+                clearResults();
+                document.getElementById("wordOfTheDay").style.display = "block";
+                document.getElementById("duplicateSection").style.display = "block";
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        });
+
     </script>
     <!-- Firebase SDK, Firestore & Authentication Engine -->
     <script type="module">
