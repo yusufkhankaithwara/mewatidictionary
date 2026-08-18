@@ -2032,11 +2032,51 @@
                 showSuggestions();
             }, 200);
         }
-        function compareHindiWords(a, b) {
-            const wordA = a.word || "";
-            const wordB = b.word || "";
-            return wordA.localeCompare(wordB, 'hi-IN', { sensitivity: 'variant', numeric: true });
+        // शुद्ध हिंदी शब्दकोश (Dictionary Order) के अनुसार वर्ण व मात्रा भार
+const HINDI_DICT_ORDER = [
+    // 1. स्वतंत्र अनुस्वार, चन्द्रबिन्दु, विसर्ग (स्वर से पहले)
+    'ँ', 'ं', 'ः',
+
+    // 2. मूल स्वर
+    'अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ऋ', 'ए', 'ऐ', 'ओ', 'औ',
+
+    // 3. व्यंजन (वर्गानुसार व नुक्ता सहित)
+    'क', 'क़', 'ख', 'ख़', 'ग', 'ग़', 'घ', 'ङ',
+    'च', 'छ', 'ज', 'ज़', 'झ', 'ञ',
+    'ट', 'ठ', 'ड', 'ड़', 'ढ', 'ढ़', 'ण',
+    'त', 'थ', 'द', 'ध', 'न',
+    'प', 'फ', 'फ़', 'ब', 'भ', 'म',
+    'य', 'र', 'ल', 'व',
+    'श', 'ष', 'स', 'ह',
+
+    // 4. मात्राएँ (बारहखड़ी क्रम: आ से औ, और सबसे अंत में हलन्त/आधा अक्षर)
+    'ा', 'ि', 'ी', 'ु', 'ू', 'ृ', 'े', 'ै', 'ो', 'ौ',
+    '्' // हलन्त सबसे अंत में रहेगा ताकि आधा अक्षर पूरी बारहखड़ी के बाद आए
+];
+
+function getCharWeight(char) {
+    const idx = HINDI_DICT_ORDER.indexOf(char);
+    return idx === -1 ? 999 + char.charCodeAt(0) : idx;
+}
+
+function compareHindiWords(a, b) {
+    const strA = (a.word || "").trim();
+    const strB = (b.word || "").trim();
+    
+    const minLen = Math.min(strA.length, strB.length);
+    for (let i = 0; i < minLen; i++) {
+        const charA = strA[i];
+        const charB = strB[i];
+        if (charA !== charB) {
+            const weightA = getCharWeight(charA);
+            const weightB = getCharWeight(charB);
+            if (weightA !== weightB) {
+                return weightA - weightB;
+            }
         }
+    }
+    return strA.length - strB.length;
+}
         function showSuggestions() {
             const input = document.getElementById("wordInput").value.trim();
             const suggestionsList = document.getElementById("suggestions");
@@ -2084,8 +2124,10 @@
                     });
                 }
             } else if (activeLetter && !input) {
-                matches = trie.searchByLetter(activeLetter);
-                matches.sort(compareHindiWords);
+    matches = trie.searchByLetter(activeLetter);
+    matches = matches.filter(match => match.word.startsWith(activeLetter));
+    matches.sort(compareHindiWords);
+
             } else if (input) {
                 matches = trie.search(input);
                 activeLetter = null;
