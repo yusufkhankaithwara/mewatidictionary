@@ -2134,36 +2134,27 @@ function compareHindiWords(a, b) {
                 document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
                 matches.sort(compareHindiWords);
             }
-            const seenSuggestions = new Set();
-            const hindiSuggestions = matches.filter(match => match.type === "hindi");
-            hindiSuggestions.forEach(match => {
-                const suggestionKey = `${match.word}-${match.type}-${match.index}`;
-                if (!seenSuggestions.has(suggestionKey)) {
-                    seenSuggestions.add(suggestionKey);
-                    const li = document.createElement("li");
-                    li.innerHTML = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning)}</span>`;
-                    li.onclick = () => {
-                        document.getElementById("wordInput").value = match.word;
-                        showResult(JSON.stringify(match));
-                        suggestionsList.innerHTML = "";
-                        suggestionsList.style.display = "none";
-                    };
-                    suggestionsList.appendChild(li);
-                }
-            });
-            const otherSuggestions = matches.filter(match => match.type !== "hindi");
-            otherSuggestions.forEach(match => {
-                let suggestionKey = `${match.word}-${match.type}-${match.index}`;
+           const seenSuggestions = new Set();
+
+            matches.forEach(match => {
+                if (activeLetter && match.type === "translit") return;
+
                 let displayText = escapeHTML(match.word);
+                let subText = "";
                 let selectedWord = match.word;
-                if (match.type === "mewati") {
+                let suggestionKey = `${match.word}-${match.type}-${match.index}`;
+
+                if (match.type === "hindi") {
+                    subText = match.data.meaning;
+                } else if (match.type === "mewati") {
                     suggestionKey = `${match.word}-mewati-${match.index}-${match.data.hindiWord}`;
-                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
+                    subText = match.data.hindiWord;
                 } else if (match.type === "translit") {
                     const meanings = match.data.meaning.split(", ").map(m => m.trim());
                     const translitIndex = match.data.mewatiTranslit.indexOf(match.word);
                     const mewatiWord = meanings[translitIndex] || meanings[0];
-                    displayText = `${escapeHTML(mewatiWord)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
+                    displayText = escapeHTML(mewatiWord);
+                    subText = match.data.hindiWord;
                     selectedWord = mewatiWord;
                     suggestionKey = `${mewatiWord}-mewati-${match.index}-${match.data.hindiWord}`;
                     match = {
@@ -2173,35 +2164,36 @@ function compareHindiWords(a, b) {
                         index: match.index
                     };
                 } else if (match.type === "english") {
-                    displayText = `${escapeHTML(match.word)}<span>${escapeHTML(match.data.meaning.split(", ")[0])}</span>`;
-                 } else if (match.type === "tag") {
-    const hindiParts = match.data.hindiWord.split(/;\s*/).map(h => h.trim()).filter(h => h);
-    hindiParts.forEach(part => {
-        const tagKey = `${part}-tag-${match.index}`;
-        if (!seenSuggestions.has(tagKey)) {
-            seenSuggestions.add(tagKey);
-            const li = document.createElement("li");
-            li.innerHTML = `${escapeHTML(part)}<span>${escapeHTML(match.data.meaning)}</span>`;
-            li.onclick = () => {
-                document.getElementById("wordInput").value = part;
-                showResult(JSON.stringify({
-                    word: part,
-                    type: "hindi",
-                    data: match.data,
-                    index: match.index
-                }));
-                suggestionsList.innerHTML = "";
-                suggestionsList.style.display = "none";
-            };
-            suggestionsList.appendChild(li);
-        }
-    });
-    return; // यह नीचे वाले डिफ़ॉल्ट li को बनने से रोकेगा
-}
-               if (!seenSuggestions.has(suggestionKey)) {
+                    subText = match.data.meaning.split(", ")[0];
+                } else if (match.type === "tag") {
+                    const hindiParts = match.data.hindiWord.split(/;\s*/).map(h => h.trim()).filter(h => h);
+                    hindiParts.forEach(part => {
+                        const tagKey = `${part}-tag-${match.index}`;
+                        if (!seenSuggestions.has(tagKey)) {
+                            seenSuggestions.add(tagKey);
+                            const li = document.createElement("li");
+                            li.innerHTML = `${escapeHTML(part)}<span>${escapeHTML(match.data.meaning)}</span>`;
+                            li.onclick = () => {
+                                document.getElementById("wordInput").value = part;
+                                showResult(JSON.stringify({
+                                    word: part,
+                                    type: "hindi",
+                                    data: match.data,
+                                    index: match.index
+                                }));
+                                suggestionsList.innerHTML = "";
+                                suggestionsList.style.display = "none";
+                            };
+                            suggestionsList.appendChild(li);
+                        }
+                    });
+                    return;
+                }
+
+                if (!seenSuggestions.has(suggestionKey)) {
                     seenSuggestions.add(suggestionKey);
                     const li = document.createElement("li");
-                    li.innerHTML = displayText;
+                    li.innerHTML = `${displayText}<span>${escapeHTML(subText)}</span>`;
                     li.onclick = () => {
                         document.getElementById("wordInput").value = selectedWord;
                         showResult(JSON.stringify(match));
@@ -2211,8 +2203,8 @@ function compareHindiWords(a, b) {
                     suggestionsList.appendChild(li);
                 }
             });
-        }
-        function calculateChhandPattern(word) {
+}
+                    function calculateChhandPattern(word) {
             if (!word) return "";
             let pattern = "";
             let i = 0;
