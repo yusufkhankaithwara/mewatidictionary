@@ -2344,13 +2344,24 @@ function compareHindiWords(a, b) {
                         break;
                     }
                 }
+                               // 1. पहले मुख्य मेवाती अर्थ (Meaning) में ढूँढें
+                for (let idx = 0; idx < dictionary.length; idx++) {
+                    const entry = dictionary[idx];
+                    const meanings = entry.meaning.split(",").map(m => m.trim());
+                    if (meanings.includes(searchWord)) {
+                        searchData = { word: searchWord, type: "mewati", data: { ...entry }, index: idx };
+                        break;
+                    }
+                }
+
+                // 2. अगर मुख्य अर्थ में न मिले, तब पर्यायवाची, Translit या English में ढूँढें
                 if (searchData.type === "unknown") {
-                    dictionary.forEach((entry, idx) => {
-                        if (
-                            entry.meaning.split(",").map(m => m.trim()).some(m => m === searchWord) ||
-                            (entry.synonyms && entry.synonyms.split(",").map(s => s.trim()).some(s => s === searchWord))
-                        ) {
-                            searchData = { word: searchWord, type: "mewati", data: {...entry}, index: idx };
+                    for (let idx = 0; idx < dictionary.length; idx++) {
+                        const entry = dictionary[idx];
+                        const synonyms = entry.synonyms ? entry.synonyms.split(",").map(s => s.trim()) : [];
+                        if (synonyms.includes(searchWord)) {
+                            searchData = { word: searchWord, type: "mewati", data: { ...entry }, index: idx };
+                            break;
                         }
                         else if (entry.mewatiTranslit && entry.mewatiTranslit.includes(searchWord)) {
                             const translitIndex = entry.mewatiTranslit.indexOf(searchWord);
@@ -2361,14 +2372,16 @@ function compareHindiWords(a, b) {
                                 data: { ...entry },
                                 index: idx
                             };
+                            break;
                         }
                         else if (entry.english) {
                             const engParts = entry.english.split(/[;]\s*/).map(e => e.trim());
                             if (engParts.includes(searchWord)) {
                                 searchData = { word: searchWord, type: "english", data: { ...entry, hindiWord: entry.hindiWord }, index: idx };
+                                break;
                             }
                         }
-                    });
+                    }
                 }
             }
             const cleanInput = searchData.word;
