@@ -365,6 +365,10 @@
         body.dark-mode #result .highlight-word,
         body.dark-mode #englishMeaning .highlight-word {
             color: #fff;
+body.dark-mode #englishMeaning span {
+    color: #ffffff !important;
+}
+
         }
         #exampleLabel { 
             font-size: 14px; 
@@ -469,12 +473,12 @@
             color: #87ceeb;
         }
         .meaning-link {
-            color: #007bff;
-            text-decoration: none;
-        }
-        body.dark-mode .meaning-link {
-            color: #fff;
-        }
+    color: #007bff;
+    text-decoration: none;
+}
+body.dark-mode .meaning-link {
+    color: #66b0ff;
+}
         .highlight { 
             font-weight: bold; 
         }
@@ -1046,13 +1050,13 @@
             color: #bbb;
         }
         #englishMeaning a,
-        #result a {
-            text-decoration: none;
-        }
-        body.dark-mode #result a,
-        body.dark-mode #englishMeaning a {
-            color: #fff;
-        }
+#result a {
+    text-decoration: none;
+}
+body.dark-mode #result a,
+body.dark-mode #englishMeaning a {
+    color: #66b0ff;
+}
         .duplicate-section {
             position: relative;
             margin: 10px 20px;
@@ -2428,7 +2432,8 @@ function compareHindiWords(a, b) {
                     const engLinks = engParts.map(eng => {
                         const wordCount = eng.split(/\s+/).length;
                         if (wordCount > 5) {
-                            return `<span class="english-word" style="color: inherit; font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+    return `<span class="highlight-word" style="font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+
                         } else {
                             const safeEng = escapeString(eng);
                             const safeEngDisplay = escapeHTML(eng);
@@ -2495,7 +2500,8 @@ function compareHindiWords(a, b) {
                 const englishMeanings = [...uniqueEnglishSet].map(eng => {
                     const wordCount = eng.split(/\s+/).length;
                     if (wordCount > 5) {
-                        return `<span style="color: #1a1a1a; font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+    return `<span class="highlight-word" style="font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+
                     } else {
                         const safeDisplayEng = escapeString(eng);
                         return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
