@@ -2471,7 +2471,6 @@
                 }
             }
             let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
-                imageLabel = "", imageHtml = "",
                 synonymLabel = "", synonymText = "", oppositeLabel = "", oppositeText = "", 
                 relatedLabel = "", relatedText = "", rhymeLabel = "";
             const relatedHindiWords = [];
@@ -2799,24 +2798,36 @@
             const adminControl = document.getElementById("adminImageControlBlock");
             const adminDelBtn = document.getElementById("adminDeleteImageBtn");
             const imageBlock = document.getElementById("imageBlock");
+            const imageContainer = document.getElementById("imageContainer");
+            const imageLabelEl = document.getElementById("imageLabel");
             const isAdmin = window.currentUser && window.currentUser.email && window.currentUser.email.toLowerCase() === "mewatidictionary@gmail.com";
+
+            // शुरुआती रीसेट (ताकि खाली बॉक्स न चमके)
+            imageBlock.style.display = "none";
+            imageLabelEl.style.display = "none";
+            imageLabelEl.textContent = "";
+            imageContainer.innerHTML = "";
+            adminControl.style.display = "none";
+            adminDelBtn.style.display = "none";
 
             let hasSheetImage = data && data.visualImage && data.visualImage.trim() !== "";
             let firebaseImage = null;
 
-            if (window.fetchCustomWordImage && cleanInput) {
-                firebaseImage = await window.fetchCustomWordImage(cleanInput);
+            if (!hasSheetImage && window.fetchCustomWordImage && data) {
+                firebaseImage = await window.fetchCustomWordImage(data);
             }
 
             if (hasSheetImage) {
-                imageLabel = "चित्रात्मक संदर्भ:";
-                imageHtml = `<img src="${escapeHTML(data.visualImage)}" class="reference-image" onerror="this.parentElement.parentElement.style.display='none'">`;
+                imageLabelEl.textContent = "चित्रात्मक संदर्भ:";
+                imageLabelEl.style.display = "block";
+                imageContainer.innerHTML = `<img src="${escapeHTML(data.visualImage)}" class="reference-image" onerror="this.parentElement.parentElement.style.display='none'; document.getElementById('imageLabel').style.display='none';">`;
                 imageBlock.style.display = "block";
                 adminControl.style.display = "none";
                 adminDelBtn.style.display = "none";
             } else if (firebaseImage) {
-                imageLabel = "चित्रात्मक संदर्भ:";
-                imageHtml = `<img src="${firebaseImage}" class="reference-image">`;
+                imageLabelEl.textContent = "चित्रात्मक संदर्भ:";
+                imageLabelEl.style.display = "block";
+                imageContainer.innerHTML = `<img src="${firebaseImage}" class="reference-image">`;
                 imageBlock.style.display = "block";
                 adminControl.style.display = "none";
                 if (isAdmin) {
@@ -2826,6 +2837,7 @@
                 }
             } else {
                 imageBlock.style.display = "none";
+                imageLabelEl.style.display = "none";
                 adminDelBtn.style.display = "none";
                 if (isAdmin && cleanInput && searchData.type !== "unknown") {
                     adminControl.style.display = "block";
@@ -3021,9 +3033,6 @@
                 document.getElementById("example").innerHTML = exampleText;
                 document.getElementById("example").style.display = exampleText ? "block" : "none";
             }
-            document.getElementById("imageLabel").textContent = imageLabel;
-            document.getElementById("imageLabel").style.display = imageLabel ? "block" : "none";
-            document.getElementById("imageContainer").innerHTML = imageHtml;
             document.getElementById("synonymLabel").innerHTML = synonymLabel;
             document.getElementById("synonyms").innerHTML = synonymText;
             document.getElementById("oppositeLabel").innerHTML = oppositeLabel;
@@ -3405,10 +3414,19 @@
       let currentUser = null;
       const ADMIN_EMAIL = "mewatidictionary@gmail.com";
 
+      // पूरी पंक्ति (Row) के लिए सुरक्षित Doc ID जनरेट करना
+      function getEntryDocKey(data) {
+          if (!data) return "";
+          const baseKey = data.hindiWord ? data.hindiWord.trim() : (data.meaning ? data.meaning.trim() : "");
+          return encodeURIComponent(baseKey);
+      }
+
       // Firebase से वर्ड इमेज लोड करना
-      window.fetchCustomWordImage = async function(word) {
+      window.fetchCustomWordImage = async function(entryData) {
           try {
-              const docRef = doc(db, "word_images", word.trim());
+              const docId = getEntryDocKey(entryData);
+              if (!docId) return null;
+              const docRef = doc(db, "word_images", docId);
               const docSnap = await getDoc(docRef);
               if (docSnap.exists()) {
                   return docSnap.data().imageBase64;
@@ -3430,13 +3448,21 @@
               alert("कृपया पहले एक इमेज चुनें।");
               return;
           }
-          if (!currentDisplayWord) {
+          if (!currentEntryRef) {
               alert("कोई शब्द सक्रिय नहीं है।");
               return;
           }
+          
+          const saveBtn = document.getElementById("adminImageSaveBtn");
+          saveBtn.disabled = true;
+          saveBtn.textContent = "सेव हो रहा है...";
+
           try {
-              await setDoc(doc(db, "word_images", currentDisplayWord.trim()), {
-                  word: currentDisplayWord.trim(),
+              const docId = getEntryDocKey(currentEntryRef);
+              await setDoc(doc(db, "word_images", docId), {
+                  wordId: docId,
+                  hindiWord: currentEntryRef.hindiWord || "",
+                  mewatiMeaning: currentEntryRef.meaning || "",
                   imageBase64: tempBase64Image,
                   updatedAt: serverTimestamp(),
                   uploadedBy: currentUser.email
@@ -3446,7 +3472,10 @@
               showResult(currentDisplayWord);
           } catch (e) {
               console.error("Image Upload Error:", e);
-              alert("चित्र अपलोड करने में समस्या आई। पुनः प्रयास करें।");
+              alert("चित्र अपलोड करने में समस्या आई: " + (e.message || "Permissions Error"));
+          } finally {
+              saveBtn.disabled = false;
+              saveBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">save</span> सेव करें';
           }
       };
 
@@ -3458,12 +3487,13 @@
           }
           if (!confirm("क्या आप वाकई इस शब्द का चित्र हटाना चाहते हैं?")) return;
           try {
-              await deleteDoc(doc(db, "word_images", currentDisplayWord.trim()));
+              const docId = getEntryDocKey(currentEntryRef);
+              await deleteDoc(doc(db, "word_images", docId));
               alert("चित्र सफलतापूर्वक हटा दिया गया है।");
               showResult(currentDisplayWord);
           } catch(e) {
               console.error("Image Delete Error:", e);
-              alert("चित्र हटाने में समस्या आई।");
+              alert("चित्र हटाने में समस्या आई: " + (e.message || "Error"));
           }
       };
 
@@ -3689,7 +3719,6 @@
           menuUserName.classList.remove("admin-name");
         }
         
-        // यदि कोई शब्द पहले से खुला है तो एडमिन के अनुसार दृश्य अपडेट करें
         if (currentDisplayWord) {
             showResult(currentDisplayWord);
         }
