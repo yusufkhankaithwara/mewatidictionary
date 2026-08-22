@@ -1237,7 +1237,7 @@
             width: 90%;
             max-width: 360px;
             box-sizing: border-box;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: background-color 0.3s, color 0.3s;
         }
         body.dark-mode #feedbackModal {
             background: #2a2a2a;
@@ -2395,7 +2395,7 @@
             reader.readAsDataURL(file);
         }
 
-        async function showResult(input) {
+        function showResult(input) {
             clearResults();
             let searchData = {};
             if (typeof input === "object" && input !== null) {
@@ -2460,13 +2460,6 @@
             const cleanInput = searchData.word;
             const data = searchData.data;
 
-            // प्री-फ़ेच Firebase कस्टम इमेज (DOM अपडेट होने से पहले ही डेटा प्राप्त करना)
-            let hasSheetImage = data && data.visualImage && data.visualImage.trim() !== "";
-            let firebaseImage = null;
-            if (!hasSheetImage && window.fetchCustomWordImage && data) {
-                firebaseImage = await window.fetchCustomWordImage(data);
-            }
-
             currentSearchType = searchData.type;
             currentDisplayWord = cleanInput;
             currentEntryRef = data;
@@ -2479,6 +2472,7 @@
                 }
             }
             let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
+                imageLabel = "", imageHtml = "",
                 synonymLabel = "", synonymText = "", oppositeLabel = "", oppositeText = "", 
                 relatedLabel = "", relatedText = "", rhymeLabel = "";
             const relatedHindiWords = [];
@@ -2802,45 +2796,14 @@
                 }
             }
 
-            // इमेज रेंडरिंग और एडमिन कंट्रोल
-            const adminControl = document.getElementById("adminImageControlBlock");
-            const adminDelBtn = document.getElementById("adminDeleteImageBtn");
-            const imageBlock = document.getElementById("imageBlock");
-            const imageContainer = document.getElementById("imageContainer");
-            const imageLabelEl = document.getElementById("imageLabel");
-            const isAdmin = window.currentUser && window.currentUser.email && window.currentUser.email.toLowerCase() === "mewatidictionary@gmail.com";
-
-            if (hasSheetImage) {
-                imageLabelEl.textContent = "चित्रात्मक संदर्भ:";
-                imageLabelEl.style.display = "block";
-                imageContainer.innerHTML = `<img src="${escapeHTML(data.visualImage)}" class="reference-image" onerror="this.parentElement.parentElement.style.display='none'; document.getElementById('imageLabel').style.display='none';">`;
-                imageBlock.style.display = "block";
-                adminControl.style.display = "none";
-                adminDelBtn.style.display = "none";
-            } else if (firebaseImage) {
-                imageLabelEl.textContent = "चित्रात्मक संदर्भ:";
-                imageLabelEl.style.display = "block";
-                imageContainer.innerHTML = `<img src="${firebaseImage}" class="reference-image">`;
-                imageBlock.style.display = "block";
-                adminControl.style.display = "none";
-                if (isAdmin) {
-                    adminDelBtn.style.display = "inline-flex";
-                } else {
-                    adminDelBtn.style.display = "none";
-                }
+            if (data && data.visualImage && data.visualImage.trim() !== "") {
+                imageLabel = "चित्रात्मक संदर्भ:";
+                imageHtml = `<img src="${escapeHTML(data.visualImage)}" class="reference-image" onerror="this.parentElement.parentElement.style.display='none'">`;
+                document.getElementById("imageBlock").style.display = "block";
             } else {
-                imageBlock.style.display = "none";
-                imageLabelEl.style.display = "none";
-                imageContainer.innerHTML = "";
-                adminDelBtn.style.display = "none";
-                if (isAdmin && cleanInput && searchData.type !== "unknown") {
-                    adminControl.style.display = "block";
-                    document.getElementById("adminImageSelectedName").style.display = "none";
-                    document.getElementById("adminImageSaveBtn").style.display = "none";
-                    document.getElementById("adminImageFileInput").value = "";
-                    tempBase64Image = "";
-                } else {
-                    adminControl.style.display = "none";
+                document.getElementById("imageBlock").style.display = "none";
+                if (window.asyncCheckAndRenderCustomImage && data) {
+                    window.asyncCheckAndRenderCustomImage(data, cleanInput, searchData.type);
                 }
             }
 
@@ -3027,6 +2990,9 @@
                 document.getElementById("example").innerHTML = exampleText;
                 document.getElementById("example").style.display = exampleText ? "block" : "none";
             }
+            document.getElementById("imageLabel").textContent = imageLabel;
+            document.getElementById("imageLabel").style.display = imageLabel ? "block" : "none";
+            document.getElementById("imageContainer").innerHTML = imageHtml;
             document.getElementById("synonymLabel").innerHTML = synonymLabel;
             document.getElementById("synonyms").innerHTML = synonymText;
             document.getElementById("oppositeLabel").innerHTML = oppositeLabel;
@@ -3213,18 +3179,7 @@
             document.getElementById("adminImageControlBlock").style.display = "none";
             document.getElementById("adminDeleteImageBtn").style.display = "none";
 
-            // इमेज ब्लॉक और लेबल को पूरी तरह खाली और अदृश्य करें
-            const imageBlock = document.getElementById("imageBlock");
-            if (imageBlock) imageBlock.style.display = "none";
-            const imageLabel = document.getElementById("imageLabel");
-            if (imageLabel) {
-                imageLabel.style.display = "none";
-                imageLabel.innerHTML = "";
-            }
-            const imageContainer = document.getElementById("imageContainer");
-            if (imageContainer) imageContainer.innerHTML = "";
-
-            document.querySelectorAll("#wordType, #subjectLine, #result, #englishMeaning, #plural, #exampleLabel, #example, #synonymLabel, #synonyms, #oppositeLabel, #opposite, #rhymeLabel, #rhymePatterns, #rhymes, #relatedLabel, #related, #coupletLabel, #couplets, #idiomLabel, #idioms, #proverbLabel, #proverbs")
+            document.querySelectorAll("#wordType, #subjectLine, #result, #englishMeaning, #plural, #exampleLabel, #example, #imageLabel, #imageContainer, #synonymLabel, #synonyms, #oppositeLabel, #opposite, #rhymeLabel, #rhymePatterns, #rhymes, #relatedLabel, #related, #coupletLabel, #couplets, #idiomLabel, #idioms, #proverbLabel, #proverbs")
             .forEach(el => el.innerHTML = "");
             document.querySelectorAll(".synonym-block, .opposite-block, .rhyme-block, .related-block, .couplet-block, .image-block, .idiom-block, .proverb-block").forEach(block => block.style.display = "none");
             document.getElementById("adminFeedbackBlock").style.display = "none";
@@ -3419,31 +3374,49 @@
       let currentUser = null;
       const ADMIN_EMAIL = "mewatidictionary@gmail.com";
 
-      // पूरी पंक्ति (Row) के लिए सुरक्षित Doc ID जनरेट करना
       function getEntryDocKey(data) {
           if (!data) return "";
           const baseKey = data.hindiWord ? data.hindiWord.trim() : (data.meaning ? data.meaning.trim() : "");
           return encodeURIComponent(baseKey);
       }
 
-      // Firebase से वर्ड इमेज लोड करना
-      window.fetchCustomWordImage = async function(entryData) {
+      window.asyncCheckAndRenderCustomImage = async function(data, cleanInput, searchType) {
+          const docId = getEntryDocKey(data);
+          if (!docId) return;
+          const isAdmin = currentUser && currentUser.email && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+          
           try {
-              const docId = getEntryDocKey(entryData);
-              if (!docId) return null;
               const docRef = doc(db, "word_images", docId);
               const docSnap = await getDoc(docRef);
+              
+              if (currentDisplayWord !== cleanInput) return;
+
               if (docSnap.exists()) {
-                  return docSnap.data().imageBase64;
+                  const base64 = docSnap.data().imageBase64;
+                  document.getElementById("imageLabel").textContent = "चित्रात्मक संदर्भ:";
+                  document.getElementById("imageLabel").style.display = "block";
+                  document.getElementById("imageContainer").innerHTML = `<img src="${base64}" class="reference-image">`;
+                  document.getElementById("imageBlock").style.display = "block";
+                  document.getElementById("adminImageControlBlock").style.display = "none";
+                  if (isAdmin) {
+                      document.getElementById("adminDeleteImageBtn").style.display = "inline-flex";
+                  } else {
+                      document.getElementById("adminDeleteImageBtn").style.display = "none";
+                  }
+              } else {
+                  if (isAdmin && searchType !== "unknown") {
+                      document.getElementById("adminImageControlBlock").style.display = "block";
+                      document.getElementById("adminImageSelectedName").style.display = "none";
+                      document.getElementById("adminImageSaveBtn").style.display = "none";
+                      document.getElementById("adminImageFileInput").value = "";
+                      tempBase64Image = "";
+                  }
               }
-              return null;
           } catch(e) {
-              console.error("Fetch Custom Image Error:", e);
-              return null;
+              console.error("Async Image Fetch Error:", e);
           }
       };
 
-      // एडमिन इमेज अपलोड
       window.uploadAdminImage = async function() {
           if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
               alert("केवल एडमिन ही चित्र अपलोड कर सकते हैं।");
@@ -3484,7 +3457,6 @@
           }
       };
 
-      // एडमिन इमेज डिलीट
       window.deleteAdminImage = async function() {
           if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
               alert("केवल एडमिन ही चित्र हटा सकते हैं।");
