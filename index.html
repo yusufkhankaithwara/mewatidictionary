@@ -1237,7 +1237,7 @@
             width: 90%;
             max-width: 360px;
             box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.3s, border-color 0.3s;
         }
         body.dark-mode #feedbackModal {
             background: #2a2a2a;
@@ -2459,6 +2459,14 @@
             }
             const cleanInput = searchData.word;
             const data = searchData.data;
+
+            // प्री-फ़ेच Firebase कस्टम इमेज (DOM अपडेट होने से पहले ही डेटा प्राप्त करना)
+            let hasSheetImage = data && data.visualImage && data.visualImage.trim() !== "";
+            let firebaseImage = null;
+            if (!hasSheetImage && window.fetchCustomWordImage && data) {
+                firebaseImage = await window.fetchCustomWordImage(data);
+            }
+
             currentSearchType = searchData.type;
             currentDisplayWord = cleanInput;
             currentEntryRef = data;
@@ -2802,21 +2810,6 @@
             const imageLabelEl = document.getElementById("imageLabel");
             const isAdmin = window.currentUser && window.currentUser.email && window.currentUser.email.toLowerCase() === "mewatidictionary@gmail.com";
 
-            // शुरुआती रीसेट (ताकि खाली बॉक्स न चमके)
-            imageBlock.style.display = "none";
-            imageLabelEl.style.display = "none";
-            imageLabelEl.textContent = "";
-            imageContainer.innerHTML = "";
-            adminControl.style.display = "none";
-            adminDelBtn.style.display = "none";
-
-            let hasSheetImage = data && data.visualImage && data.visualImage.trim() !== "";
-            let firebaseImage = null;
-
-            if (!hasSheetImage && window.fetchCustomWordImage && data) {
-                firebaseImage = await window.fetchCustomWordImage(data);
-            }
-
             if (hasSheetImage) {
                 imageLabelEl.textContent = "चित्रात्मक संदर्भ:";
                 imageLabelEl.style.display = "block";
@@ -2838,6 +2831,7 @@
             } else {
                 imageBlock.style.display = "none";
                 imageLabelEl.style.display = "none";
+                imageContainer.innerHTML = "";
                 adminDelBtn.style.display = "none";
                 if (isAdmin && cleanInput && searchData.type !== "unknown") {
                     adminControl.style.display = "block";
@@ -3219,7 +3213,18 @@
             document.getElementById("adminImageControlBlock").style.display = "none";
             document.getElementById("adminDeleteImageBtn").style.display = "none";
 
-            document.querySelectorAll("#wordType, #subjectLine, #result, #englishMeaning, #plural, #exampleLabel, #example, #imageLabel, #imageContainer, #synonymLabel, #synonyms, #oppositeLabel, #opposite, #rhymeLabel, #rhymePatterns, #rhymes, #relatedLabel, #related, #coupletLabel, #couplets, #idiomLabel, #idioms, #proverbLabel, #proverbs")
+            // इमेज ब्लॉक और लेबल को पूरी तरह खाली और अदृश्य करें
+            const imageBlock = document.getElementById("imageBlock");
+            if (imageBlock) imageBlock.style.display = "none";
+            const imageLabel = document.getElementById("imageLabel");
+            if (imageLabel) {
+                imageLabel.style.display = "none";
+                imageLabel.innerHTML = "";
+            }
+            const imageContainer = document.getElementById("imageContainer");
+            if (imageContainer) imageContainer.innerHTML = "";
+
+            document.querySelectorAll("#wordType, #subjectLine, #result, #englishMeaning, #plural, #exampleLabel, #example, #synonymLabel, #synonyms, #oppositeLabel, #opposite, #rhymeLabel, #rhymePatterns, #rhymes, #relatedLabel, #related, #coupletLabel, #couplets, #idiomLabel, #idioms, #proverbLabel, #proverbs")
             .forEach(el => el.innerHTML = "");
             document.querySelectorAll(".synonym-block, .opposite-block, .rhyme-block, .related-block, .couplet-block, .image-block, .idiom-block, .proverb-block").forEach(block => block.style.display = "none");
             document.getElementById("adminFeedbackBlock").style.display = "none";
