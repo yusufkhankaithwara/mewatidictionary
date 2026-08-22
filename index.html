@@ -26,33 +26,6 @@
       "url": "https://mewatidictionary.in/"
     }
     </script>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mewati Dictionary - हिंदी ⇄ मेवाती शब्दकोश</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="canonical" href="https://mewatidictionary.in/" />
-
-    <!-- Site Name Meta Tags -->
-    <meta name="application-name" content="Mewati Dictionary">
-    <meta property="og:site_name" content="Mewati Dictionary" />
-    <meta property="og:title" content="Mewati Dictionary - हिंदी ⇄ मेवाती शब्दकोश" />
-    <meta property="og:url" content="https://mewatidictionary.in/" />
-    <meta property="og:type" content="website" />
-    <meta name="description" content="हिंदी-मेवाती शब्दकोश। मेवाती भाषा के शब्दों के अर्थ, पर्यायवाची, विलोम, उदाहरण, मुहावरे और कहावतें।">
-    <meta property="og:description" content="हिंदी-मेवाती शब्दकोश। मेवाती भाषा के शब्दों के अर्थ, पर्यायवाची, विलोम, उदाहरण, मुहावरे और कहावतें।">
-
-    <!-- WebSite Schema Data for Google Site Name -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Mewati Dictionary",
-      "alternateName": ["हिंदी मेवाती शब्दकोश", "मेवाती शब्दकोश", "MewatiDictionary"],
-      "url": "https://mewatidictionary.in/"
-    }
-    </script>
-
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -66,7 +39,7 @@
             align-items: center; 
             transition: background-color 0.3s, color 0.3s;
             background: #E8E4DC;
-            line-height: 1.6;        /* मात्राओं को कटने से बचाएगा */
+            line-height: 1.6;
             letter-spacing: 0.2px;
         }
         
@@ -151,7 +124,7 @@
             background: #f5f5f5; 
             border: 1px solid #ccc; 
             font-size: 14px; 
-            color: #1a1a1a;
+            color: #1a1a1a; 
             transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
         input:focus {
@@ -398,10 +371,9 @@
         body.dark-mode #result .highlight-word,
         body.dark-mode #englishMeaning .highlight-word {
             color: #fff;
-body.dark-mode #englishMeaning span {
-    color: #ffffff !important;
-}
-
+        }
+        body.dark-mode #englishMeaning span {
+            color: #ffffff !important;
         }
         #exampleLabel { 
             font-size: 14px; 
@@ -438,26 +410,25 @@ body.dark-mode #englishMeaning span {
             color: #e0e0e0;
         }
         .related-btn, .opposite-btn, .synonym-btn, .rhyme-word-btn { 
-    background: #e6f2ff; 
-    color: #007bff; /* नीले अक्षरों के लिए */
-    border: 1px solid #bfe2ff; 
-    padding: 5px 10px; 
-    margin: 2px 2px 2px 0; 
-    cursor: pointer; 
-    text-decoration: none; 
-    border-radius: 5px; 
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.related-btn:hover, .opposite-btn:hover, .synonym-btn:hover, .rhyme-word-btn:hover { 
-    background: #cce5ff; 
-    color: #0056b3;
-}
+            background: #e6f2ff; 
+            color: #007bff;
+            border: 1px solid #bfe2ff; 
+            padding: 5px 10px; 
+            margin: 2px 2px 2px 0; 
+            cursor: pointer; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .related-btn:hover, .opposite-btn:hover, .synonym-btn:hover, .rhyme-word-btn:hover { 
+            background: #cce5ff; 
+            color: #0056b3;
+        }
         body.dark-mode .related-btn, body.dark-mode .opposite-btn, body.dark-mode .synonym-btn, body.dark-mode .rhyme-word-btn {
             background: #808080;
             color: #ffffff;
         }
-                body.dark-mode .related-btn:hover, body.dark-mode .opposite-btn:hover, body.dark-mode .synonym-btn:hover, body.dark-mode .rhyme-word-btn:hover {
+        body.dark-mode .related-btn:hover, body.dark-mode .opposite-btn:hover, body.dark-mode .synonym-btn:hover, body.dark-mode .rhyme-word-btn:hover {
             background: #999999;
         }
         .subject-btn {
@@ -509,12 +480,12 @@ body.dark-mode #englishMeaning span {
             color: #87ceeb;
         }
         .meaning-link {
-    color: #007bff;
-    text-decoration: none;
-}
-body.dark-mode .meaning-link {
-    color: #66b0ff;
-}
+            color: #007bff;
+            text-decoration: none;
+        }
+        body.dark-mode .meaning-link {
+            color: #66b0ff;
+        }
         .highlight { 
             font-weight: bold; 
         }
@@ -1086,13 +1057,13 @@ body.dark-mode .meaning-link {
             color: #bbb;
         }
         #englishMeaning a,
-#result a {
-    text-decoration: none;
-}
-body.dark-mode #result a,
-body.dark-mode #englishMeaning a {
-    color: #66b0ff;
-}
+        #result a {
+            text-decoration: none;
+        }
+        body.dark-mode #result a,
+        body.dark-mode #englishMeaning a {
+            color: #66b0ff;
+        }
         .duplicate-section {
             position: relative;
             margin: 10px 20px;
@@ -1403,6 +1374,42 @@ body.dark-mode #englishMeaning a {
         body.dark-mode .admin-words-table tr:nth-child(even) {
             background-color: #333;
         }
+
+        /* एडमिन इमेज कंट्रोल स्टाइल */
+        #adminImageControlBlock {
+            margin: 5px 20px 10px;
+            text-align: left;
+            display: none;
+        }
+        .admin-img-action-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.2s;
+        }
+        .admin-img-action-btn:hover {
+            background: #218838;
+        }
+        .admin-img-delete-btn {
+            background: #dc3545;
+            margin-top: 6px;
+        }
+        .admin-img-delete-btn:hover {
+            background: #c82333;
+        }
+        #adminImageSaveBtn {
+            background: #007bff;
+        }
+        #adminImageSaveBtn:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -1573,9 +1580,26 @@ body.dark-mode #englishMeaning a {
         <p id="exampleLabel"></p>
         <p id="example"></p>
         <p id="imageLabel"></p>
+        
+        <!-- एडमिन इमेज अपलोड / डिलीट ब्लॉक -->
+        <div id="adminImageControlBlock">
+            <input type="file" id="adminImageFileInput" accept="image/*" style="display: none;" onchange="handleAdminImageSelect(event)">
+            <button id="adminAddImageBtn" class="admin-img-action-btn" onclick="document.getElementById('adminImageFileInput').click()">
+                <span class="material-symbols-outlined" style="font-size: 16px;">add_photo_alternate</span> चित्र जोड़ें
+            </button>
+            <span id="adminImageSelectedName" style="font-size: 12px; color: #555; margin-left: 6px; display: none;"></span>
+            <button id="adminImageSaveBtn" class="admin-img-action-btn" style="display: none; margin-left: 6px;" onclick="uploadAdminImage()">
+                <span class="material-symbols-outlined" style="font-size: 16px;">save</span> सेव करें
+            </button>
+        </div>
+
         <div class="image-block" id="imageBlock">
             <div id="imageContainer"></div>
+            <button id="adminDeleteImageBtn" class="admin-img-action-btn admin-img-delete-btn" style="display: none;" onclick="deleteAdminImage()">
+                <span class="material-symbols-outlined" style="font-size: 16px;">delete</span> चित्र हटाएँ
+            </button>
         </div>
+
         <p id="synonymLabel"></p>
         <div class="synonym-block" id="synonymBlock">
             <div id="synonyms"></div>
@@ -1626,7 +1650,11 @@ body.dark-mode #englishMeaning a {
         let dictionary = [];
         let currentSearchType = "";
         let debounceTimer = null;
+        let currentDisplayWord = "";
+        let currentEntryRef = null;
+        let tempBase64Image = "";
         const CURRENT_DATA_VERSION = "v2.0";
+
         function escapeHTML(str) {
             if (!str || typeof str !== 'string') return "";
             return str
@@ -1875,7 +1903,6 @@ body.dark-mode #englishMeaning a {
             const wotdMewati = document.getElementById("wotdMewati");
             const wotdHindiMeaning = document.getElementById("wotdHindiMeaning");
             
-            // 1. सभी यूनीक मेवाती शब्दों की सूची बनाएं
             const mewatiWords = [];
             const seen = new Set();
             
@@ -1896,7 +1923,6 @@ body.dark-mode #englishMeaning a {
 
             if (mewatiWords.length === 0) return;
 
-            // 2. तारीख के अनुसार आज का मेवाती शब्द चुनें
             const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
             const startDate = new Date('2025-01-01');
             const todayDate = new Date(today);
@@ -1905,14 +1931,12 @@ body.dark-mode #englishMeaning a {
             const index = dayNumber % mewatiWords.length;
             const selectedWord = mewatiWords[index];
 
-            // 3. पूरी डिक्शनरी से इस मेवाती शब्द के सभी हिन्दी अर्थ इकट्ठा करें
             const hindiMeaningsSet = new Set();
             dictionary.forEach(entry => {
                 const meanings = entry.meaning ? entry.meaning.split(/[,;]\s*/).map(m => m.trim()) : [];
                 const synonyms = entry.synonyms ? entry.synonyms.split(/[,;]\s*/).map(s => s.trim()) : [];
                 
                 if (meanings.includes(selectedWord) || synonyms.includes(selectedWord)) {
-                    // हिन्दी शब्द को अलग-अलग करके जोड़ें
                     const hindiParts = entry.hindiWord.split(/;\s*/).map(h => h.trim()).filter(h => h);
                     hindiParts.forEach(h => hindiMeaningsSet.add(h));
                 }
@@ -1920,11 +1944,9 @@ body.dark-mode #englishMeaning a {
 
             const allHindiText = Array.from(hindiMeaningsSet).join(", ");
 
-            // 4. कार्ड में मेवाती शब्द और सभी हिन्दी अर्थ सेट करें
             wotdMewati.textContent = selectedWord;
             wotdHindiMeaning.textContent = allHindiText;
 
-            // 5. कार्ड पर क्लिक करने पर पूरा परिणाम खुलना
             document.getElementById("wordOfTheDay").onclick = () => {
                 showResult(selectedWord);
                 toggleClearIcon();
@@ -2072,51 +2094,44 @@ body.dark-mode #englishMeaning a {
                 showSuggestions();
             }, 200);
         }
-        // शुद्ध हिंदी शब्दकोश (Dictionary Order) के अनुसार वर्ण व मात्रा भार
-const HINDI_DICT_ORDER = [
-    // 1. स्वतंत्र अनुस्वार, चन्द्रबिन्दु, विसर्ग (स्वर से पहले)
-    'ँ', 'ं', 'ः',
+        const HINDI_DICT_ORDER = [
+            'ँ', 'ं', 'ः',
+            'अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ऋ', 'ए', 'ऐ', 'ओ', 'औ',
+            'क', 'क़', 'ख', 'ख़', 'ग', 'ग़', 'घ', 'ङ',
+            'च', 'छ', 'ज', 'ज़', 'झ', 'ञ',
+            'ट', 'ठ', 'ड', 'ड़', 'ढ', 'ढ़', 'ण',
+            'त', 'थ', 'द', 'ध', 'न',
+            'प', 'फ', 'फ़', 'ब', 'भ', 'म',
+            'य', 'र', 'ल', 'व',
+            'श', 'ष', 'स', 'ह',
+            'ा', 'ि', 'ी', 'ु', 'ू', 'ृ', 'े', 'ै', 'ो', 'ौ',
+            '्'
+        ];
 
-    // 2. मूल स्वर
-    'अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ऋ', 'ए', 'ऐ', 'ओ', 'औ',
-
-    // 3. व्यंजन (वर्गानुसार व नुक्ता सहित)
-    'क', 'क़', 'ख', 'ख़', 'ग', 'ग़', 'घ', 'ङ',
-    'च', 'छ', 'ज', 'ज़', 'झ', 'ञ',
-    'ट', 'ठ', 'ड', 'ड़', 'ढ', 'ढ़', 'ण',
-    'त', 'थ', 'द', 'ध', 'न',
-    'प', 'फ', 'फ़', 'ब', 'भ', 'म',
-    'य', 'र', 'ल', 'व',
-    'श', 'ष', 'स', 'ह',
-
-    // 4. मात्राएँ (बारहखड़ी क्रम: आ से औ, और सबसे अंत में हलन्त/आधा अक्षर)
-    'ा', 'ि', 'ी', 'ु', 'ू', 'ृ', 'े', 'ै', 'ो', 'ौ',
-    '्' // हलन्त सबसे अंत में रहेगा ताकि आधा अक्षर पूरी बारहखड़ी के बाद आए
-];
-
-function getCharWeight(char) {
-    const idx = HINDI_DICT_ORDER.indexOf(char);
-    return idx === -1 ? 999 + char.charCodeAt(0) : idx;
-}
-
-function compareHindiWords(a, b) {
-    const strA = (a.word || "").trim();
-    const strB = (b.word || "").trim();
-    
-    const minLen = Math.min(strA.length, strB.length);
-    for (let i = 0; i < minLen; i++) {
-        const charA = strA[i];
-        const charB = strB[i];
-        if (charA !== charB) {
-            const weightA = getCharWeight(charA);
-            const weightB = getCharWeight(charB);
-            if (weightA !== weightB) {
-                return weightA - weightB;
-            }
+        function getCharWeight(char) {
+            const idx = HINDI_DICT_ORDER.indexOf(char);
+            return idx === -1 ? 999 + char.charCodeAt(0) : idx;
         }
-    }
-    return strA.length - strB.length;
-}
+
+        function compareHindiWords(a, b) {
+            const strA = (a.word || "").trim();
+            const strB = (b.word || "").trim();
+            
+            const minLen = Math.min(strA.length, strB.length);
+            for (let i = 0; i < minLen; i++) {
+                const charA = strA[i];
+                const charB = strB[i];
+                if (charA !== charB) {
+                    const weightA = getCharWeight(charA);
+                    const weightB = getCharWeight(charB);
+                    if (weightA !== weightB) {
+                        return weightA - weightB;
+                    }
+                }
+            }
+            return strA.length - strB.length;
+        }
+
         function showSuggestions() {
             const input = document.getElementById("wordInput").value.trim();
             const suggestionsList = document.getElementById("suggestions");
@@ -2164,17 +2179,16 @@ function compareHindiWords(a, b) {
                     });
                 }
             } else if (activeLetter && !input) {
-    matches = trie.searchByLetter(activeLetter);
-    matches = matches.filter(match => match.word.startsWith(activeLetter));
-    matches.sort(compareHindiWords);
-
+                matches = trie.searchByLetter(activeLetter);
+                matches = matches.filter(match => match.word.startsWith(activeLetter));
+                matches.sort(compareHindiWords);
             } else if (input) {
                 matches = trie.search(input);
                 activeLetter = null;
                 document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
                 matches.sort(compareHindiWords);
             }
-           const seenSuggestions = new Set();
+            const seenSuggestions = new Set();
 
             matches.forEach(match => {
                 if (activeLetter && match.type === "translit") return;
@@ -2243,8 +2257,9 @@ function compareHindiWords(a, b) {
                     suggestionsList.appendChild(li);
                 }
             });
-}
-                    function calculateChhandPattern(word) {
+        }
+
+        function calculateChhandPattern(word) {
             if (!word) return "";
             let pattern = "";
             let i = 0;
@@ -2360,7 +2375,27 @@ function compareHindiWords(a, b) {
                 handleExactWordClick(searchedWord);
             }
         }
-        function showResult(input) {
+
+        // इमेज चयन और बेस64 हैंडलर
+        function handleAdminImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 100 * 1024) {
+                alert("इमेज साइज 100 KB से अधिक नहीं होना चाहिए।");
+                event.target.value = "";
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                tempBase64Image = e.target.result;
+                document.getElementById("adminImageSelectedName").textContent = file.name;
+                document.getElementById("adminImageSelectedName").style.display = "inline";
+                document.getElementById("adminImageSaveBtn").style.display = "inline-flex";
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function showResult(input) {
             clearResults();
             let searchData = {};
             if (typeof input === "object" && input !== null) {
@@ -2384,7 +2419,6 @@ function compareHindiWords(a, b) {
                         break;
                     }
                 }
-                               // 1. पहले मुख्य मेवाती अर्थ (Meaning) में ढूँढें
                 for (let idx = 0; idx < dictionary.length; idx++) {
                     const entry = dictionary[idx];
                     const meanings = entry.meaning.split(",").map(m => m.trim());
@@ -2394,7 +2428,6 @@ function compareHindiWords(a, b) {
                     }
                 }
 
-                // 2. अगर मुख्य अर्थ में न मिले, तब पर्यायवाची, Translit या English में ढूँढें
                 if (searchData.type === "unknown") {
                     for (let idx = 0; idx < dictionary.length; idx++) {
                         const entry = dictionary[idx];
@@ -2427,14 +2460,16 @@ function compareHindiWords(a, b) {
             const cleanInput = searchData.word;
             const data = searchData.data;
             currentSearchType = searchData.type;
+            currentDisplayWord = cleanInput;
+            currentEntryRef = data;
+
             if (cleanInput) {
-   const formattedWord = cleanInput.trim().replace(/\s+/g, '-');
-   const newUrl = `${window.location.pathname}?word=${formattedWord}`;
-   // अगर बैक बटन से नहीं आए हैं और नया शब्द है, तभी हिस्ट्री में जोड़ें
-   if (!window.isNavigatingBack && window.location.search !== `?word=${formattedWord}`) {
-       window.history.pushState({ word: cleanInput }, '', newUrl);
-   }
-}
+                const formattedWord = cleanInput.trim().replace(/\s+/g, '-');
+                const newUrl = `${window.location.pathname}?word=${formattedWord}`;
+                if (!window.isNavigatingBack && window.location.search !== `?word=${formattedWord}`) {
+                    window.history.pushState({ word: cleanInput }, '', newUrl);
+                }
+            }
             let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
                 imageLabel = "", imageHtml = "",
                 synonymLabel = "", synonymText = "", oppositeLabel = "", oppositeText = "", 
@@ -2459,17 +2494,16 @@ function compareHindiWords(a, b) {
                 const d = data;
                 wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
                 const meanings = d.meaning.split(/\s*,\s*/);
-                 result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के मेवाती अर्थ:<br>` + meanings.map(m => {
-    const safeM = escapeString(m);
-    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}', 'mewati');return false">• ${escapeHTML(m)}</a>`;
-}).join("<br>");
-               if (d.english) {
+                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के मेवाती अर्थ:<br>` + meanings.map(m => {
+                    const safeM = escapeString(m);
+                    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}', 'mewati');return false">• ${escapeHTML(m)}</a>`;
+                }).join("<br>");
+                if (d.english) {
                     const engParts = d.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                     const engLinks = engParts.map(eng => {
                         const wordCount = eng.split(/\s+/).length;
                         if (wordCount > 5) {
-    return `<span class="highlight-word" style="font-weight: normal;">• ${escapeHTML(eng)}</span>`;
-
+                            return `<span class="highlight-word" style="font-weight: normal;">• ${escapeHTML(eng)}</span>`;
                         } else {
                             const safeEng = escapeString(eng);
                             const safeEngDisplay = escapeHTML(eng);
@@ -2536,8 +2570,7 @@ function compareHindiWords(a, b) {
                 const englishMeanings = [...uniqueEnglishSet].map(eng => {
                     const wordCount = eng.split(/\s+/).length;
                     if (wordCount > 5) {
-    return `<span class="highlight-word" style="font-weight: normal;">• ${escapeHTML(eng)}</span>`;
-
+                        return `<span class="highlight-word" style="font-weight: normal;">• ${escapeHTML(eng)}</span>`;
                     } else {
                         const safeDisplayEng = escapeString(eng);
                         return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
@@ -2624,30 +2657,22 @@ function compareHindiWords(a, b) {
             } else if (searchData.type === "english" && data) {
                 const d = data;
                 wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
-                
-                // 1. संबंधित पंक्तियाँ इकट्ठा करें
                 const searchLower = cleanInput.trim().toLowerCase();
                 const relatedEntries = dictionary.filter(entry => {
                     if (!entry.english) return false;
                     const engParts = entry.english.split(/[;]\s*/).map(e => e.trim().toLowerCase());
                     return engParts.includes(searchLower);
                 });
-
                 const entriesToUse = relatedEntries.length > 0 ? relatedEntries : [d];
-
-                // 2. हर रो के हिन्दी शब्द (कॉमा से जुड़े हुए, खाली पंक्तियाँ हटाकर)
                 const seenHindiRows = new Set();
                 const validHindiBullets = [];
-
                 entriesToUse.forEach(entry => {
                     if (!entry.hindiWord) return;
                     const rawHindi = entry.hindiWord.trim();
                     if (!rawHindi || seenHindiRows.has(rawHindi)) return;
                     seenHindiRows.add(rawHindi);
-
                     const parts = rawHindi.split(/;\s*/).map(h => h.trim()).filter(h => h.length > 0);
                     if (parts.length === 0) return;
-
                     const linksInSameRow = parts.map(part => {
                         const wordCount = part.split(/\s+/).length;
                         if (wordCount > 5) {
@@ -2657,20 +2682,14 @@ function compareHindiWords(a, b) {
                             return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
                         }
                     }).join(", ");
-
                     validHindiBullets.push(`• ${linksInSameRow}`);
                 });
-
                 const hindiBullets = validHindiBullets.join("<br>");
-
-                // 3. मेवाती अर्थ (मूल कोड की तरह)
                 const meanings = d.meaning ? d.meaning.split(/\s*,\s*/).map(m => m.trim()).filter(m => m.length > 0) : [];
                 const mewatiBullets = meanings.map(m => {
                     const safeM = escapeString(m);
                     return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
                 }).join("<br>");
-
-                // 4. मूल कोड जैसा सीधा स्ट्रक्चर (कोई एक्स्ट्रा div या एक्स्ट्रा <br> नहीं)
                 result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiBullets}<br>मेवाती अर्थ:<br>${mewatiBullets}`;
             } else if (searchData.type === "translit" && data) {
                 const d = data;
@@ -2752,8 +2771,6 @@ function compareHindiWords(a, b) {
             }
             if (cleanInput) {
                 document.getElementById("stickyWordText").textContent = cleanInput;
-                
-                // लेटर बटन छिपाएं और एक्शन बटन (ऑडियो + शेयर) दिखाएं
                 document.getElementById("lettersWrapper").style.display = "none";
                 const actionButtons = document.getElementById("filterActionButtons");
                 actionButtons.style.display = "flex";
@@ -2777,13 +2794,50 @@ function compareHindiWords(a, b) {
                     };
                 }
             }
-            if (data && data.visualImage && data.visualImage.trim() !== "") {
+
+            // इमेज रेंडरिंग और एडमिन कंट्रोल
+            const adminControl = document.getElementById("adminImageControlBlock");
+            const adminDelBtn = document.getElementById("adminDeleteImageBtn");
+            const imageBlock = document.getElementById("imageBlock");
+            const isAdmin = window.currentUser && window.currentUser.email && window.currentUser.email.toLowerCase() === "mewatidictionary@gmail.com";
+
+            let hasSheetImage = data && data.visualImage && data.visualImage.trim() !== "";
+            let firebaseImage = null;
+
+            if (window.fetchCustomWordImage && cleanInput) {
+                firebaseImage = await window.fetchCustomWordImage(cleanInput);
+            }
+
+            if (hasSheetImage) {
                 imageLabel = "चित्रात्मक संदर्भ:";
                 imageHtml = `<img src="${escapeHTML(data.visualImage)}" class="reference-image" onerror="this.parentElement.parentElement.style.display='none'">`;
-                document.getElementById("imageBlock").style.display = "block";
+                imageBlock.style.display = "block";
+                adminControl.style.display = "none";
+                adminDelBtn.style.display = "none";
+            } else if (firebaseImage) {
+                imageLabel = "चित्रात्मक संदर्भ:";
+                imageHtml = `<img src="${firebaseImage}" class="reference-image">`;
+                imageBlock.style.display = "block";
+                adminControl.style.display = "none";
+                if (isAdmin) {
+                    adminDelBtn.style.display = "inline-flex";
+                } else {
+                    adminDelBtn.style.display = "none";
+                }
             } else {
-                document.getElementById("imageBlock").style.display = "none";
+                imageBlock.style.display = "none";
+                adminDelBtn.style.display = "none";
+                if (isAdmin && cleanInput && searchData.type !== "unknown") {
+                    adminControl.style.display = "block";
+                    document.getElementById("adminImageSelectedName").style.display = "none";
+                    document.getElementById("adminImageSaveBtn").style.display = "none";
+                    document.getElementById("adminImageFileInput").value = "";
+                    tempBase64Image = "";
+                } else {
+                    adminControl.style.display = "none";
+                }
             }
+
             if (searchData.type === "mewati") {
                 const rhymeData = findAllRhymingWords(cleanInput);
                 const patterns = Object.keys(rhymeData);
@@ -2985,56 +3039,51 @@ function compareHindiWords(a, b) {
             document.getElementById("adminWordsBlock").style.display = "none";
         }
         
-function showDuplicateSuggestions(word, forceType = null) {
-    document.getElementById("wordInput").value = word;
-    
-    // अगर जबरन मेवाती (forceType === 'mewati') नहीं मांगा गया है और शब्द हिंदी में है
-    if (forceType !== 'mewati') {
-        const hindiEntry = dictionary.find(e => e.hindiWord === word);
-        if (hindiEntry) {
-            handleExactWordClick(word, false, 'hindi');
-            return;
-        }
-    }
-
-    let matched = [];
-    dictionary.forEach((entry, idx) => {
-        const meanings = entry.meaning
-            ? entry.meaning.split(",").map(m => m.trim())
-            : [];
-        if (meanings.includes(word)) {
-            matched.push({
-                word: word,
-                type: "mewati",
-                data: entry,
-                index: idx
+        function showDuplicateSuggestions(word, forceType = null) {
+            document.getElementById("wordInput").value = word;
+            if (forceType !== 'mewati') {
+                const hindiEntry = dictionary.find(e => e.hindiWord === word);
+                if (hindiEntry) {
+                    handleExactWordClick(word, false, 'hindi');
+                    return;
+                }
+            }
+            let matched = [];
+            dictionary.forEach((entry, idx) => {
+                const meanings = entry.meaning
+                    ? entry.meaning.split(",").map(m => m.trim())
+                    : [];
+                if (meanings.includes(word)) {
+                    matched.push({
+                        word: word,
+                        type: "mewati",
+                        data: entry,
+                        index: idx
+                    });
+                }
             });
-        }
-    });
-
-    if (matched.length === 1) {
-        showResult(matched[0]);
-        document.getElementById("suggestions").style.display = "none";
-        return;
-    }
-
-    if (matched.length > 1) {
-        const suggestionsList = document.getElementById("suggestions");
-        suggestionsList.innerHTML = "";
-        suggestionsList.style.display = "block";
-        matched.forEach(match => {
-            const li = document.createElement("li");
-            li.innerHTML = `${escapeHTML(word)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
-            li.onclick = () => {
-                showResult(match);
+            if (matched.length === 1) {
+                showResult(matched[0]);
+                document.getElementById("suggestions").style.display = "none";
+                return;
+            }
+            if (matched.length > 1) {
+                const suggestionsList = document.getElementById("suggestions");
                 suggestionsList.innerHTML = "";
-                suggestionsList.style.display = "none";
-            };
-            suggestionsList.appendChild(li);
-        });
-        clearResults();
-    }
-}
+                suggestionsList.style.display = "block";
+                matched.forEach(match => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `${escapeHTML(word)}<span>${escapeHTML(match.data.hindiWord)}</span>`;
+                    li.onclick = () => {
+                        showResult(match);
+                        suggestionsList.innerHTML = "";
+                        suggestionsList.style.display = "none";
+                    };
+                    suggestionsList.appendChild(li);
+                });
+                clearResults();
+            }
+        }
         function searchByTag(tag){
             const searchValue = "#" + tag;
             document.getElementById("wordInput").value = searchValue;
@@ -3073,66 +3122,66 @@ function showDuplicateSuggestions(word, forceType = null) {
             return [...relatedWords].filter(word => word && word.trim()).sort((a, b) => a.localeCompare(b, 'hi'));
         }
         
-function handleExactWordClick(word, fromPopState = false, forceType = null) {
-    if (fromPopState) window.isNavigatingBack = true;
-    clearResults();
-    const input = document.getElementById("wordInput");
-    input.value = word;
-    document.getElementById("wordOfTheDay").style.display = "none";
-    document.getElementById("duplicateSection").style.display = "none";
+        function handleExactWordClick(word, fromPopState = false, forceType = null) {
+            if (fromPopState) window.isNavigatingBack = true;
+            clearResults();
+            const input = document.getElementById("wordInput");
+            input.value = word;
+            document.getElementById("wordOfTheDay").style.display = "none";
+            document.getElementById("duplicateSection").style.display = "none";
 
-    const exactMatches = [];
-    dictionary.forEach((entry, idx) => {
-        const meanings = entry.meaning.split(",").map(m => m.trim());
-        const hindiWords = entry.hindiWord.split(/;/).map(h => h.trim());
-        const engParts = entry.english ? entry.english.split(/[;]\s*/).map(e => e.trim()) : [];
+            const exactMatches = [];
+            dictionary.forEach((entry, idx) => {
+                const meanings = entry.meaning.split(",").map(m => m.trim());
+                const hindiWords = entry.hindiWord.split(/;/).map(h => h.trim());
+                const engParts = entry.english ? entry.english.split(/[;]\s*/).map(e => e.trim()) : [];
 
-        if ((!forceType || forceType === "hindi") && hindiWords.includes(word)) {
-            exactMatches.push({
-                word: word,
-                type: "hindi",
-                data: entry,
-                index: idx
+                if ((!forceType || forceType === "hindi") && hindiWords.includes(word)) {
+                    exactMatches.push({
+                        word: word,
+                        type: "hindi",
+                        data: entry,
+                        index: idx
+                    });
+                }
+                else if ((!forceType || forceType === "mewati") && meanings.includes(word)) {
+                    exactMatches.push({
+                        word: word,
+                        type: "mewati",
+                        data: entry,
+                        index: idx
+                    });
+                }
+                else if ((!forceType || forceType === "english") && engParts.includes(word)) {
+                    exactMatches.push({
+                        word: word,
+                        type: "english",
+                        data: entry,
+                        index: idx
+                    });
+                }
             });
-        }
-        else if ((!forceType || forceType === "mewati") && meanings.includes(word)) {
-            exactMatches.push({
-                word: word,
-                type: "mewati",
-                data: entry,
-                index: idx
-            });
-        }
-        else if ((!forceType || forceType === "english") && engParts.includes(word)) {
-            exactMatches.push({
-                word: word,
-                type: "english",
-                data: entry,
-                index: idx
-            });
-        }
-    });
 
-    if (exactMatches.length === 1) {
-        showResult(exactMatches[0]);
-    } else if (exactMatches.length > 1) {
-        const suggestionsList = document.getElementById("suggestions");
-        suggestionsList.innerHTML = "";
-        suggestionsList.style.display = "block";
-        exactMatches.forEach(match => {
-            const li = document.createElement("li");
-            const subLabel = match.type === "hindi" ? match.data.meaning : match.data.hindiWord;
-            li.innerHTML = `${escapeHTML(match.word)}<span>${escapeHTML(subLabel)}</span>`;
-            li.onclick = () => {
-                showResult(match);
-                suggestionsList.style.display = "none";
-            };
-            suggestionsList.appendChild(li);
-        });
-    } else {
-        showResult(word);
-    }
-}
+            if (exactMatches.length === 1) {
+                showResult(exactMatches[0]);
+            } else if (exactMatches.length > 1) {
+                const suggestionsList = document.getElementById("suggestions");
+                suggestionsList.innerHTML = "";
+                suggestionsList.style.display = "block";
+                exactMatches.forEach(match => {
+                    const li = document.createElement("li");
+                    const subLabel = match.type === "hindi" ? match.data.meaning : match.data.hindiWord;
+                    li.innerHTML = `${escapeHTML(match.word)}<span>${escapeHTML(subLabel)}</span>`;
+                    li.onclick = () => {
+                        showResult(match);
+                        suggestionsList.style.display = "none";
+                    };
+                    suggestionsList.appendChild(li);
+                });
+            } else {
+                showResult(word);
+            }
+        }
         function makeMewatiWordsClickable(text) {
             const lines = text.split('।').map(line => line.trim()).filter(line => line);
             return lines.map(line => {
@@ -3156,9 +3205,10 @@ function handleExactWordClick(word, fromPopState = false, forceType = null) {
             const stickyWordText = document.getElementById("stickyWordText");
             if (stickyWordText) stickyWordText.textContent = "";
 
-            // परिणाम हटते ही अक्षर बटन दिखाएं और एक्शन बटन छिपाएं
             document.getElementById("lettersWrapper").style.display = "flex";
             document.getElementById("filterActionButtons").style.display = "none";
+            document.getElementById("adminImageControlBlock").style.display = "none";
+            document.getElementById("adminDeleteImageBtn").style.display = "none";
 
             document.querySelectorAll("#wordType, #subjectLine, #result, #englishMeaning, #plural, #exampleLabel, #example, #imageLabel, #imageContainer, #synonymLabel, #synonyms, #oppositeLabel, #opposite, #rhymeLabel, #rhymePatterns, #rhymes, #relatedLabel, #related, #coupletLabel, #couplets, #idiomLabel, #idioms, #proverbLabel, #proverbs")
             .forEach(el => el.innerHTML = "");
@@ -3254,13 +3304,12 @@ function handleExactWordClick(word, fromPopState = false, forceType = null) {
             document.getElementById("feedbackModal").style.display = "none";
             document.getElementById("feedbackInput").value = "";
         }
-                document.querySelector(".app-logo").onclick = function () {
+        document.querySelector(".app-logo").onclick = function () {
             document.getElementById("wordInput").value = "";
             activeLetter = null;
             document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
             document.getElementById("suggestions").style.display = "none";
             
-            // होम पर आने पर यूआरएल को साफ करें
             if (window.location.search !== "") {
                 window.history.pushState({}, '', window.location.pathname);
             }
@@ -3305,10 +3354,10 @@ function handleExactWordClick(word, fromPopState = false, forceType = null) {
                 document.getElementById("textSizeToggle").checked = true;
             }
         };
-              window.isNavigatingBack = false;
+        window.isNavigatingBack = false;
 
         window.addEventListener('popstate', function(event) {
-            window.isNavigatingBack = true; // लूप को रोकने के लिए फ्लैग चालू
+            window.isNavigatingBack = true;
             const urlParams = new URLSearchParams(window.location.search);
             const word = urlParams.get('word');
 
@@ -3327,27 +3376,27 @@ function handleExactWordClick(word, fromPopState = false, forceType = null) {
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }
             
-            // नेविगेशन पूरा होने के बाद फ्लैग बंद करें
             setTimeout(() => {
                 window.isNavigatingBack = false;
             }, 100);
         });
-
     </script>
+
     <!-- Firebase SDK, Firestore & Authentication Engine -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-      import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      
       const firebaseConfig = {
-  apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
-  authDomain: "mewati-dictionary.firebaseapp.com",
-  projectId: "mewati-dictionary",
-  storageBucket: "mewati-dictionary.firebasestorage.app",
-  messagingSenderId: "258178654948",
-  appId: "1:258178654948:web:e726a480fac76b3dce42f1",
-  measurementId: "G-V4XXJ072VK"
-};
+        apiKey: "AIzaSyD0YyKFril7Q1J565817HFxBsddkLrTRAk",
+        authDomain: "mewati-dictionary.firebaseapp.com",
+        projectId: "mewati-dictionary",
+        storageBucket: "mewati-dictionary.firebasestorage.app",
+        messagingSenderId: "258178654948",
+        appId: "1:258178654948:web:e726a480fac76b3dce42f1",
+        measurementId: "G-V4XXJ072VK"
+      };
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
@@ -3355,6 +3404,69 @@ function handleExactWordClick(word, fromPopState = false, forceType = null) {
       const provider = new GoogleAuthProvider();
       let currentUser = null;
       const ADMIN_EMAIL = "mewatidictionary@gmail.com";
+
+      // Firebase से वर्ड इमेज लोड करना
+      window.fetchCustomWordImage = async function(word) {
+          try {
+              const docRef = doc(db, "word_images", word.trim());
+              const docSnap = await getDoc(docRef);
+              if (docSnap.exists()) {
+                  return docSnap.data().imageBase64;
+              }
+              return null;
+          } catch(e) {
+              console.error("Fetch Custom Image Error:", e);
+              return null;
+          }
+      };
+
+      // एडमिन इमेज अपलोड
+      window.uploadAdminImage = async function() {
+          if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+              alert("केवल एडमिन ही चित्र अपलोड कर सकते हैं।");
+              return;
+          }
+          if (!tempBase64Image) {
+              alert("कृपया पहले एक इमेज चुनें।");
+              return;
+          }
+          if (!currentDisplayWord) {
+              alert("कोई शब्द सक्रिय नहीं है।");
+              return;
+          }
+          try {
+              await setDoc(doc(db, "word_images", currentDisplayWord.trim()), {
+                  word: currentDisplayWord.trim(),
+                  imageBase64: tempBase64Image,
+                  updatedAt: serverTimestamp(),
+                  uploadedBy: currentUser.email
+              });
+              alert("चित्र सफलतापूर्वक सेव हो गया है!");
+              tempBase64Image = "";
+              showResult(currentDisplayWord);
+          } catch (e) {
+              console.error("Image Upload Error:", e);
+              alert("चित्र अपलोड करने में समस्या आई। पुनः प्रयास करें।");
+          }
+      };
+
+      // एडमिन इमेज डिलीट
+      window.deleteAdminImage = async function() {
+          if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+              alert("केवल एडमिन ही चित्र हटा सकते हैं।");
+              return;
+          }
+          if (!confirm("क्या आप वाकई इस शब्द का चित्र हटाना चाहते हैं?")) return;
+          try {
+              await deleteDoc(doc(db, "word_images", currentDisplayWord.trim()));
+              alert("चित्र सफलतापूर्वक हटा दिया गया है।");
+              showResult(currentDisplayWord);
+          } catch(e) {
+              console.error("Image Delete Error:", e);
+              alert("चित्र हटाने में समस्या आई।");
+          }
+      };
+
       window.checkAuthAndRedirect = function(url) {
         if (!currentUser) {
             window.location.href = `login.html?redirect=${encodeURIComponent(url)}`;
@@ -3575,6 +3687,11 @@ function handleExactWordClick(word, fromPopState = false, forceType = null) {
           adminMenuItem.style.display = "none";
           if (adminWordsMenuItem) adminWordsMenuItem.style.display = "none";
           menuUserName.classList.remove("admin-name");
+        }
+        
+        // यदि कोई शब्द पहले से खुला है तो एडमिन के अनुसार दृश्य अपडेट करें
+        if (currentDisplayWord) {
+            showResult(currentDisplayWord);
         }
       });
     </script>
