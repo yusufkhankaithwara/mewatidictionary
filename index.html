@@ -1718,14 +1718,14 @@ body.dark-mode .lang-toggle-btn {
         let currentEntryRef = null;
         let tempBase64Image = "";
         const CURRENT_DATA_VERSION = "v2.0";
-let currentLetterLanguage = "hindi"; // डिफ़ॉल्ट 'hindi' (हि) रहेगा
+let currentLetterLanguage = "hindi"; // डिफ़ॉल्ट 'hindi' (हिं) रहेगा
 
 function toggleLetterLanguage() {
     currentLetterLanguage = (currentLetterLanguage === "hindi") ? "mewati" : "hindi";
     
     const btn = document.getElementById("letterLangToggleBtn");
     if (btn) {
-        btn.textContent = (currentLetterLanguage === "hindi") ? "हि" : "मे";
+        btn.textContent = (currentLetterLanguage === "hindi") ? "हिं" : "मे";
         btn.title = (currentLetterLanguage === "hindi") ? "हिंदी मुख्य शब्द (क्लिक करके मेवाती चुनें)" : "मेवाती मुख्य शब्द (क्लिक करके हिंदी चुनें)";
     }
     
