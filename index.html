@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
     <title>Mewati Dictionary - हिंदी ⇄ मेवाती शब्दकोश</title>
     <link rel="icon" type="image/png" href="favicon.png">
     
@@ -32,10 +31,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-html, body {
-    touch-action: pan-x pan-y;
-    -webkit-text-size-adjust: 100%;
-}
+        html, body {
+            touch-action: pan-x pan-y;
+            -webkit-text-size-adjust: 100%;
+        }
 
         body { 
             margin: 0; 
@@ -1417,6 +1416,34 @@ html, body {
         #adminImageSaveBtn:hover {
             background: #0056b3;
         }
+.lang-toggle-btn {
+    background: #800000;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    min-width: 32px;
+    height: 30px;
+    padding: 0 6px;
+    margin: 2px 6px 2px 2px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s, transform 0.1s;
+}
+.lang-toggle-btn:active {
+    transform: scale(0.95);
+}
+body.dark-mode .lang-toggle-btn {
+    background: #a00000;
+    color: #ffffff;
+}
+
     </style>
 </head>
 <body>
@@ -1519,8 +1546,9 @@ html, body {
         </div>
     </div>
     
-    <!-- लेटर बार और एक्शन बटन कंटेनर -->
+       <!-- लेटर बार और एक्शन बटन कंटेनर -->
     <div id="letterFilter">
+        <button id="letterLangToggleBtn" class="lang-toggle-btn" onclick="toggleLetterLanguage()" title="भाषा बदलें (हिन्दी / मेवाती)">हि</button>
         <div id="lettersWrapper"></div>
         <div id="filterActionButtons">
             <button class="action-bar-btn" id="filterAudioBtn" title="उच्चारण सुनें">
@@ -1654,34 +1682,34 @@ html, body {
         <button onclick="hideAbout()" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">बंद करें</button>
     </div>
     <script>
-// पिंच-टू-ज़ूम ब्लॉक (iOS Safari व Chrome Mobile)
-document.addEventListener('gesturestart', function(e) {
-    e.preventDefault();
-});
+        // 1. पिंच-टू-ज़ूम ब्लॉक (iOS Safari व Chrome Mobile)
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
 
-// डबल-टैप ज़ूम ब्लॉक
-let lastTouchEnd = 0;
-document.addEventListener('touchend', function(event) {
-    const now = (new Date()).getTime();
-    if (now - lastTouchEnd <= 300) {
-        event.preventDefault();
-    }
-    lastTouchEnd = now;
-}, false);
+        // 2. डबल-टैप ज़ूम ब्लॉक
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
 
-// डेस्कटॉप पर Ctrl + Scroll / Wheel ज़ूम ब्लॉक
-document.addEventListener('wheel', function(e) {
-    if (e.ctrlKey) {
-        e.preventDefault();
-    }
-}, { passive: false });
+        // 3. डेस्कटॉप पर Ctrl + Scroll / Wheel ज़ूम ब्लॉक
+        document.addEventListener('wheel', function(e) {
+            if (e.ctrlKey) {
+                e.preventDefault();
+            }
+        }, { passive: false });
 
-// डेस्कटॉप पर Ctrl + Plus / Minus कीबोर्ड ज़ूम ब्लॉक
-document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
-        e.preventDefault();
-    }
-});
+        // 4. डेस्कटॉप पर Ctrl + Plus / Minus कीबोर्ड ज़ूम ब्लॉक
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                e.preventDefault();
+            }
+        });
 
         let dictionary = [];
         let currentSearchType = "";
@@ -1690,6 +1718,23 @@ document.addEventListener('keydown', function(e) {
         let currentEntryRef = null;
         let tempBase64Image = "";
         const CURRENT_DATA_VERSION = "v2.0";
+let currentLetterLanguage = "hindi"; // डिफ़ॉल्ट 'hindi' (हि) रहेगा
+
+function toggleLetterLanguage() {
+    currentLetterLanguage = (currentLetterLanguage === "hindi") ? "mewati" : "hindi";
+    
+    const btn = document.getElementById("letterLangToggleBtn");
+    if (btn) {
+        btn.textContent = (currentLetterLanguage === "hindi") ? "हि" : "मे";
+        btn.title = (currentLetterLanguage === "hindi") ? "हिंदी मुख्य शब्द (क्लिक करके मेवाती चुनें)" : "मेवाती मुख्य शब्द (क्लिक करके हिंदी चुनें)";
+    }
+    
+    // यदि कोई अक्षर पहले से चुना हुआ है, तो तुरंत लिस्ट रिफ्रेश करें
+    if (activeLetter) {
+        showSuggestions();
+    }
+}
+
 
         function escapeHTML(str) {
             if (!str || typeof str !== 'string') return "";
@@ -1909,7 +1954,7 @@ document.addEventListener('keydown', function(e) {
             if (!string || typeof string !== 'string') return "";
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
-        function initializeLetterFilter() {
+                function initializeLetterFilter() {
             const lettersWrapper = document.getElementById("lettersWrapper");
             lettersWrapper.innerHTML = "";
             letters.forEach(letter => {
@@ -2214,10 +2259,23 @@ document.addEventListener('keydown', function(e) {
                         });
                     });
                 }
-            } else if (activeLetter && !input) {
+                       } else if (activeLetter && !input) {
                 matches = trie.searchByLetter(activeLetter);
-                matches = matches.filter(match => match.word.startsWith(activeLetter));
+                // केवल वही शब्द लें जो चुने गए अक्षर से शुरू हों और चुनी गई भाषा (हि या मे) के हों
+                matches = matches.filter(match => {
+                    const startsWithActive = match.word.startsWith(activeLetter);
+                    if (!startsWithActive) return false;
+                    
+                    if (currentLetterLanguage === "hindi") {
+                        return match.type === "hindi";
+                    } else if (currentLetterLanguage === "mewati") {
+                        return match.type === "mewati";
+                    }
+                    return true;
+                });
                 matches.sort(compareHindiWords);
+            
+
             } else if (input) {
                 matches = trie.search(input);
                 activeLetter = null;
@@ -2811,6 +2869,9 @@ document.addEventListener('keydown', function(e) {
                 document.getElementById("lettersWrapper").style.display = "none";
                 const actionButtons = document.getElementById("filterActionButtons");
                 actionButtons.style.display = "flex";
+const langBtn = document.getElementById("letterLangToggleBtn");
+if (langBtn) langBtn.style.display = "none";
+
 
                 const filterShareBtn = document.getElementById("filterShareBtn");
                 if (filterShareBtn) {
@@ -3212,6 +3273,9 @@ document.addEventListener('keydown', function(e) {
 
             document.getElementById("lettersWrapper").style.display = "flex";
             document.getElementById("filterActionButtons").style.display = "none";
+const langBtn = document.getElementById("letterLangToggleBtn");
+if (langBtn) langBtn.style.display = "inline-flex";
+
             document.getElementById("adminImageControlBlock").style.display = "none";
             document.getElementById("adminDeleteImageBtn").style.display = "none";
 
@@ -3739,3 +3803,4 @@ document.addEventListener('keydown', function(e) {
     </script>
 </body>
 </html>
+
