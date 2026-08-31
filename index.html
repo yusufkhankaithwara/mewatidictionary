@@ -171,6 +171,7 @@
             transition: background-color 0.3s, border-color 0.3s;
             box-sizing: border-box;
             min-height: 48px;
+            gap: 6px;
         }
         body.dark-mode #letterFilter {
             background: #2a2a2a;
@@ -187,44 +188,44 @@
             align-items: center;
         }
         #filterActionButtons {
-            display: none;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            justify-content: flex-end;
-        }
-        .action-bar-btn {
-            background: rgba(128, 0, 0, 0.1);
-            color: #800000;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            padding: 0;
-            flex-shrink: 0;
-        }
-        .action-bar-btn:hover {
-            background: rgba(128, 0, 0, 0.2);
-        }
-        .action-bar-btn:active {
-            transform: scale(0.92);
-        }
-        .action-bar-btn .material-symbols-outlined {
-            font-size: 18px;
-            color: #800000;
-        }
-        body.dark-mode .action-bar-btn {
-            background: rgba(255, 102, 102, 0.15);
-            color: #ff6666;
-        }
-        body.dark-mode .action-bar-btn .material-symbols-outlined {
-            color: #ff6666;
-        }
+    display: none;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-left: auto;                /* बटनों को दाईं तरफ रखने के लिए */
+}
+        /* बदला हुआ CSS */
+.action-bar-btn {
+    background: #800000;              /* भाषा बटन जैसा बैकग्राउंड */
+    color: #ffffff;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;               /* भाषा बटन जैसा रेडियस */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    padding: 0;
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.action-bar-btn:hover {
+    background: #990000;
+}
+.action-bar-btn .material-symbols-outlined {
+    font-size: 18px;
+    color: #ffffff;                  /* सफ़ेद आइकन */
+}
+body.dark-mode .action-bar-btn {
+    background: #a00000;              /* डार्क मोड में भाषा बटन जैसा बैकग्राउंड */
+    color: #ffffff;
+}
+body.dark-mode .action-bar-btn .material-symbols-outlined {
+    color: #ffffff;                  /* डार्क मोड में भी सफ़ेद आइकन */
+}
         #stickyWordContainer {
             position: fixed;
             top: 90px;
@@ -2866,12 +2867,12 @@ function toggleLetterLanguage() {
             }
             if (cleanInput) {
                 document.getElementById("stickyWordText").textContent = cleanInput;
-                document.getElementById("lettersWrapper").style.display = "none";
-                const actionButtons = document.getElementById("filterActionButtons");
-                actionButtons.style.display = "flex";
+               document.getElementById("lettersWrapper").style.display = "flex";
 const langBtn = document.getElementById("letterLangToggleBtn");
-if (langBtn) langBtn.style.display = "none";
+if (langBtn) langBtn.style.display = "inline-flex";
 
+const actionButtons = document.getElementById("filterActionButtons");
+actionButtons.style.display = "flex"; 
 
                 const filterShareBtn = document.getElementById("filterShareBtn");
                 if (filterShareBtn) {
