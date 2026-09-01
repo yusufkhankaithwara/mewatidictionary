@@ -2680,8 +2680,9 @@ function toggleLetterLanguage() {
                     : cleanInput;
                 englishMeaning = `English meaning of <span class="highlight-word">${escapeHTML(translitFromW)}</span>:<br>${englishMeanings}`;
                 if (d.example) {
-                    exampleLabel = "उदाहरण:";
-                    exampleText = escapeHTML(d.example.split(", ")[meaningIndex]?.trim() || d.example.split(", ")[0]?.trim() || "");
+    exampleLabel = "उदाहरण:";
+    const rawExample = d.example.split("।")[meaningIndex]?.trim() || d.example.split("।")[0]?.trim() || "";
+    exampleText = escapeHTML(rawExample ? rawExample + "।" : "");
                     const wordsToHighlight = cleanInput.split(" ");
                     wordsToHighlight.forEach(word => {
                         if (!word) return;
@@ -2829,9 +2830,10 @@ function toggleLetterLanguage() {
                     ? d.mewatiTranslit2[0]
                     : cleanInput;
                 englishMeaning = `English meaning of <span class="highlight-word">${escapeHTML(translitFromW)}</span>:<br>${englishMeanings}`;  
-                if (d.example) {
-                    exampleLabel = "उदाहरण:";
-                    exampleText = escapeHTML(d.example.split(", ")[translitIndex]?.trim() || d.example.split(", ")[0]?.trim() || "");
+if (d.example) {
+    exampleLabel = "उदाहरण:";
+    const rawExample = d.example.split("।")[translitIndex]?.trim() || d.example.split("।")[0]?.trim() || "";
+    exampleText = escapeHTML(rawExample ? rawExample + "।" : "");
                     const wordsToHighlight = mewatiMeaning.split(" ");
                     wordsToHighlight.forEach(word => {
                         if (!word) return;
