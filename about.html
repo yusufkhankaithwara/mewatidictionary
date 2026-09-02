@@ -3,7 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>हमारे बारे में - मेवाती शब्दकोश</title>
+    <title>हमारे बारे में - यूसुफ खान कैथवाड़ा | मेवाती शब्दकोश</title>
+    <link rel="canonical" href="https://mewatidictionary.in/about.html" />
+
+    <!-- Search Engine Meta Tags -->
+    <meta name="author" content="यूसुफ खान कैथवाड़ा (Yusuf Khan Kaithwara)">
+    <meta name="description" content="मेवाती शब्दकोश के निर्माता और संकलक यूसुफ खान कैथवाड़ा का परिचय एवं मेवाती भाषा संरक्षण प्रयास।">
+    <meta name="keywords" content="यूसुफ खान कैथवाड़ा, Yusuf Khan Kaithwara, मेवाती शब्दकोश, Mewati Dictionary, हमारे बारे में, कैथवाड़ा">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="हमारे बारे में - यूसुफ खान कैथवाड़ा | मेवाती शब्दकोश">
+    <meta property="og:description" content="मेवाती भाषा के संरक्षण और संवर्धन के लिए समर्पित मेवाती शब्दकोश एवं इसके निर्माता यूसुफ खान कैथवाड़ा का परिचय।">
+    <meta property="og:url" content="https://mewatidictionary.in/about.html">
+    <meta property="og:type" content="profile">
+    <meta property="og:image" content="https://lh3.googleusercontent.com/d/1TWBGpFaHrimnuTfESRaFnF2F4_1mpKOP">
+
+    <!-- Google Structured Data: Person & AboutPage Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      "mainEntity": {
+        "@type": "Person",
+        "name": "यूसुफ खान कैथवाड़ा",
+        "alternateName": ["Yusuf Khan Kaithwara", "Yusuf Khan"],
+        "jobTitle": "अध्यापक एवं लेखक",
+        "description": "मेवाती शब्दकोश (Mewati Dictionary) के निर्माता, संकलक एवं शोधकर्ता।",
+        "image": "https://lh3.googleusercontent.com/d/1TWBGpFaHrimnuTfESRaFnF2F4_1mpKOP",
+        "url": "https://mewatidictionary.in/about.html",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "कैथवाड़ा",
+          "addressRegion": "राजस्थान",
+          "addressCountry": "IN"
+        },
+        "knowsAbout": ["Mewati Language", "मेवाती भाषा", "भाषा संरक्षण", "शब्दकोश निर्माण"]
+      }
+    }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -253,15 +290,19 @@
         }
 
         /* =========================
-           PROFILE HEADER
+           PROFILE HEADER (STICKY)
         ========================= */
 
         .profile-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
             text-align: center;
-            padding: 30px 24px 22px;
+            padding: 24px 24px 18px;
             background: #f8f5ee;
             border-bottom: 1px solid #e8e4dc;
             border-radius: 20px 20px 0 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .profile-photo {
@@ -304,6 +345,11 @@
             font-size: 22px;
             line-height: 34px;
             cursor: pointer;
+            z-index: 15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
         }
 
         .close-btn:hover {
@@ -430,7 +476,7 @@
             }
 
             .profile-header {
-                padding: 26px 18px 20px;
+                padding: 20px 18px 16px;
             }
 
             .profile-content {
@@ -577,20 +623,17 @@
 
         <div class="profile-card">
 
-            <!-- CLOSE -->
-            <button
-                class="close-btn"
-                onclick="closeProfile()"
-                aria-label="बंद करें">
-
-                ×
-
-            </button>
-
-
-            <!-- PROFILE HEADER -->
+            <!-- PROFILE HEADER (STICKY) -->
 
             <div class="profile-header">
+
+                <!-- CLOSE BUTTON INSIDE STICKY HEADER -->
+                <button
+                    class="close-btn"
+                    onclick="closeProfile()"
+                    aria-label="बंद करें">
+                    ×
+                </button>
 
                 <img
                     class="profile-photo"
