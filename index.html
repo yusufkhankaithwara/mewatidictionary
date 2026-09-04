@@ -44,14 +44,16 @@
             flex-direction: column; 
             align-items: center; 
             transition: background-color 0.3s, color 0.3s;
-            background: #E8E4DC;
+            background: #f4f6f9
+;
             line-height: 1.6;
             letter-spacing: 0.2px;
         }
         
         body.dark-mode {
             background-color: #1a1a1a;
-            color: #e0e0e0;
+            color: #0f172a
+;
         }
         body.large-text {
             font-size: 18px;
@@ -237,7 +239,7 @@ body.dark-mode .action-bar-btn .material-symbols-outlined {
             pointer-events: none;
         }
         #stickyWordStrip {
-            background: #E8E4DC;
+            background: #f4f6f9;
             padding: 6px 20px;
             font-weight: bold;
             font-size: 16px;
@@ -360,17 +362,69 @@ body.dark-mode .action-bar-btn .material-symbols-outlined {
         body.dark-mode #pluralLine {
             color: #aaa;
         }
-        #result, #englishMeaning { 
-            font-size: 14px; 
-            color: #888; 
-            margin: 5px 20px; 
-            display: none; 
-        }
-        body.dark-mode #result,
-        body.dark-mode #englishMeaning {
-            color: #bbb !important;
-        }
-        #result .highlight-word,
+         #result { 
+    margin: 0;
+    display: none; 
+}
+#englishMeaning { 
+    margin: 0; 
+    display: none; 
+}
+body.dark-mode #englishMeaning {
+    color: #bbb !important;
+}
+
+/* हेडिंग बॉक्स के बाहर रहेगी */
+.result-heading {
+    font-size: 14px;
+    color: #888;
+    margin: 5px 20px;
+}
+body.dark-mode .result-heading {
+    color: #bbb;
+}
+
+/* परिणाम का बॉक्स */
+.result-box {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 0 20px 10px;
+    padding: 10px 15px;
+    background: #ffffff;
+    line-height: 1.8;
+}
+body.dark-mode .result-box {
+    background: #333;
+    border-color: #555;
+    color: #e0e0e0;
+}
+
+
+/* प्रत्येक अर्थ की पंक्ति (टेक्स्ट को सीध में रखने के लिए) */
+.result-box > div {
+    position: relative;
+    padding-left: 22px;        /* दूसरी लाइन को बुलेट के नीचे आने से रोकेगा */
+    margin-bottom: 6px;
+    line-height: 1.6;
+}
+.result-box > div:last-child {
+    margin-bottom: 0;
+}
+
+/* बुलेट को बाईं तरफ फिक्स करना */
+.res-bullet {
+    position: absolute;
+    left: 2px;
+    top: 0;
+    color: #800000;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: inherit;
+}
+body.dark-mode .res-bullet {
+    color: #ff6666;
+}
+       #result .highlight-word,
         #englishMeaning .highlight-word {
             color: #000;
             font-weight: bold;
@@ -417,14 +471,14 @@ body.dark-mode .action-bar-btn .material-symbols-outlined {
             color: #e0e0e0;
         }
         .related-btn, .opposite-btn, .synonym-btn, .rhyme-word-btn { 
-            background: #e6f2ff; 
+            background: #f4f6f9; 
             color: #007bff;
-            border: 1px solid #bfe2ff; 
+            border: none; 
             padding: 5px 10px; 
             margin: 2px 2px 2px 0; 
             cursor: pointer; 
             text-decoration: none; 
-            border-radius: 5px; 
+            border-radius: 20px; 
             transition: background-color 0.3s, color 0.3s;
         }
         .related-btn:hover, .opposite-btn:hover, .synonym-btn:hover, .rhyme-word-btn:hover { 
@@ -1018,11 +1072,11 @@ body.dark-mode .action-bar-btn .material-symbols-outlined {
         }
         .couplet-text {
             white-space: pre-wrap;
-            font-style: italic;
+            font-style: normal;
         }
         .couplet-line {
             margin-bottom: 5px;
-            white-space: nowrap;
+            white-space: pre;
         }
         .author-text {
             font-size: 12px;
@@ -2590,25 +2644,26 @@ function toggleLetterLanguage() {
                 const d = data;
                 wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
                 const meanings = d.meaning.split(/\s*,\s*/);
-                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के मेवाती अर्थ:<br>` + meanings.map(m => {
+                               const mewatiItems = meanings.map(m => {
                     const safeM = escapeString(m);
-                    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}', 'mewati');return false">• ${escapeHTML(m)}</a>`;
-                }).join("<br>");
-                if (d.english) {
+                    return `<div><span class="res-bullet">◦</span><a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}', 'mewati');return false">${escapeHTML(m)}</a></div>`;
+                }).join("");
+                result = `<div class="result-heading"><span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के मेवाती अर्थ:</div><div class="result-box">${mewatiItems}</div>`;
+                                 if (d.english) {
                     const engParts = d.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                     const engLinks = engParts.map(eng => {
                         const wordCount = eng.split(/\s+/).length;
                         if (wordCount > 5) {
-                            return `<span class="highlight-word" style="font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+                            return `<div><span class="res-bullet">◦</span><span class="highlight-word" style="font-weight: normal;">${escapeHTML(eng)}</span></div>`;
                         } else {
                             const safeEng = escapeString(eng);
                             const safeEngDisplay = escapeHTML(eng);
-                            return `<a href="#" class="english-word" onclick="showResult('${safeEng}'); return false;">• ${safeEngDisplay}</a>`;
+                            return `<div><span class="res-bullet">◦</span><a href="#" class="english-word" onclick="showResult('${safeEng}'); return false;">${safeEngDisplay}</a></div>`;
                         }
-                    }).join("<br>");
-                    englishMeaning = `English meaning:<br>${engLinks}`;
+                    }).join("");
+                    englishMeaning = `<div class="result-heading">English meaning:</div><div class="result-box">${engLinks}</div>`;
                 }
-            } else if (searchData.type === "mewati" && data) {
+          } else if (searchData.type === "mewati" && data) {
                 const d = data;
                 const meanings = d.meaning.split(/\s*,\s*/);
                 const meaningIndex = meanings.indexOf(cleanInput);
@@ -2650,10 +2705,10 @@ function toggleLetterLanguage() {
                             return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
                         }
                     }).join(", ");
-                    return `• ${linksForThisEntry}`;
-                }).join("<br>");
-                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiWordsList}`;
-                const uniqueEnglishSet = new Set();
+                                        return `<div><span class="res-bullet">◦</span>${linksForThisEntry}</div>`;
+                }).join("");
+                result = `<div class="result-heading"><span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:</div><div class="result-box">${hindiWordsList}</div>`;
+               const uniqueEnglishSet = new Set();
                 uniqueRelatedHindiWords.forEach(hindi => {
                     const entry = dictionary.find(e => e.hindiWord === hindi);
                     if (entry && entry.english) {
@@ -2663,23 +2718,23 @@ function toggleLetterLanguage() {
                         });
                     }
                 });
-                const englishMeanings = [...uniqueEnglishSet].map(eng => {
+                                 const englishMeanings = [...uniqueEnglishSet].map(eng => {
                     const wordCount = eng.split(/\s+/).length;
                     if (wordCount > 5) {
-                        return `<span class="highlight-word" style="font-weight: normal;">• ${escapeHTML(eng)}</span>`;
+                        return `<div><span class="res-bullet">◦</span><span class="highlight-word" style="font-weight: normal;">${escapeHTML(eng)}</span></div>`;
                     } else {
                         const safeDisplayEng = escapeString(eng);
-                        return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
+                        return `<div><span class="res-bullet">◦</span><a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false;">${escapeHTML(eng)}</a></div>`;
                     }
-                }).join("<br>");
+                }).join("");
                 const translitFromW =
                     (d.mewatiTranslit2 && d.mewatiTranslit2[meaningIndex])
                     ? d.mewatiTranslit2[meaningIndex]
                     : (d.mewatiTranslit2 && d.mewatiTranslit2[0])
                     ? d.mewatiTranslit2[0]
                     : cleanInput;
-                englishMeaning = `English meaning of <span class="highlight-word">${escapeHTML(translitFromW)}</span>:<br>${englishMeanings}`;
-                if (d.example) {
+                englishMeaning = `<div class="result-heading">English meaning of <span class="highlight-word">${escapeHTML(translitFromW)}</span>:</div><div class="result-box">${englishMeanings}</div>`;
+              if (d.example) {
     exampleLabel = "उदाहरण:";
     const rawExample = d.example.split("।")[meaningIndex]?.trim() || d.example.split("।")[0]?.trim() || "";
     exampleText = escapeHTML(rawExample ? rawExample + "।" : "");
@@ -2779,16 +2834,22 @@ function toggleLetterLanguage() {
                             return `<a href="#" class="meaning-link" onclick="handleExactWordClick('${safePart}');return false">${escapeHTML(part)}</a>`;
                         }
                     }).join(", ");
-                    validHindiBullets.push(`• ${linksInSameRow}`);
+                                         validHindiBullets.push(`<div><span class="res-bullet">◦</span>${linksInSameRow}</div>`);
                 });
-                const hindiBullets = validHindiBullets.join("<br>");
+                const hindiBullets = validHindiBullets.join("");
                 const meanings = d.meaning ? d.meaning.split(/\s*,\s*/).map(m => m.trim()).filter(m => m.length > 0) : [];
                 const mewatiBullets = meanings.map(m => {
                     const safeM = escapeString(m);
-                    return `<a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">• ${escapeHTML(m)}</a>`;
-                }).join("<br>");
-                result = `<span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:<br>${hindiBullets}<br>मेवाती अर्थ:<br>${mewatiBullets}`;
-            } else if (searchData.type === "translit" && data) {
+                    return `<div><span class="res-bullet">◦</span><a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}');return false">${escapeHTML(m)}</a></div>`;
+                }).join("");
+                
+                result = `
+                    <div class="result-heading"><span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:</div>
+                    <div class="result-box">${hindiBullets}</div>
+                    <div class="result-heading">मेवाती अर्थ:</div>
+                    <div class="result-box">${mewatiBullets}</div>
+                `;
+           } else if (searchData.type === "translit" && data) {
                 const d = data;
                 const meanings = d.meaning.split(/\s*,\s*/);
                 const translitIndex = d.mewatiTranslit.indexOf(cleanInput);
@@ -2819,18 +2880,18 @@ function toggleLetterLanguage() {
                         });
                     }
                 });
-                const englishMeanings = [...uniqueEnglishSet].map(eng => {
+                       const englishMeanings = [...uniqueEnglishSet].map(eng => {
                     const safeDisplayEng = escapeString(eng);
-                    return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false">• ${escapeHTML(eng)}</a>`;
-                }).join("<br>");
+                    return `<div><span class="res-bullet">◦</span><a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false;">${escapeHTML(eng)}</a></div>`;
+                }).join("");
                 const translitFromW =
                     (d.mewatiTranslit2 && d.mewatiTranslit2[translitIndex])
                     ? d.mewatiTranslit2[translitIndex]
                     : (d.mewatiTranslit2 && d.mewatiTranslit2[0])
                     ? d.mewatiTranslit2[0]
                     : cleanInput;
-                englishMeaning = `English meaning of <span class="highlight-word">${escapeHTML(translitFromW)}</span>:<br>${englishMeanings}`;  
-if (d.example) {
+                englishMeaning = `<div class="result-heading">English meaning of <span class="highlight-word">${escapeHTML(translitFromW)}</span>:</div><div class="result-box">${englishMeanings}</div>`;
+        if (d.example) {
     exampleLabel = "उदाहरण:";
     const rawExample = d.example.split("।")[translitIndex]?.trim() || d.example.split("।")[0]?.trim() || "";
     exampleText = escapeHTML(rawExample ? rawExample + "।" : "");
@@ -3252,20 +3313,22 @@ actionButtons.style.display = "flex";
             }
         }
         function makeMewatiWordsClickable(text) {
-            const lines = text.split('।').map(line => line.trim()).filter(line => line);
-            return lines.map(line => {
-                const words = line.split(/\s+/).map(word => {
-                    let cleanWord = word.replace(/[^\u0900-\u097F]/g, '');
-                    if (allMewatiWords && allMewatiWords.has(cleanWord)) {
-                        const safeWord = escapeString(cleanWord);
-                        return `<a href="#" class="clickable-word" onclick="showResult('${safeWord}'); return false;">${escapeHTML(word)}</a>`;
-                    } else {
-                        return escapeHTML(word);
-                    }
-                }).join(' ');
-                return `<div class="couplet-line">${words}</div>`;
-            }).join('');
-        }
+    const lines = text.split('।').map(line => line.trim()).filter(line => line);
+    return lines.map(line => {
+        const words = line.split(/(\s+)/).map(word => {
+            if (/^\s+$/.test(word)) return word; // शीट के सारे स्पेस हुबहू बच जाएँगे
+
+            let cleanWord = word.replace(/[^\u0900-\u097F]/g, '');
+            if (allMewatiWords && allMewatiWords.has(cleanWord)) {
+                const safeWord = escapeString(cleanWord);
+                return `<a href="#" class="clickable-word" onclick="showResult('${safeWord}'); return false;">${escapeHTML(word)}</a>`;
+            } else {
+                return escapeHTML(word);
+            }
+        }).join('');
+        return `<div class="couplet-line">${words}</div>`;
+    }).join('');
+}
         function clearResults() {
             currentSearchType = "";
             document.getElementById("pluralLine").style.display = "none";
@@ -3806,4 +3869,5 @@ if (langBtn) langBtn.style.display = "inline-flex";
     </script>
 </body>
 </html>
+
 
