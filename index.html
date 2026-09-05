@@ -1222,28 +1222,45 @@ body.dark-mode .res-bullet {
             object-fit: cover;
             cursor: pointer;
         }
-        .clear-icon {
+              .clear-icon {
             position: absolute;
-            right: 5px;
+            right: 8px;                         /* किनारे से थोड़ा सा स्पेस */
             top: 50%;
             transform: translateY(-50%);
-            font-size: 18px;
-            cursor: pointer;
-            color: #888;
+            width: 18px;                        /* गोल बटन की चौड़ाई */
+            height: 18px;                       /* गोल बटन की ऊँचाई */
+            border-radius: 50%;                 /* पूरी तरह गोल करने के लिए */
+            background-color: #9aa0a6;          /* रेखता जैसा हल्का स्लेटी/ग्रे रंग */
+            color: #ffffff;                     /* अंदर का क्रॉस बिल्कुल सफेद */
+            font-size: 15px;                    /* क्रॉस का परफेक्ट साइज */
+            font-weight: bold;
+            line-height: 18px;                  /* क्रॉस को सर्कल के ठीक बीच में रखने के लिए */
+            text-align: center;
             display: none;
-            padding: 3px;
-            line-height: 1;
+            cursor: pointer;
+            padding: 0;
             -webkit-tap-highlight-color: transparent;
             outline: none;
             user-select: none;
+            box-sizing: border-box;
+            transition: background-color 0.15s ease;
         }
-        .clear-icon:hover {
-            color: #000;
+
+        .clear-icon:hover, .clear-icon:active {
+            background-color: #7b8188;          /* टच या होवर करने पर थोड़ा गहरा ग्रे */
+            color: #ffffff;
         }
+
+        /* डार्क मोड में भी सुंदर और साफ दिखे */
         body.dark-mode .clear-icon {
-            color: #bbb;
+            background-color: #555555;
+            color: #ffffff;
         }
-        .idiom-item {
+
+        body.dark-mode .clear-icon:hover, body.dark-mode .clear-icon:active {
+            background-color: #6e6e6e;
+        }
+         .idiom-item {
             margin-bottom: 10px;
         }
         .idiom-word {
@@ -1521,6 +1538,17 @@ body.dark-mode .lang-toggle-btn {
 body.dark-mode .word-divider {
     background-color: #334155;
 }
+/* केवल मोबाइल स्क्रीन (768px से छोटी) पर स्क्रॉल लाइन छिपेगी */
+@media (max-width: 768px) {
+    #lettersWrapper::-webkit-scrollbar {
+        display: none;
+    }
+    #lettersWrapper {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+
 
     </style>
 </head>
