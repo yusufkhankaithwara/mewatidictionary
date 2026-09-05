@@ -124,16 +124,18 @@
             display: flex;
             align-items: center; 
         }
-        input { 
-            padding: 4px 35px 4px 35px; 
+                input { 
+            height: 42px;                     /* नई ऊँचाई */
+            padding: 0 35px;                  /* वर्टिकली सेंटर टेक्स्ट */
             width: 100%; 
             box-sizing: border-box; 
-            border-radius: 20px; 
-            background: #f5f5f5; 
-            border: 1px solid #ccc; 
-            font-size: 14px; 
-            color: #1a1a1a; 
-            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+            border-radius: 24px;              /* पिल शेप राउंड */
+            background: #f4f6f9;              /* नए कोड का लाइट बॉडी कलर */
+            border: 1px solid #e2e8f0;        /* हल्का सॉफ्ट बॉर्डर */
+            font-size: 15px; 
+            color: #1f2937; 
+            outline: none;
+            transition: all 0.2s ease;
         }
         input:focus {
             border-color: #800000;
@@ -160,7 +162,7 @@
         }
         #letterFilter {
             position: fixed;
-            top: 45px;
+            top: 52px;
             left: 0;
             right: 0;
             display: flex;
@@ -230,7 +232,7 @@ body.dark-mode .action-bar-btn .material-symbols-outlined {
 }
         #stickyWordContainer {
             position: fixed;
-            top: 90px;
+            top: 100px;
             left: 0;
             right: 0;
             width: 100%;
@@ -242,8 +244,8 @@ body.dark-mode .action-bar-btn .material-symbols-outlined {
             background: #f4f6f9;
             padding: 6px 20px;
             font-weight: bold;
-            font-size: 16px;
-            color: #800000;
+            font-size: 20px;
+            color: #1a1a1a;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
@@ -266,7 +268,7 @@ body.dark-mode .action-bar-btn .material-symbols-outlined {
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
         .letter-btn { 
-            background: #f5f5f5; 
+            background: #f4f6f9; 
             border: 1px solid #ccc; 
             border-radius: 50%; 
             width: 30px; 
@@ -305,7 +307,7 @@ body.dark-mode .action-bar-btn .material-symbols-outlined {
             border-color: #1e90ff;
         }
         .content-container { 
-            margin-top: 100px; 
+            margin-top: 105px; 
             width: 100%; 
             max-width: 100%;
             box-sizing: border-box; 
@@ -1498,6 +1500,30 @@ body.dark-mode .lang-toggle-btn {
     background: #a00000;
     color: #ffffff;
 }
+        .main-word-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 10px 20px 2px;
+            display: none;
+            line-height: 1.2;
+        }
+        body.dark-mode .main-word-title {
+            color: #f1f5f9;
+        }
+/* मुख्य शब्द और व्याकरण के नीचे की सॉफ्ट डिवाइडर लाइन */
+.word-divider {
+    border: none;
+    height: 1px;
+    background-color: #e2e8f0;        /* हल्का और आधुनिक ग्रे शेड */
+    margin: 12px 20px 14px;           /* ऊपर-नीचे बराबर गैप */
+    display: none;                    /* सर्च होने पर ही दिखेगी */
+}
+
+/* डार्क मोड सपोर्ट */
+body.dark-mode .word-divider {
+    background-color: #334155;
+}
 
     </style>
 </head>
@@ -1662,9 +1688,11 @@ body.dark-mode .lang-toggle-btn {
             <div class="duplicate-slider" id="duplicateSlider"></div>
         </div>
         <ul id="suggestions"></ul>
+        <h1 id="mainWordTitle" class="main-word-title"></h1>
         <p id="wordType"></p>
         <p id="subjectLine"></p>
         <p id="pluralLine"></p>
+        <hr id="wordHeaderDivider" class="word-divider">
         <p id="result"></p>
         <p id="englishMeaning"></p>
         <p id="exampleLabel"></p>
@@ -2931,6 +2959,14 @@ function toggleLetterLanguage() {
             if (cleanInput) {
                 document.getElementById("stickyWordText").textContent = cleanInput;
                document.getElementById("lettersWrapper").style.display = "flex";
+                const mainTitle = document.getElementById("mainWordTitle");
+                if (mainTitle) {
+                    mainTitle.textContent = cleanInput;
+                    mainTitle.style.display = "block";
+                }
+const dividerEl = document.getElementById("wordHeaderDivider");
+                if (dividerEl) dividerEl.style.display = "block";
+
 const langBtn = document.getElementById("letterLangToggleBtn");
 if (langBtn) langBtn.style.display = "inline-flex";
 
@@ -3332,6 +3368,14 @@ actionButtons.style.display = "flex";
         function clearResults() {
             currentSearchType = "";
             document.getElementById("pluralLine").style.display = "none";
+            const mainTitle = document.getElementById("mainWordTitle");
+            if (mainTitle) {
+                mainTitle.textContent = "";
+                mainTitle.style.display = "none";
+            }
+const dividerEl = document.getElementById("wordHeaderDivider");
+if (dividerEl) dividerEl.style.display = "none";
+
             const stickyStrip = document.getElementById("stickyWordStrip");
             stickyStrip.classList.remove("visible");
             const stickyWordText = document.getElementById("stickyWordText");
@@ -3354,16 +3398,19 @@ if (langBtn) langBtn.style.display = "inline-flex";
                 document.getElementById("wordOfTheDay").style.display = "block";
             }
         }
-        window.addEventListener("scroll", function() {
+                window.addEventListener("scroll", function() {
             if (!currentSearchType) {
                 document.getElementById("stickyWordStrip").classList.remove("visible");
                 return;
             }
-            const mainWordEl = document.getElementById("mainMewatiWord") || document.getElementById("result");
+            // अब यह नए बड़े शब्द को ट्रैक करेगा
+            const mainWordEl = document.getElementById("mainWordTitle");
             const stickyStrip = document.getElementById("stickyWordStrip");
-            if (mainWordEl) {
+
+            if (mainWordEl && mainWordEl.style.display !== "none") {
                 const rect = mainWordEl.getBoundingClientRect();
-                if (rect.top <= 97) {
+                // जैसे ही बड़े शब्द का निचला हिस्सा (bottom) ऊपर लेटर पट्टी (100px) के पीछे छुपेगा
+                if (rect.bottom <= 138) {
                     stickyStrip.classList.add("visible");
                 } else {
                     stickyStrip.classList.remove("visible");
