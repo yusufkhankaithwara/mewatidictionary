@@ -200,12 +200,12 @@
 }
         /* बदला हुआ CSS */
 .action-bar-btn {
-    background: #800000;              /* भाषा बटन जैसा बैकग्राउंड */
+    background: #DCE8FA;
     color: #ffffff;
     border: none;
     width: 30px;
     height: 30px;
-    border-radius: 6px;               /* भाषा बटन जैसा रेडियस */
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,12 +216,9 @@
     user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
-.action-bar-btn:hover {
-    background: #990000;
-}
 .action-bar-btn .material-symbols-outlined {
     font-size: 18px;
-    color: #ffffff;                  /* सफ़ेद आइकन */
+    color: #346399;                  /* सफ़ेद आइकन */
 }
 body.dark-mode .action-bar-btn {
     background: #a00000;              /* डार्क मोड में भाषा बटन जैसा बैकग्राउंड */
@@ -1631,21 +1628,13 @@ body.dark-mode .word-divider {
     <div id="letterFilter">
         <button id="letterLangToggleBtn" class="lang-toggle-btn" onclick="toggleLetterLanguage()" title="भाषा बदलें (हिन्दी / मेवाती)">हिं</button>
         <div id="lettersWrapper"></div>
-        <div id="filterActionButtons">
-            <button class="action-bar-btn" id="filterAudioBtn" title="उच्चारण सुनें">
-                <span class="material-symbols-outlined">volume_up</span>
-            </button>
-            <button class="action-bar-btn" id="filterShareBtn" title="शेयर करें">
-                <span class="material-symbols-outlined">share</span>
-            </button>
-        </div>
-    </div>
+            </div>
 
     <div id="stickyWordContainer">
-        <div id="stickyWordStrip">
-            <span id="stickyWordText"></span>
-        </div>
+    <div id="stickyWordStrip" style="padding-right: 95px; box-sizing: border-box;">
+        <span id="stickyWordText" style="display: inline-block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle;"></span>
     </div>
+</div>
 
     <div class="content-container">
         <div id="adminFeedbackBlock" style="display: none; margin: 10px 20px;">
@@ -1688,7 +1677,19 @@ body.dark-mode .word-divider {
             <div class="duplicate-slider" id="duplicateSlider"></div>
         </div>
         <ul id="suggestions"></ul>
-        <h1 id="mainWordTitle" class="main-word-title"></h1>
+        <div class="word-header-row" style="display: flex; align-items: center; justify-content: space-between; margin: 10px 20px 4px;">
+    <h1 id="mainWordTitle" class="main-word-title" style="margin: 0; line-height: 1.2; padding-right: 85px; word-wrap: break-word;"></h1>
+
+<div id="filterActionButtons" style="position: fixed; top: 105px; right: 20px; z-index: 998; display: none; align-items: center; gap: 8px;">
+        <button class="action-bar-btn" id="filterAudioBtn" title="उच्चारण सुनें">
+            <span class="material-symbols-outlined">volume_up</span>
+        </button>
+        <button class="action-bar-btn" id="filterShareBtn" title="शेयर करें">
+            <span class="material-symbols-outlined">share</span>
+        </button>
+    </div>
+</div>
+
         <p id="wordType"></p>
         <p id="subjectLine"></p>
         <p id="pluralLine"></p>
