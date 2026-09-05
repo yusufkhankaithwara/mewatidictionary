@@ -1223,43 +1223,33 @@ body.dark-mode .res-bullet {
             cursor: pointer;
         }
               .clear-icon {
-            position: absolute;
-            right: 8px;                         /* किनारे से थोड़ा सा स्पेस */
-            top: 50%;
-            transform: translateY(-50%);
-            width: 18px;                        /* गोल बटन की चौड़ाई */
-            height: 18px;                       /* गोल बटन की ऊँचाई */
-            border-radius: 50%;                 /* पूरी तरह गोल करने के लिए */
-            background-color: #9aa0a6;          /* रेखता जैसा हल्का स्लेटी/ग्रे रंग */
-            color: #ffffff;                     /* अंदर का क्रॉस बिल्कुल सफेद */
-            font-size: 15px;                    /* क्रॉस का परफेक्ट साइज */
-            font-weight: bold;
-            line-height: 18px;                  /* क्रॉस को सर्कल के ठीक बीच में रखने के लिए */
-            text-align: center;
-            display: none;
-            cursor: pointer;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
-            user-select: none;
-            box-sizing: border-box;
-            transition: background-color 0.15s ease;
-        }
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #9aa0a6;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease;
+}
 
-        .clear-icon:hover, .clear-icon:active {
-            background-color: #7b8188;          /* टच या होवर करने पर थोड़ा गहरा ग्रे */
-            color: #ffffff;
-        }
+.clear-icon:hover, .clear-icon:active {
+    background-color: #7b8188;
+}
 
-        /* डार्क मोड में भी सुंदर और साफ दिखे */
-        body.dark-mode .clear-icon {
-            background-color: #555555;
-            color: #ffffff;
-        }
-
-        body.dark-mode .clear-icon:hover, body.dark-mode .clear-icon:active {
-            background-color: #6e6e6e;
-        }
+body.dark-mode .clear-icon {
+    background-color: #555555;
+}
          .idiom-item {
             margin-bottom: 10px;
         }
@@ -1566,7 +1556,13 @@ body.dark-mode .word-divider {
         <div class="search-box">
             <span class="search-icon material-symbols-outlined">search</span>
             <input type="text" id="wordInput" placeholder="शब्दार्थ खोजिए" oninput="debouncedSuggestions(); toggleClearIcon();" autocomplete="off">
-            <span class="clear-icon" id="clearSearch" onclick="clearSearch()">×</span>
+            <span class="clear-icon" id="clearSearch" onclick="clearSearch()">
+    <svg viewBox="0 0 24 24" width="10" height="10" stroke="white" stroke-width="3.5" fill="none" stroke-linecap="round" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: block;">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+</span>
+
         </div>
         <span class="settings-icon material-symbols-outlined" onclick="toggleSettingsMenu()">menu</span>
         <div class="settings-menu" id="settingsMenu">
