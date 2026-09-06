@@ -196,9 +196,9 @@
     align-items: center;
     gap: 6px;
     flex-shrink: 0;
-    margin-left: auto;                /* बटनों को दाईं तरफ रखने के लिए */
+    margin-left: auto;              
 }
-        /* बदला हुआ CSS */
+        
 .action-bar-btn {
     background: #DCE8FA;
     color: #ffffff;
@@ -221,7 +221,7 @@
     color: #346399;                  /* सफ़ेद आइकन */
 }
 body.dark-mode .action-bar-btn {
-    background: #a00000;              /* डार्क मोड में भाषा बटन जैसा बैकग्राउंड */
+    background: #2a2a2a;              /* डार्क मोड में भाषा बटन जैसा बैकग्राउंड */
     color: #ffffff;
 }
 body.dark-mode .action-bar-btn .material-symbols-outlined {
@@ -421,7 +421,7 @@ body.dark-mode .result-box {
     line-height: inherit;
 }
 body.dark-mode .res-bullet {
-    color: #ff6666;
+    color: #ffffff;
 }
        #result .highlight-word,
         #englishMeaning .highlight-word {
@@ -1480,7 +1480,7 @@ body.dark-mode .clear-icon {
 .lang-toggle-btn {
     background: #800000;
     color: #ffffff;
-    border: none;
+    border: 1px solid #ccc;
     border-radius: 6px;
     min-width: 32px;
     height: 30px;
@@ -1501,8 +1501,10 @@ body.dark-mode .clear-icon {
     transform: scale(0.95);
 }
 body.dark-mode .lang-toggle-btn {
-    background: #a00000;
-    color: #ffffff;
+    background: #444;
+            border-color: #666;
+            color: #e0e0e0;
+
 }
         .main-word-title {
             font-size: 20px;
