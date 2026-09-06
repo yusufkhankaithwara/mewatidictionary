@@ -391,6 +391,7 @@ body.dark-mode .result-heading {
     padding: 10px 15px;
     background: #ffffff;
     line-height: 1.8;
+    color: #888888;
 }
 body.dark-mode .result-box {
     background: #333;
@@ -2704,21 +2705,21 @@ function toggleLetterLanguage() {
                     return `<div><span class="res-bullet">◦</span><a href="#" class="meaning-link" onclick="showDuplicateSuggestions('${safeM}', 'mewati');return false">${escapeHTML(m)}</a></div>`;
                 }).join("");
                 result = `<div class="result-heading"><span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के मेवाती अर्थ:</div><div class="result-box">${mewatiItems}</div>`;
-                                 if (d.english) {
+                if (d.english) {
                     const engParts = d.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                     const engLinks = engParts.map(eng => {
                         const wordCount = eng.split(/\s+/).length;
                         if (wordCount > 5) {
-                            return `<div><span class="res-bullet">◦</span><span class="highlight-word" style="font-weight: normal;">${escapeHTML(eng)}</span></div>`;
+                            return `<span class="highlight-word" style="font-weight: normal;">${escapeHTML(eng)}</span>`;
                         } else {
                             const safeEng = escapeString(eng);
                             const safeEngDisplay = escapeHTML(eng);
-                            return `<div><span class="res-bullet">◦</span><a href="#" class="english-word" onclick="showResult('${safeEng}'); return false;">${safeEngDisplay}</a></div>`;
+                            return `<a href="#" class="english-word" onclick="showResult('${safeEng}'); return false;">${safeEngDisplay}</a>`;
                         }
-                    }).join("");
-                    englishMeaning = `<div class="result-heading">English meaning:</div><div class="result-box">${engLinks}</div>`;
+                    }).join(", ");
+                    englishMeaning = `<div class="result-heading">English meaning:</div><div class="result-box"><div><span class="res-bullet">◦</span>${engLinks}</div></div>`;
                 }
-          } else if (searchData.type === "mewati" && data) {
+              } else if (searchData.type === "mewati" && data) {
                 const d = data;
                 const meanings = d.meaning.split(/\s*,\s*/);
                 const meaningIndex = meanings.indexOf(cleanInput);
@@ -2763,25 +2764,29 @@ function toggleLetterLanguage() {
                                         return `<div><span class="res-bullet">◦</span>${linksForThisEntry}</div>`;
                 }).join("");
                 result = `<div class="result-heading"><span class="highlight-word" id="mainMewatiWord">${escapeHTML(cleanInput)}</span> के हिंदी अर्थ:</div><div class="result-box">${hindiWordsList}</div>`;
-               const uniqueEnglishSet = new Set();
+                const seenEnglishRows = new Set();
+                const validEnglishBullets = [];
                 uniqueRelatedHindiWords.forEach(hindi => {
                     const entry = dictionary.find(e => e.hindiWord === hindi);
                     if (entry && entry.english) {
-                        const engParts = entry.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
-                        engParts.forEach(eng => {
-                            if (eng) uniqueEnglishSet.add(eng);
-                        });
+                        const rawEng = entry.english.trim();
+                        if (!rawEng || seenEnglishRows.has(rawEng)) return;
+                        seenEnglishRows.add(rawEng);
+                        const engParts = rawEng.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
+                        if (engParts.length === 0) return;
+                        const engLinksInRow = engParts.map(eng => {
+                            const wordCount = eng.split(/\s+/).length;
+                            if (wordCount > 5) {
+                                return `<span class="highlight-word" style="font-weight: normal;">${escapeHTML(eng)}</span>`;
+                            } else {
+                                const safeDisplayEng = escapeString(eng);
+                                return `<a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false;">${escapeHTML(eng)}</a>`;
+                            }
+                        }).join(", ");
+                        validEnglishBullets.push(`<div><span class="res-bullet">◦</span>${engLinksInRow}</div>`);
                     }
                 });
-                                 const englishMeanings = [...uniqueEnglishSet].map(eng => {
-                    const wordCount = eng.split(/\s+/).length;
-                    if (wordCount > 5) {
-                        return `<div><span class="res-bullet">◦</span><span class="highlight-word" style="font-weight: normal;">${escapeHTML(eng)}</span></div>`;
-                    } else {
-                        const safeDisplayEng = escapeString(eng);
-                        return `<div><span class="res-bullet">◦</span><a href="#" class="english-word" onclick="showResult('${safeDisplayEng}');return false;">${escapeHTML(eng)}</a></div>`;
-                    }
-                }).join("");
+                const englishMeanings = validEnglishBullets.join("");
                 const translitFromW =
                     (d.mewatiTranslit2 && d.mewatiTranslit2[meaningIndex])
                     ? d.mewatiTranslit2[meaningIndex]
