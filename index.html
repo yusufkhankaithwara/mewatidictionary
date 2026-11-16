@@ -2854,7 +2854,7 @@ function toggleLetterLanguage() {
                         oppositeLabel = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के विलोम शब्द:`;
                         oppositeText = opposites.map(o => {
                             const safeO = escapeString(o);
-                            return `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>`;
+                            return (window.allMewatiWords && window.allMewatiWords.has(o)) ? `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>` : `<span class="non-clickable-chip">${escapeHTML(o)}</span>`;
                         }).join(" ");
                         document.getElementById("oppositeBlock").style.display = "block";
                     }
@@ -2875,7 +2875,7 @@ function toggleLetterLanguage() {
                         oppositeLabel = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के विलोम शब्द:`;
                         oppositeText = allOpposites.map(o => {
                             const safeO = escapeString(o);
-                            return `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>`;
+                            return (window.allMewatiWords && window.allMewatiWords.has(o)) ? `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>` : `<span class="non-clickable-chip">${escapeHTML(o)}</span>`;
                         }).join(" ");
                         document.getElementById("oppositeBlock").style.display = "block";
                     }
@@ -2994,7 +2994,7 @@ function toggleLetterLanguage() {
                         oppositeLabel = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के विलोम शब्द:`;
                         oppositeText = opposites.map(o => {
                             const safeO = escapeString(o);
-                            return `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>`;
+                            return (window.allMewatiWords && window.allMewatiWords.has(o)) ? `<button class="opposite-btn" onclick="showDuplicateSuggestions('${safeO}')">${escapeHTML(o)}</button>` : `<span class="non-clickable-chip">${escapeHTML(o)}</span>`;
                         }).join(" ");
                         document.getElementById("oppositeBlock").style.display = "block";
                     }
