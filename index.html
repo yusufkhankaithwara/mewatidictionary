@@ -530,6 +530,20 @@ body.dark-mode .res-bullet {
         body.dark-mode .unclickable-btn:hover {
             background: #999999;
         }
+.non-clickable-chip {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 2px 2px 2px 0;
+    color: #1a1a1a;
+    background: #f4f6f9;
+    border-radius: 20px;
+    cursor: default;
+}
+body.dark-mode .non-clickable-chip {
+    background: #444;
+    color: #e0e0e0;
+}
+
         .unclickable-text { 
             color: #4682b4; 
             text-decoration: none; 
@@ -2830,7 +2844,7 @@ function toggleLetterLanguage() {
                     synonymLabel = `<span class="highlight-word">${escapeHTML(cleanInput)}</span> के पर्यायवाची शब्द:`;
                     synonymText = allSynonyms.map(s => {
                         const safeS = escapeString(s);
-                        return `<button class="synonym-btn" onclick="showDuplicateSuggestions('${safeS}')">${escapeHTML(s)}</button>`;
+                        return (window.allMewatiWords && window.allMewatiWords.has(s)) ? `<button class="synonym-btn" onclick="showDuplicateSuggestions('${safeS}')">${escapeHTML(s)}</button>` : `<span class="non-clickable-chip">${escapeHTML(s)}</span>`;
                     }).join(" ");
                     document.getElementById("synonymBlock").style.display = "block";
                 }
@@ -2970,7 +2984,7 @@ function toggleLetterLanguage() {
                     synonymLabel = `<span class="highlight-word">${escapeHTML(mewatiMeaning)}</span> के पर्यायवाची शब्द:`;
                     synonymText = allSynonyms.map(s => {
                         const safeS = escapeString(s);
-                        return `<button class="synonym-btn" onclick="showDuplicateSuggestions('${safeS}')">${escapeHTML(s)}</button>`;
+                        return (window.allMewatiWords && window.allMewatiWords.has(s)) ? `<button class="synonym-btn" onclick="showDuplicateSuggestions('${safeS}')">${escapeHTML(s)}</button>` : `<span class="non-clickable-chip">${escapeHTML(s)}</span>`;
                     }).join(" ");
                     document.getElementById("synonymBlock").style.display = "block";
                 }
