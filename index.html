@@ -2694,7 +2694,9 @@ function toggleLetterLanguage() {
                 imageLabel = "", imageHtml = "",
                 synonymLabel = "", synonymText = "", oppositeLabel = "", oppositeText = "", 
                 relatedLabel = "", relatedText = "", rhymeLabel = "";
-            const relatedHindiWords = [];
+            const primaryHindiWords = [];
+            const secondaryHindiWords = [];
+
             dictionary.forEach(entry => {
                 const meanings = entry.meaning
                     ? entry.meaning.split(",").map(m => m.trim())
@@ -2702,14 +2704,18 @@ function toggleLetterLanguage() {
                 const synonyms = entry.synonyms
                     ? entry.synonyms.split(",").map(s => s.trim())
                     : [];
+
                 if (
                     meanings.includes(cleanInput) ||
-                    synonyms.includes(cleanInput) ||
                     (searchData.type === "translit" && entry.mewatiTranslit.includes(cleanInput))
                 ) {
-                    relatedHindiWords.push(entry.hindiWord);
+                    primaryHindiWords.push(entry.hindiWord);
+                } else if (synonyms.includes(cleanInput)) {
+                    secondaryHindiWords.push(entry.hindiWord);
                 }
             });
+
+            const relatedHindiWords = [...primaryHindiWords, ...secondaryHindiWords];
             if (searchData.type === "hindi" && data) {
                 const d = data;
                 wordType = d.type ? (d.gender ? `${d.type}, ${d.gender}` : d.type) : (d.gender || "");
