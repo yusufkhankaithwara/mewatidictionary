@@ -3131,16 +3131,15 @@ actionButtons.style.display = "flex";
                         return `<button class="related-btn" onclick="handleExactWordClick('${safeW}'); return false;">${escapeHTML(w)}</button>`;
                     }).join(" ");
 
-                    if (window.currentRelatedLimit < window.currentRelatedList.length) {
-                        const remaining = window.currentRelatedList.length - window.currentRelatedLimit;
-                        html += `<div style="margin-top: 8px; text-align: center;">
+                                        if (window.currentRelatedLimit < window.currentRelatedList.length) {
+                        html += `<div style="margin-top: 10px; text-align: center;">
                             <button onclick="window.currentRelatedLimit += 20; window.renderMoreRelated();" 
-                                style="background: none; border: none; color: #800000; font-weight: bold; font-size: 13px; cursor: pointer; padding: 4px 10px; text-decoration: underline;">
-                                और देखिए (${remaining} शेष)
+                                style="background: #f4f6f9; color: #800000; border: 1px solid #e2e8f0; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; padding: 6px 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); transition: all 0.2s ease;">
+                                और देखिए
                             </button>
                         </div>`;
                     }
-                    relatedContainer.innerHTML = html;
+                   relatedContainer.innerHTML = html;
                 };
 
                 document.getElementById("relatedBlock").style.display = "block";
