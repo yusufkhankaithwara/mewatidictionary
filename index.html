@@ -1837,6 +1837,7 @@ body.dark-mode .word-divider {
         });
 
         let dictionary = [];
+        let smartSearchIndex = [];
         let currentSearchType = "";
         let debounceTimer = null;
         let currentDisplayWord = "";
@@ -1928,6 +1929,192 @@ function toggleLetterLanguage() {
             }
         }
         const trie = new Trie();
+                            function devanagariToRomanAuto(text) {
+            if (!text) return "";
+            // कोष्ठक के अंदर की अतिरिक्त जानकारी हटाएं और NFC नॉर्मलाइज करें
+            text = text.replace(/\(.*?\)/g, '').normalize('NFC').trim();
+            const cons = {
+                'क':'k','क़':'q','ख':'kh','ख़':'kh','ग':'g','ग़':'gh','घ':'gh','ङ':'ng',
+                'च':'ch','छ':'chh','ज':'j','ज़':'z','झ':'jh','ञ':'ny',
+                'ट':'t','ठ':'th','ड':'d','ड़':'d','ढ':'dh','ढ़':'dh','ण':'n',
+                'त':'t','थ':'th','द':'d','ध':'dh','न':'n',
+                'प':'p','फ':'ph','फ़':'f','ब':'b','भ':'bh','म':'m',
+                'य':'y','र':'r','ल':'l','ळ':'l','व':'w','श':'sh','ष':'sh','स':'s','ह':'h'
+            };
+            const vowels = {
+                'अ':'a','आ':'aa','इ':'i','ई':'i','उ':'u','ऊ':'oo','ऋ':'ri',
+                'ए':'e','ऐ':'ai','ओ':'o','औ':'au'
+            };
+            const matras = {
+                'ा':'aa','ि':'i','ी':'i','ु':'u','ू':'oo','ृ':'ri',
+                'े':'e','ै':'ai','ो':'o','ौ':'au','ं':'n','ँ':'n','ः':'h'
+            };
+
+            let res = "";
+            const chars = Array.from(text);
+            for (let i = 0; i < chars.length; i++) {
+                const c = chars[i];
+                if (c === '़') continue; // यदि कोई अलग से नुक़्ता चिह्न बच जाए तो अनदेखा करें
+
+                let next = chars[i + 1];
+                if (next === '़') {
+                    i++;
+                    next = chars[i + 1];
+                }
+
+                if (vowels[c]) {
+                    res += vowels[c];
+                } else if (cons[c]) {
+                    res += cons[c];
+                    if (next === '्') {
+                        i++;
+                    } else if (matras[next]) {
+                        res += matras[next];
+                        i++;
+                    } else if (next && next !== ' ' && i < chars.length - 1) {
+                        res += 'a';
+                    }
+                } else if (matras[c]) {
+                    res += matras[c];
+                } else {
+                    res += c;
+                }
+            }
+            return res.toLowerCase();
+        }
+                     function normalizeSmartText(str) {
+            if (!str) return "";
+            let s = str.replace(/\(.*?\)/g, '').normalize('NFC').toLowerCase().trim();
+            s = s.replace(/क़/g, 'क').replace(/ख़/g, 'ख').replace(/ग़/g, 'ग')
+                 .replace(/ज़/g, 'ज').replace(/ड़/g, 'ड').replace(/ढ़/g, 'ढ').replace(/फ़/g, 'फ')
+                 .replace(/ळ/g, 'ल')
+                 .replace(/ी/g, 'ि').replace(/ई/g, 'इ')
+                 .replace(/ू/g, 'ु').replace(/ऊ/g, 'उ')
+                 .replace(/ै/g, 'े').replace(/ऐ/g, 'ए')
+                 .replace(/ौ/g, 'ो').replace(/औ/g, 'ओ')
+                 .replace(/[ँं]/g, 'न').replace(/[ः]/g, '')
+                 .replace(/श|ष/g, 'स').replace(/व/g, 'ब');
+
+            if (/[a-z]/.test(s)) {
+                s = s.replace(/aa/g, 'a').replace(/ee|ii/g, 'i').replace(/oo|uu/g, 'u')
+                     .replace(/ph/g, 'f').replace(/kh/g, 'k').replace(/gh/g, 'g')
+                     .replace(/chh/g, 'ch').replace(/th/g, 't').replace(/dh/g, 'd')
+                     .replace(/bh/g, 'b').replace(/sh/g, 's').replace(/q/g, 'k')
+                     .replace(/z/g, 'j')
+                     .replace(/([kgcjtdnpbmrls])w([ou])/g, '$1$2')
+                     .replace(/w/g, 'v')
+                     .replace(/r/g, 'd')
+                     .replace(/(.)\1+/g, '$1');
+            }
+            return s;
+        }
+
+        function computeLevenshtein(a, b) {
+            if (a === b) return 0;
+            const lenA = a.length, lenB = b.length;
+            if (lenA === 0) return lenB;
+            if (lenB === 0) return lenA;
+            if (Math.abs(lenA - lenB) > 4) return 99;
+
+            let prevRow = new Array(lenB + 1);
+            for (let j = 0; j <= lenB; j++) prevRow[j] = j;
+
+            for (let i = 1; i <= lenA; i++) {
+                let currRow = [i];
+                for (let j = 1; j <= lenB; j++) {
+                    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                    currRow[j] = Math.min(prevRow[j] + 1, currRow[j - 1] + 1, prevRow[j - 1] + cost);
+                }
+                prevRow = currRow;
+            }
+            return prevRow[lenB];
+        }
+
+              function performSmartSearch(rawQuery) {
+            const q = rawQuery.toLowerCase().trim();
+            if (!q) return [];
+            const isRomanQuery = /^[a-z0-9\s\-]+$/.test(q);
+            const qNorm = normalizeSmartText(q);
+            const qTokens = q.split(/\s+/).filter(t => t.length >= 2);
+            const qNormTokens = qNorm.split(/\s+/).filter(t => t.length >= 2);
+            const scoredMatches = [];
+
+            for (let i = 0; i < smartSearchIndex.length; i++) {
+                const item = smartSearchIndex[i];
+                const w = item.lower;
+                const wNorm = item.norm;
+
+                // यदि यूज़र देवनागरी में लिख रहा है, तो रोमन इंडेक्स को न मिलाएं (और इसके विपरीत)
+                const isItemRoman = /^[a-z0-9\s\-]+$/.test(w);
+                if (!isRomanQuery && isItemRoman) continue;
+                if (isRomanQuery && !isItemRoman && item.type !== "english") continue;
+
+                let score = 0;
+
+                // 1. 100% बिल्कुल सटीक शब्द
+                if (w === q) {
+                    score = 1000;
+                }
+                // 2. मात्रा या नुक़्ता के बदलाव के साथ सटीक मिलान (जैसे: गुदड़ी -> गूदड़ी, कीताब -> किताब)
+                else if (wNorm === qNorm && qNorm.length >= 2) {
+                    score = 940;
+                }
+                // 3. शुरुआत से मिलान (Prefix Match: जैसे 'कित' -> 'किताब')
+                else if (w.startsWith(q)) {
+                    score = 860 - Math.min(50, (w.length - q.length) * 4);
+                }
+                // 4. मात्रा सुधार के साथ शुरुआत से मिलान (जैसे: 'गुद' -> 'गूदड़ी')
+                else if (qNorm.length >= 2 && wNorm.startsWith(qNorm)) {
+                    score = 820 - Math.min(50, (wNorm.length - qNorm.length) * 4);
+                }
+                // 5. यूज़र ने बड़ा शब्द लिखा हो और शब्द उसके अंदर हो (कम से कम 3 अक्षर और 60% लंबाई का मिलान ज़रूरी)
+                else if (w.length >= 3 && q.includes(w) && (w.length / q.length) >= 0.6) {
+                    score = 760 - Math.min(40, (q.length - w.length) * 5);
+                }
+                else if (wNorm.length >= 3 && qNorm.includes(wNorm) && (wNorm.length / qNorm.length) >= 0.6) {
+                    score = 730 - Math.min(40, (qNorm.length - wNorm.length) * 5);
+                }
+                // 6. बहु-शब्द मिलान (जैसे: 'किताबी किताब' में 'किताब')
+                else if (qTokens.length > 1) {
+                    for (let tIdx = 0; tIdx < qTokens.length; tIdx++) {
+                        if (w === qTokens[tIdx] || wNorm === qNormTokens[tIdx]) {
+                            score = Math.max(score, 750);
+                        } else if (w.startsWith(qTokens[tIdx]) && qTokens[tIdx].length >= 3) {
+                            score = Math.max(score, 680);
+                        }
+                    }
+                }
+                // 7. शब्द के बीच में मिलान (कम से कम 3 अक्षर)
+                else if (q.length >= 3 && w.includes(q)) {
+                    score = 640 - Math.min(30, w.indexOf(q) * 3);
+                }
+
+                // 8. गलत अक्षर टाइप करने पर फ़ज़ी मिलान (Typo Tolerance)
+                if (score === 0 && qNorm.length >= 3 && wNorm.length >= 3) {
+                    const dist = computeLevenshtein(qNorm, wNorm);
+                    const maxLen = Math.max(qNorm.length, wNorm.length);
+                    const similarity = 1 - (dist / maxLen);
+                    if (dist === 1 || (dist === 2 && maxLen >= 5) || similarity >= 0.68) {
+                        score = Math.round(520 + similarity * 180);
+                    }
+                }
+
+                if (score > 0) {
+                    if (item.type === "hindi" || item.type === "mewati") score += 15;
+                    scoredMatches.push({
+                        word: item.word,
+                        type: item.type,
+                        index: item.index,
+                        data: dictionary[item.index],
+                        score: score
+                    });
+                }
+            }
+
+            scoredMatches.sort((a, b) => (b.score !== a.score) ? (b.score - a.score) : compareHindiWords(a, b));
+            return scoredMatches;
+        }
+ 
         async function fetchDictionaryFromGoogleSheets() {
             const loadingIndicator = document.getElementById("loadingIndicator");
             const errorMessage = document.getElementById("errorMessage");
@@ -1943,14 +2130,18 @@ function toggleLetterLanguage() {
             if (cachedData) {
                 try {
                     const rows = JSON.parse(cachedData);
-                    if (Array.isArray(rows)) {
+                                        if (Array.isArray(rows)) {
                         processRows(rows);
+                        initializeLetterFilter();
+                        initializeTrie();
+                        initializeWordOfTheDay();
+                        initializeDuplicateMewatiWords();
                         loadingIndicator.style.opacity = "0";
                         setTimeout(() => { loadingIndicator.style.display = "none"; }, 300);
                         fetchFreshData();
                         return dictionary;
                     }
-                    localStorage.removeItem("mewati_dictionary_cache");
+                   localStorage.removeItem("mewati_dictionary_cache");
                 } catch (e) {
                     localStorage.removeItem("mewati_dictionary_cache");
                 }
@@ -2033,8 +2224,25 @@ function toggleLetterLanguage() {
                 });
             });
         }
-        function initializeTrie() {
+              function initializeTrie() {
+            trie.root = new TrieNode();
+            smartSearchIndex = [];
+
+            const addToSmartIndex = (searchKey, type, index, displayWord = null) => {
+                if (!searchKey || !searchKey.trim()) return;
+                const cleanKey = searchKey.trim();
+                const finalWord = displayWord ? displayWord.trim() : cleanKey;
+                smartSearchIndex.push({
+                    word: finalWord,
+                    lower: cleanKey.toLowerCase(),
+                    norm: normalizeSmartText(cleanKey),
+                    type: type,
+                    index: index
+                });
+            };
+
             dictionary.forEach((entry, index) => {
+                // 1. हिंदी शब्द व उनका ऑटो-रोमन
                 const word = entry.hindiWord;
                 const hindiWords = word
                     .split(/;\s*/)
@@ -2043,35 +2251,55 @@ function toggleLetterLanguage() {
                 hindiWords.forEach(part => {
                     if (part.split(/\s+/).length <= 5) {
                         trie.insert(part, "hindi", index);
+                        addToSmartIndex(part, "hindi", index, part);
+                        const autoHindiRoman = devanagariToRomanAuto(part);
+                        if (autoHindiRoman) addToSmartIndex(autoHindiRoman, "hindi", index, part);
                     }
                 });
+
+                // 2. मेवाती शब्द व उनका ऑटो-रोमन
                 const meanings = entry.meaning.split(/,\s*/).map(m => m.trim());
                 meanings.forEach(meaning => {
                     if (meaning) {
                         trie.insert(meaning, "mewati", index);
+                        addToSmartIndex(meaning, "mewati", index, meaning);
+                        const autoMewatiRoman = devanagariToRomanAuto(meaning);
+                        if (autoMewatiRoman) addToSmartIndex(autoMewatiRoman, "mewati", index, meaning);
                     }
                 });
+
+                // 3. विषय टैग (#Tags)
                 entry.subject.forEach(tag => {
-                    if(tag){
+                    if (tag) {
                         trie.insert(tag, "tag", index);
+                        addToSmartIndex(tag, "tag", index, tag);
                     }
                 });
+
+                // 4. अंग्रेज़ी अर्थ
                 if (entry.english) {
                     const engParts = entry.english.split(/[;]\s*/).map(e => e.trim()).filter(e => e);
                     engParts.forEach(eng => {
                         if (eng.split(/\s+/).length <= 5) {
                             trie.insert(eng, "english", index);
+                            addToSmartIndex(eng, "english", index, eng);
                         }
                     });
                 }
-                entry.mewatiTranslit.forEach((translit) => {
-                    if (translit) {
-                        trie.insert(translit, "translit", index);
-                    }
-                });
+
+                // 5. कॉलम W (mewatiTranslit2) को मुख्य रोमन कीवर्ड के रूप में जोड़ना
+                if (entry.mewatiTranslit2 && Array.isArray(entry.mewatiTranslit2)) {
+                    entry.mewatiTranslit2.forEach((translit2, tIdx) => {
+                        if (translit2) {
+                            const targetMewati = meanings[tIdx] || meanings[0] || translit2;
+                            trie.insert(translit2, "mewati", index);
+                            addToSmartIndex(translit2, "mewati", index, targetMewati);
+                        }
+                    });
+                }
             }); 
         }
-        function escapeString(str) {
+         function escapeString(str) {
             if (!str || typeof str !== 'string') return "";
             return str.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
         }
@@ -2401,11 +2629,10 @@ function toggleLetterLanguage() {
                 matches.sort(compareHindiWords);
             
 
-            } else if (input) {
-                matches = trie.search(input);
+                       } else if (input) {
                 activeLetter = null;
                 document.querySelectorAll(".letter-btn").forEach(btn => btn.classList.remove("active"));
-                matches.sort(compareHindiWords);
+                matches = performSmartSearch(input);
             }
             const seenSuggestions = new Set();
 
