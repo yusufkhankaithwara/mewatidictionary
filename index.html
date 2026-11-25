@@ -67,7 +67,8 @@
         body.large-text #suggestions li span {
             font-size: 14px;
         }
-        body.large-text #wordType,
+                body.large-text #wordType,
+        body.large-text #oppositeGenderLine,
         body.large-text #pluralLine,
         body.large-text #subjectLine {
             font-size: 12px;
@@ -350,16 +351,20 @@ body.dark-mode .action-bar-btn .material-symbols-outlined {
         body.dark-mode #suggestions li span {
             color: #aaa;
         }
-        #wordType, #subjectLine, #pluralLine {    
+                #wordType, #oppositeGenderLine, #subjectLine, #pluralLine {    
             color: #666;
             font-size: 10px;
             margin: 5px 20px;
             display: none;
         }
         body.dark-mode #wordType,
+        body.dark-mode #oppositeGenderLine,
         body.dark-mode #subjectLine,
         body.dark-mode #pluralLine {
             color: #aaa;
+        }
+        body.dark-mode #oppositeGenderLine span {
+            color: #ffffff !important;
         }
          #result { 
     margin: 0;
@@ -543,6 +548,23 @@ body.dark-mode .non-clickable-chip {
     background: #444;
     color: #e0e0e0;
 }
+.opp-gender-non-clickable {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 1px 6px;
+    margin: 0 4px 0 0;
+    color: #1a1a1a;
+    border-radius: 3px;
+    font-size: 10px;
+    display: inline-block;
+    cursor: default;
+}
+body.dark-mode .opp-gender-non-clickable {
+    background: #3a3a3a;
+    border-color: #555;
+    color: #e0e0e0;
+}
+
 
         .unclickable-text { 
             color: #4682b4; 
@@ -1731,7 +1753,8 @@ body.dark-mode .word-divider {
     </div>
 </div>
 
-        <p id="wordType"></p>
+                <p id="wordType"></p>
+        <p id="oppositeGenderLine"></p>
         <p id="subjectLine"></p>
         <p id="pluralLine"></p>
         <hr id="wordHeaderDivider" class="word-divider">
@@ -2196,7 +2219,7 @@ function toggleLetterLanguage() {
                     type: row[3] || "",
                     gender: row[4] || "",
                     english: row[5] || "",
-                    mewatiTranslit: row[6] ? row[6].split(", ").map(t => t.trim()) : [],
+                    oppositeGender: row[6] ? row[6].split(",").map(t => t.trim()) : [],
                     mewatiGender: row[7] || "",
                     example: row[8] || "",
                     opposite: row[9] || "",
@@ -2917,8 +2940,8 @@ function toggleLetterLanguage() {
                     window.history.pushState({ word: cleanInput }, '', newUrl);
                 }
             }
-            let wordType = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "", 
-                imageLabel = "", imageHtml = "",
+                      let wordType = "", oppositeGenderLine = "", subjectLine = "", pluralLine = "", result = "", englishMeaning = "", exampleLabel = "", exampleText = "",
+                 imageLabel = "", imageHtml = "",
                 synonymLabel = "", synonymText = "", oppositeLabel = "", oppositeText = "", 
                 relatedLabel = "", relatedText = "", rhymeLabel = "";
                          const selectedMainHindi = [];
@@ -2978,6 +3001,17 @@ function toggleLetterLanguage() {
                 const d = data;
                 const meanings = d.meaning.split(/\s*,\s*/);
                 const meaningIndex = meanings.indexOf(cleanInput);
+                               if (d.oppositeGender && d.oppositeGender.length) {
+                    const oppGenderWord = d.oppositeGender[meaningIndex] || d.oppositeGender[0];
+                    if (oppGenderWord) {
+                        const safeOpp = escapeString(oppGenderWord);
+                        const oppHtml = (window.allMewatiWords && window.allMewatiWords.has(oppGenderWord))
+                            ? `<button class="subject-btn" onclick="showDuplicateSuggestions('${safeOpp}', 'mewati')">${escapeHTML(oppGenderWord)}</button>`
+                            : `<span class="opp-gender-non-clickable">${escapeHTML(oppGenderWord)}</span>`;
+                        oppositeGenderLine = `विपरीत लिंग: ${oppHtml}`;
+                    }
+                }
+
                 if (d.subject && d.subject.length) {
                     const cleanTags = d.subject.map(tag => tag.replace("#","").trim());
                     subjectLine = "विषय: " + cleanTags.map(tag =>
@@ -3476,11 +3510,13 @@ actionButtons.style.display = "flex";
             }
             document.getElementById("proverbLabel").innerHTML = proverbLabelText;
             document.getElementById("proverbs").innerHTML = proverbHtml;
-            document.getElementById("wordType").textContent = wordType;
+                     document.getElementById("wordType").textContent = wordType;
             document.getElementById("wordType").style.display = wordType ? "block" : "none";
+            document.getElementById("oppositeGenderLine").innerHTML = oppositeGenderLine;
+            document.getElementById("oppositeGenderLine").style.display = oppositeGenderLine ? "block" : "none";
             document.getElementById("subjectLine").innerHTML = subjectLine;
             document.getElementById("subjectLine").style.display = subjectLine ? "block" : "none";
-            if (pluralLine) {
+              if (pluralLine) {
                 document.getElementById("pluralLine").innerHTML = pluralLine;
                 document.getElementById("pluralLine").style.display = "block";
             }
@@ -3675,6 +3711,9 @@ actionButtons.style.display = "flex";
         function clearResults() {
             currentSearchType = "";
             document.getElementById("pluralLine").style.display = "none";
+            document.getElementById("oppositeGenderLine").style.display = "none";
+            document.getElementById("oppositeGenderLine").innerHTML = "";
+
             const mainTitle = document.getElementById("mainWordTitle");
             if (mainTitle) {
                 mainTitle.textContent = "";
